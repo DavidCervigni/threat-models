@@ -1,0 +1,83 @@
+#based on: https://datatracker.ietf.org/doc/html/rfc6819
+
+ID: AuthorizationEndpoint
+title: Authorization Endpoint
+parent: OAuth2.0
+scope:  
+  description:
+  diagram:
+
+    assets:
+    - ID: token
+      type: credential
+      title: 
+      description: 
+      inScope: true
+
+  assumptions:
+    - ID:
+      description: |
+        A Auth server may host several ...
+
+  attackers:
+    - ID: ANONYMOUS
+      description: |
+        Anonymous internet user
+      inScope: true
+
+    - ID: CLIENT
+      description: |
+        Client app
+      inScope: true
+  
+analysis:
+
+ 
+threats:
+  - ID: AuthServerPhishing1
+    title: Password Phishing by Counterfeit Authorization Server
+    impact: Steal users' passwords
+    impacts:
+      - REFID: CONFIDENTIALITY
+    assets:
+      # - ID: 
+    CVSS:
+      vector: CVSS:3.0/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      A hostile party could take advantage of this
+      by intercepting the client's requests and returning misleading or
+      otherwise incorrect responses.  This could be achieved using DNS or
+      Address Resolution Protocol (ARP) spoofing.  Wide deployment of OAuth
+      and similar protocols may cause users to become inured to the
+      practice of being redirected to web sites where they are asked to
+      enter their passwords.  If users are not careful to verify the
+      authenticity of these web sites before entering their credentials, it
+      will be possible for attackers to exploit this practice to steal
+      users' passwords.
+    pentestTestable: true
+    public: true
+    fullyMitigated: false
+    countermeasures:
+      - ID: AUTH_SERVER_TLS
+        title: TLS for the authorization server
+        description: |
+          Authorization servers should consider such attacks when developing
+          services based on OAuth and should require the use of transport-
+          layer security for any requests where the authenticity of the
+          authorization server or of request responses is an issue (see
+          Section 5.1.2).
+        operational: true
+        inPlace: no
+        public: true
+
+      - ID: USER_PHISHING_AWARENESS
+        title: Users educated to avoid phishing attacks
+        description: |
+          Authorization servers should attempt to educate users about the
+          risks posed by phishing attacks and should provide mechanisms that
+          make it easy for users to confirm the authenticity of their sites.
+          Section 5.1.2).
+        operational: true
+        inPlace: no
+        public: true
