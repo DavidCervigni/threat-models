@@ -30,3 +30,7 @@ python -m r3threatmodeling.report_generator \
 cd $BUILD_DIR
 sh bsync.sh 
 ```
+
+## Example MD report
+
+ - [OAuth 2.0](report-examples/OAuth 2.0 build/OAuth2.md)
