@@ -70,6 +70,8 @@ threats:
         operational: true
         inPlace: no
         public: true
+        operator: AUTHORIZATION_SERVER
+
 
       - ID: USER_PHISHING_AWARENESS
         title: Users educated to avoid phishing attacks
@@ -78,6 +80,55 @@ threats:
           risks posed by phishing attacks and should provide mechanisms that
           make it easy for users to confirm the authenticity of their sites.
           Section 5.1.2).
+        operational: true
+        inPlace: no
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+
+  - ID: TOO_MUCH_GRANT
+    title: User Unintentionally Grants Too Much Access Scope
+    impact: Disclosure of  RESOURCE_OWNER's RESOURCES
+    impacts:
+      - REFID: CONFIDENTIALITY
+    assets:
+      # - ID: 
+    CVSS:
+      vector: CVSS:3.0/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      When obtaining end-user authorization, the end user may not
+      understand the scope of the access being granted and to whom, or they
+      may end up providing a client with access to resources that should
+      not be permitted.
+    pentestTestable: true
+    public: true
+    fullyMitigated: false
+    countermeasures:
+      - ID: AUTH_SERVER_RE_CHECK_GRANTS
+        title: AUTHORIZATION_SERVER policy discretional decision
+        description: |
+          Narrow the scope, based on the client.  When obtaining end-user
+          authorization and where the client requests scope, the
+          authorization server may want to consider whether to honor that
+          scope based on the client identifier.  That decision is between
+          the client and authorization server and is outside the scope of
+          this spec.  The authorization server may also want to consider
+          what scope to grant based on the client type, e.g., providing
+          lower scope to public clients (Section 5.1.5.1).
+        operational: true
+        inPlace: no
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+      - ID: USER_AUTH_AWARENESS
+        title: Users educated to avoid phishing attacks
+        description: |
+          Authorization servers should attempt to educate users about the
+          risks posed by phishing attacks and should provide mechanisms that
+          make it easy for users to confirm the authenticity of their sites.
+          Section 5.1.2).
+        operator: AUTHORIZATION_SERVER
         operational: true
         inPlace: no
         public: true
