@@ -224,3 +224,41 @@ threats:
         operational: true
         inPlace: false
         public: true
+
+
+
+  - ID: EAVESDROPPING_ACCESS_TOKENS1
+    title:  Eavesdropping Access Tokens
+    impact: |
+      The attacker is able to access all resources with the
+      permissions covered by the scope of the particular access token.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: DF_ACCESS_TOKEN_CL
+      - REFID: DF_AUTH_GRANT_AS
+      - REFID: AUTH_SERVER_TOKEN_ENDPOINT
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      Attackers may attempt to eavesdrop access tokens in transit from the
+      authorization server to the client.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+
+    countermeasures:
+      - ID: CLIENT_AUTH_SERVER_TLS
+        title: Secure transport layer to CLient to AUTH_SERVER by TLS
+        description: |
+          As per the core OAuth spec, the authorization servers must ensure
+          that these transmissions are protected using transport-layer
+          mechanisms such as TLS (see Section 5.1.1).
+        operator: AUTHORIZATION_SERVER
+        operational: true
+        inPlace: false
+        public: true
+
+      - REFID: REDUCED_ACCESS_TOKEN_SCOPE

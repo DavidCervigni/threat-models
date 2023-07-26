@@ -231,6 +231,17 @@ scope:
       description: User Agent Redirection for Client authorization request. this is part of DF_AUTH_REQUEST
       inScope: true
 
+    - ID: DF_ACCESS_TOKEN_CL
+      type: dataflow
+      title: Auth server sending the access token to the client
+      description: Auth server sending the access token to the client after resource owner approval
+      inScope: true
+
+    - ID: DF_AUTH_GRANT_AS
+      type: dataflow
+      title: Client requesting Authorization Server for the Access Token 
+      description: Client requesting Authorization Server for the Access Token after resource owner approval
+      inScope: true
 
     - ID: CONFIDENTIAL_CLIENT
       type: system
