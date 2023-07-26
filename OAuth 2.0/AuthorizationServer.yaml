@@ -69,7 +69,7 @@ threats:
     public: true
     fullyMitigated: false
     countermeasures:
-      - ID: AUTH_SERVER_TLS
+      - ID: 5.1.2_AUTH_SERVER_AUTHENTICATION
         title: TLS for the authorization server
         description: |
           Authorization servers should consider such attacks when developing
@@ -77,6 +77,24 @@ threats:
           layer security for any requests where the authenticity of the
           authorization server or of request responses is an issue (see
           Section 5.1.2).
+          
+          HTTPS server authentication or similar means can be used to
+          authenticate the identity of a server. The goal is to reliably bind
+          the fully qualified domain name of the server to the public key
+          presented by the server during connection establishment (see
+          [RFC2818]).
+          The client should validate the binding of the server to its domain
+          name. If the server fails to prove that binding, the communication
+          is considered a man-in-the-middle attack. This security measure
+          depends on the certification authorities the client trusts for that
+          purpose. Clients should carefully select those trusted CAs and
+          protect the storage for trusted CA certificates from modifications.
+          This is a countermeasure against the following threats:
+          o Spoofing
+          o Proxying
+          o Phishing by counterfeit servers
+
+
         operational: true
         inPlace: no
         public: true
@@ -265,7 +283,7 @@ threats:
 
 
   - ID: 4.3.2_AS_DB_TOKEN_DISCLOSURE
-    title: Obtaining Access Tokens from  Authorization Server Database
+    title: Obtaining Access Tokens from Authorization Server Database
     impact: |
       The attacker is able to access all resources for all tokens in Auth Server.
     impacts:
@@ -323,6 +341,68 @@ threats:
           o Filter and sanitize the input. For example, if an identifier has
           a known format, ensure that the supplied value matches the
           identifier syntax rules.
+        operational: false
+        inPlace: false
+        public: true
+
+
+  - ID: 4.3.3_CLIENT_CREDENTIALS_DISCLOSURE
+    title: Disclosure of Client Credentials during Transmission
+    impact: |
+      Revelation of a client credential enabling phishing or impersonation of a client service.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: DF_AUTH_GRANT_AS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker could attempt to eavesdrop the transmission of client
+      credentials between the client and server during the client
+      authentication process or during OAuth token requests.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+
+    countermeasures:
+      - ID: 5.1.1_CONFIDENTIAL_REQUESTS
+        title: Ensure Confidentiality of Requests (TLS)
+        description: |
+          This is applicable to all requests sent from the client to the
+          authorization server or resource server. While OAuth provides a
+          mechanism for verifying the integrity of requests, it provides no
+          guarantee of request confidentiality. Unless further precautions are
+          taken, eavesdroppers will have full access to request content and may
+          be able to mount interception or replay attacks by using the contents
+          of requests, e.g., secrets or tokens.
+          Attacks can be mitigated by using transport-layer mechanisms such as
+          TLS [RFC5246]. A virtual private network (VPN), e.g., based on IPsec
+          VPNs [RFC4301], may be considered as well.
+          Note: This document assumes end-to-end TLS protected connections
+          between the respective protocol entities. Deployments deviating from
+          this assumption by offloading TLS in between (e.g., on the data
+          center edge) must refine this threat model in order to account for
+          the additional (mainly insider) threat this may cause.
+          This is a countermeasure against the following threats:
+          o Replay of access tokens obtained on the token’s endpoint or the
+          resource server’s endpoint
+          o Replay of refresh tokens obtained on the token’s endpoint
+          Replay of authorization "codes" obtained on the token’s endpoint
+          (redirect?)
+          o Replay of user passwords and client secrets
+        operational: true
+        operator: CLIENT_OPERATOR
+        inPlace: true
+        public: true
+  
+      - ID: CONFIDENTIAL_CREDENTIALS_REQUESTS
+        title: Do not send plaintext credentials
+        description: |
+          Use alternative authentication means that do not require the
+          sending of plaintext credentials over the wire (e.g., Hash-based
+          Message Authentication Code).
         operational: false
         inPlace: false
         public: true

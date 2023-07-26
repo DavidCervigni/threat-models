@@ -214,6 +214,40 @@ scope:
     #   description: |
     #     Authorization server's endpoint for DF_AUTH_REDIRECT
     #   inScope: true
+    - ID: CONFIDENTIAL_CLIENT
+      title: Confidential Client
+      description: |
+        Clients capable of maintaining the confidentiality of their
+        credentials (e.g., client implemented on a secure server with
+        restricted access to the client credentials), or capable of secure
+        client authentication using other means.
+      specifies: CLIENT
+      type: system
+      inScope: true
+
+    - ID: PUBLIC_CLIENT
+      title: Confidential Client
+      description: |
+        Clients incapable of maintaining the confidentiality of their
+        credentials (e.g., clients executing on the device used by the
+        resource owner, such as an installed native application or a web
+        browser-based application), and incapable of secure client
+        authentication via any other means.
+      specifies: CLIENT
+      type: system
+      inScope: true
+
+    - ID: AUTHORIZATION_GRANT
+      title: Authorization Grant
+      description: |
+        An authorization grant is a credential representing the resource
+        owner's authorization (to access its protected resources) used by the
+        client to obtain an access token.  This specification defines four
+        grant types -- authorization code, implicit, resource owner password
+        credentials, and client credentials -- as well as an extensibility
+        mechanism for defining additional types.
+      type: credential
+      inScope: true
 
     - ID: ACCESS_TOKEN
       type: system
@@ -247,6 +281,13 @@ scope:
         this specification and are defined by companion specifications such
         as [RFC6750].
       inScope: true
+
+    # - ID: CLIENT_CREDENTIALS
+    #   type: system
+    #   title: Client credentials
+    #   description: |
+        
+    #   inScope: true
 
     - ID: AUTH_SERVER
       type: system
@@ -424,53 +465,24 @@ scope:
         and responding to protected resource requests using access tokens.
       inScope: true
 
-    - ID: CLIENT
+    - ID: CLIENT_OPERATOR
       description: |
-        An application making protected resource requests on behalf of the
-        resource owner and with its authorization.  The term "client" does
-        not imply any particular implementation characteristics (e.g.,
-        whether the application executes on a server, a desktop, or other
-        devices).
+        The operators of the CLIENT.
+      # An application making protected resource requests on behalf of the
+      # resource owner and with its authorization.  The term "client" does
+      # not imply any particular implementation characteristics (e.g.,
+      # whether the application executes on a server, a desktop, or other
+      # devices).
       inScope: true
 
     - ID: AUTHORIZATION_SERVER_OPERATOR
       description: |
-        The server issuing access tokens to the client after successfully
-        authenticating the resource owner and obtaining authorization.
+        The operators in the Authorization Server.
+      # The server issuing access tokens to the client after successfully
+      # authenticating the resource owner and obtaining authorization.
       inScope: true
 
-    - ID: CONFIDENTIAL_CLIENT
-      title: Confidential Client
-      description: |
-        Clients capable of maintaining the confidentiality of their
-        credentials (e.g., client implemented on a secure server with
-        restricted access to the client credentials), or capable of secure
-        client authentication using other means.
-      specifies: CLIENT
-      inScope: true
 
-    - ID: PUBLIC_CLIENT
-      title: Confidential Client
-      description: |
-        Clients incapable of maintaining the confidentiality of their
-        credentials (e.g., clients executing on the device used by the
-        resource owner, such as an installed native application or a web
-        browser-based application), and incapable of secure client
-        authentication via any other means.
-      specifies: CLIENT
-      inScope: true
-
-    - ID: AUTHORIZATION_GRANT
-      title: Authorization Grant
-      description: |
-        An authorization grant is a credential representing the resource
-        owner's authorization (to access its protected resources) used by the
-        client to obtain an access token.  This specification defines four
-        grant types -- authorization code, implicit, resource owner password
-        credentials, and client credentials -- as well as an extensibility
-        mechanism for defining additional types.
-      specifies: CLIENT
-      inScope: true
 
 
 analysis:
