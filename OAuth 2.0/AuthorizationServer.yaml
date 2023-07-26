@@ -406,3 +406,96 @@ threats:
         operational: false
         inPlace: false
         public: true
+
+
+  - ID: 4.3.4_CLIENT_CREDENTIALS_DISCLOSURE
+    title: Obtaining Client Secret from Authorization Server Database
+    impact: |
+      Disclosure of all "client_id"/secret combinations. This
+      allows the attacker to act on behalf of legitimate clients.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: CLIENT_SECRETS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker may obtain valid "client_id"/secret combinations from the
+      authorization server’s database by gaining access to the database or
+      launching a SQL injection attack.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.1.4.1.2_SQL_SEC
+      - REFID: 5.1.4.1.1_SYS_SEC
+      - ID: 5.1.4.1_CRED_PROTECTION
+        title: Enforce Credential Storage Protection Best Practices
+        description: |
+          Administrators should undertake industry best practices to protect
+          the storage of credentials (for example, see [OWASP]). Such
+          practices may include but are not limited to the following
+          sub-sections.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true       
+
+  - ID: 4.3.5_CLIENT_SECRET_BRUTE_FORCE
+    title: Obtaining Client Secret by Online Guessing
+    impact: |
+       Disclosure of a single "client_id"/secret pair.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: CLIENT_SECRETS
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:L
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker may try to guess valid "client_id"/secret pairs.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - ID: 5.1.4.2.2_HIGH_ENTROPY_SECRETS
+        title: Use High Entropy for Secrets
+        description: |
+          When creating secrets not intended for usage by human users (e.g.,
+          client secrets or token handles), the authorization server should
+          include a reasonable level of entropy in order to mitigate the risk
+          of guessing attacks. The token value should be >=128 bits long and
+          constructed from a cryptographically strong random or pseudo-random
+          number sequence (see [RFC4086] for best current practice) generated
+          by the authorization server.
+        operational: false
+        inPlace: false
+        public: true
+
+      - ID: 5.1.4.2.3_LOCK_ACCOUNTS
+        title: Lock Accounts
+        description: |
+          Online attacks on passwords can be mitigated by locking the
+          respective accounts after a certain number of failed attempts.
+          Note: This measure can be abused to lock down legitimate service users.
+        operational: false
+        inPlace: false
+        public: true       
+
+      - ID: 5.2.3.7_STRONG_CLIENT_AUTHENTICATION
+        title: Use strong client authentication
+        description: |
+          By using an alternative form of authentication such as client
+          assertion [OAuth-ASSERTIONS], the need to distribute a
+          "client_secret" is eliminated. This may require the use of a secure
+          private key store or other supplemental authentication system as
+          specified by the client assertion issuer in its authentication
+          process. (e.g., client_assertion/client_token)
+        operational: false
+        inPlace: false
+        public: true       

@@ -289,6 +289,15 @@ scope:
         
     #   inScope: true
 
+    
+
+    - ID: CLIENT_SECRETS
+      type: credentials
+      title: Client secret for authentication with AUTH_SERVER
+      description: |
+        Secrets held by CLIENT to authentication to the Authorization Server
+      inScope: true
+
     - ID: AUTH_SERVER
       type: system
       title: Authorization server
