@@ -1,11 +1,27 @@
 #based on: https://datatracker.ietf.org/doc/html/rfc6819
 
-ID: AuthorizationEndpoint
-title: Authorization Endpoint
+ID: AuthorizationServer
+title: Authorization Server
 parent: OAuth2.0
 scope:  
   description:
   diagram:
+
+  assets:
+    - ID: AUTH_SERVER_TOKEN_ENDPOINT
+      type: endpoint
+      title: Authorization server token endpoint
+      description: |
+        Authorization server's endpoint for DF_AUTH_GRANT_AS and DF_ACCESS_TOKEN_CL
+      inScope: true
+
+
+    - ID: AUTH_SERVER_AUTH_ENDPOINT
+      type: endpoint
+      title: Authorization endpoint for resource owner
+      description: |
+        Authorization server's endpoint for DF_AUTH_REDIRECT
+      inScope: true
 
 
   assumptions:
@@ -136,6 +152,7 @@ threats:
     assets:
       - REFID: DF_AUTH_REDIRECT
       - REFID: AUTH_SERVER
+      - REFID: AUTH_SERVER_AUTH_ENDPOINT
     CVSS:
       vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N
     threatType: Spoofing, Information Disclosure
@@ -172,6 +189,7 @@ threats:
       - REFID: CONFIDENTIALITY
     assets:
       - REFID: DF_AUTH_REDIRECT
+      - REFID: AUTH_SERVER_AUTH_ENDPOINT
       - REFID: PUBLIC_CLIENT
     CVSS:
       vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
