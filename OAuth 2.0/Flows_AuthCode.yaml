@@ -1,0 +1,240 @@
+#based on: https://datatracker.ietf.org/doc/html/rfc6819
+
+ID: Flows_AuthCode
+title: Authorization "code" flow
+parent: Flows
+scope:  
+  description:
+     Authorization "code" flow
+   The authorization code is obtained by using an authorization server
+   as an intermediary between the client and resource owner.  Instead of
+   requesting authorization directly from the resource owner, the client
+   directs the resource owner to an authorization server (via its
+   user-agent as defined in [RFC2616]), which in turn directs the
+   resource owner back to the client with the authorization code.
+
+   Before directing the resource owner back to the client with the
+   authorization code, the authorization server authenticates the
+   resource owner and obtains authorization.  Because the resource owner
+   only authenticates with the authorization server, the resource
+   owner's credentials are never shared with the client.
+
+   The authorization code provides a few important security benefits,
+   such as the ability to authenticate the client, as well as the
+   transmission of the access token directly to the client without
+   passing it through the resource owner's user-agent and potentially
+   exposing it to others, including the resource owner.
+
+     **Implicit**
+
+   The implicit grant is a simplified authorization code flow optimized
+   for clients implemented in a browser using a scripting language such
+   as JavaScript.  In the implicit flow, instead of issuing the client
+   an authorization code, the client is issued an access token directly
+   (as the result of the resource owner authorization).  The grant type
+   is implicit, as no intermediate credentials (such as an authorization
+   code) are issued (and later used to obtain an access token).
+
+   When issuing an access token during the implicit grant flow, the
+   authorization server does not authenticate the client.  In some
+   cases, the client identity can be verified via the redirection URI
+   used to deliver the access token to the client.  The access token may
+   be exposed to the resource owner or other applications with access to
+   the resource owner's user-agent.
+
+   Implicit grants improve the responsiveness and efficiency of some
+   clients (such as a client implemented as an in-browser application),
+   since it reduces the number of round trips required to obtain an
+   access token.  However, this convenience should be weighed against
+   the security implications of using implicit grants, such as those
+   described in Sections 10.3 and 10.16, especially when the
+   authorization code grant type is available.
+  diagram:
+
+  assets:
+    - ID: DF_AUTH_CODE_AS
+      type: dataflow
+      title: Auth code is returned to the User Agent from the AUTH_SERVER
+      description: |
+        AUTH_SERVER response 30x (redirect)
+        Assuming the resource owner grants access, the authorization
+        server redirects the user-agent back to the client using the
+        redirection URI provided earlier (in the request or during
+        client registration).  The redirection URI includes an
+        authorization code and any local state provided by the client
+        earlier.
+      inScope: true
+
+    - ID: DF_AUTH_CODE_CLI
+      type: dataflow
+      title: Auth code redirected to the CLIENT
+      description: |
+        USER_AGENT request (redirected from DF_AUTH_CODE_AS 30x response)
+        Assuming the resource owner grants access, the authorization
+        server redirects the user-agent back to the client using the
+        redirection URI provided earlier (in the request or during
+        client registration).  The redirection URI includes an
+        authorization code and any local state provided by the client
+        earlier.
+      inScope: true
+
+
+
+    # - ID: AUTH_SERVER_AUTH_ENDPOINT
+    #   type: endpoint
+    #   title: Authorization endpoint for resource owner
+    #   description: |
+    #     Authorization server's endpoint for DF_AUTH_REDIRECT
+    #   inScope: true
+
+
+  assumptions:
+    # - ID:
+    #   description: |
+    #     A Auth server may host several ...
+
+  attackers:
+    # - ID: ANONYMOUS
+    #   description: |
+    #     Anonymous internet user
+    #   inScope: true
+
+    # - ID: CLIENT
+    #   description: |
+    #     Client app
+    #   inScope: true
+  
+analysis:
+
+ 
+threats:
+
+  - ID: 4.4.1.1_AUTH_CODE_DISCLOSURE
+    title: Eavesdropping or Leaking Authorization "codes"
+    impact: |
+       Auth codes can be used to 
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker could try to eavesdrop transmission of the authorization
+      "code" between the authorization server and client. Furthermore,
+      authorization "codes" are passed via the browser, which may
+      unintentionally leak those codes to untrusted web sites and attackers
+      in different ways:
+      o Referrer headers: Browsers frequently pass a "referer" header when
+      a web page embeds content, or when a user travels from one web
+      page to another web page. These referrer headers may be sent even
+      when the origin site does not trust the destination site. The
+      referrer header is commonly logged for traffic analysis purposes.
+      o Request logs: Web server request logs commonly include query
+      parameters on requests.
+      o Open redirectors: Web sites sometimes need to send users to
+      another destination via a redirector. Open redirectors pose a
+      particular risk to web-based delegation protocols because the
+      redirector can leak verification codes to untrusted destination
+      sites.
+      o Browser history: Web browsers commonly record visited URLs in the
+      browser history. Another user of the same web browser may be able
+      to view URLs that were visited by previous users.
+      Note: A description of similar attacks on the SAML protocol can be
+      found at [OASIS.sstc-saml-bindings-1.1], Section 4.1.1.9.1;
+      [Sec-Analysis]; and [OASIS.sstc-sec-analysis-response-01].
+
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
+      - ID: 5.2.4.4_CLIENT_TO_CODE_BINDING
+        title: Binding of Authorization "code" to "client_id"
+        description: |
+          The authorization server should bind every authorization "code" to
+          the id of the respective client that initiated the end-user
+          authorization process. This measure is a countermeasure against:
+          o Replay of authorization "codes" with different client credentials,
+          since an attacker cannot use another "client_id" to exchange an
+          authorization "code" into a token
+          o Online guessing of authorization "codes"
+          Note: This binding should be protected from unauthorized
+          modifications (e.g., using protected memory and/or a secure
+          database).
+          Also:
+          The authorization server will require the client to authenticate
+          wherever possible, so the binding of the authorization "code" to a
+          certain client can be validated in a reliable way (see
+          Section 5.2.4.4).
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: true
+        public: true       
+
+      - ID: 5.1.5.3_SHORT_EXPIRY_CODE
+        title: Use Short Expiration Time
+        description: |
+          A short expiration time for tokens is a means of protection against
+          the following threats:
+          o replay
+          o token leak (a short expiration time will reduce impact)
+          o online guessing (a short expiration time will reduce the
+          likelihood of success)
+          Note: Short token duration requires more precise clock
+          synchronization between the authorization server and resource server.
+          Furthermore, shorter duration may require more token refreshes
+          (access token) or repeated end-user authorization processes
+          (authorization "code" and refresh token).
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+      - ID: 5.1.5.4_ONE_TIME_USE_TOKEN
+        title: Limit Number of Usages or One-Time Usage
+        description: |
+          The authorization server may restrict the number of requests or
+          operations that can be performed with a certain token. This
+          mechanism can be used to mitigate the following threats:
+          o replay of tokens
+          o guessing
+          For example, if an authorization server observes more than one
+          attempt to redeem an authorization "code", the authorization server
+          may want to revoke all access tokens granted based on the
+          authorization "code" as well as reject the current request.
+          As with the authorization "code", access tokens may also have a
+          limited number of operations. This either forces client applications
+          to re-authenticate and use a refresh token to obtain a fresh access
+          token, or forces the client to re-authorize the access token by
+          involving the user.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+      - ID: 5.2.1.1_TOKEN_ABUSE_DETECTION
+        title: Automatic Revocation of Derived Tokens If Abuse Is Detected
+        description: |
+          If an authorization server observes multiple attempts to redeem an
+          authorization grant (e.g., such as an authorization "code"), the
+          authorization server may want to revoke all tokens granted based on
+          the authorization grant
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+      - ID: USER_AGENT_PAGE_RELOAD
+        title: Reload the target page
+        description: |
+          The client server may reload the target page of the redirect URI
+          in order to automatically clean up the browser cache.
+        operational: true
+        operator: CLIENT_OPERATOR
+        inPlace: false
+        public: true
