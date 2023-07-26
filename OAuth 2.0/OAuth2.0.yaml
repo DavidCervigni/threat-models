@@ -4,6 +4,7 @@ ID: OAuth2
 title: OAuth 2.0
 version: rfc6819
 children:
+  - ID: Client
   - ID: AuthorizationEndpoint
 
 authors: |
@@ -204,9 +205,89 @@ scope:
       inScope: true
 
   assumptions:
-    - ID:
+    - ID: ATT1
       description: |
-        A Auth server may host several ...
+        the attacker has full access to the network between the client and
+        authorization servers and the client and the resource server,
+        respectively.  The attacker may eavesdrop on any communications
+    - ID: ATT2
+      description: |
+        an attacker has unlimited resources to mount an attack.
+    - ID: ATT3
+      description: |
+        two of the three parties involved in the OAuth protocol may
+        collude to mount an attack against the 3rd party.  For example,
+        the client and authorization server may be under control of an
+        attacker and collude to trick a user to gain access to resources.
+
+    - ID: ARC1
+      description: |
+        The OAuth protocol leaves deployments with a certain degree of
+        freedom regarding how to implement and apply the standard.  The core
+        specification defines the core concepts of an authorization server
+        and a resource server.  Both servers can be implemented in the same
+        server entity, or they may also be different entities.  The latter is
+        typically the case for multi-service providers with a single
+        authentication and authorization system and is more typical in
+        middleware architectures.
+
+    - ID: ARC2
+      description: |
+           The following data elements are stored or accessible on the
+            authorization server:
+
+            o  usernames and passwords
+
+            o  client ids and secrets
+
+            o  client-specific refresh tokens
+
+            o  client-specific access tokens (in the case of handle-based design;
+                see Section 3.1)
+
+            o  HTTPS certificate/key
+
+            o  per-authorization process (in the case of handle-based design;
+                Section 3.1): "redirect_uri", "client_id", authorization "code"
+
+    - ID: ARC3
+      description: |
+        The following data elements are stored or accessible on the resource
+        server:
+
+        o  user data (out of scope)
+
+        o  HTTPS certificate/key
+
+        o  either authorization server credentials (handle-based design; see
+            Section 3.1) or authorization server shared secret/public key
+            (assertion-based design; see Section 3.1)
+
+        o  access tokens (per request)
+
+        It is assumed that a resource server has no knowledge of refresh
+        tokens, user passwords, or client secrets.
+    - ID: ARC4
+      description: |
+        In OAuth, a client is an application making protected resource
+        requests on behalf of the resource owner and with its authorization.
+        There are different types of clients with different implementation
+        and security characteristics, such as web, user-agent-based, and
+        native applications.  A full definition of the different client types
+        and profiles is given in [RFC6749], Section 2.1.
+
+        The following data elements are stored or accessible on the client:
+
+        o  client id (and client secret or corresponding client credential)
+
+        o  one or more refresh tokens (persistent) and access tokens
+            (transient) per end user or other security-context or delegation
+            context
+
+        o  trusted certification authority (CA) certificates (HTTPS)
+
+        o  per-authorization process: "redirect_uri", authorization "code"
+
 
   attackers:
     - ID: ANONYMOUS
@@ -274,6 +355,8 @@ scope:
         mechanism for defining additional types.
       specifies: CLIENT
       inScope: true
+
+
 analysis:
 
  

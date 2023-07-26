@@ -1,0 +1,220 @@
+#based on: https://datatracker.ietf.org/doc/html/rfc6819
+
+ID: Client
+title: Client
+parent: OAuth2.0
+scope:  
+  description:
+  diagram:
+analysis:
+
+ 
+threats:
+  - ID: Client_Secrets_disclosure
+    title: Client Secrets Disclosure and impersonation 
+    impactDesc: |
+      - Client authentication of access to the authorization server can be
+      bypassed.
+      - Stolen refresh tokens or authorization "codes" can be replayed.
+      - Client spoofing/impersonation
+    impactedSecObj:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      # - ID: 
+    CVSS:
+      vector: CVSS:3.0/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      Obtain Secret From Source Code or Binary:
+      This applies for all client types.  For open source projects, secrets
+      can be extracted directly from source code in their public
+      repositories.  Secrets can be extracted from application binaries
+      just as easily when the published source is not available to the
+      attacker.  Even if an application takes significant measures to
+      obfuscate secrets in their application distribution, one should
+      consider that the secret can still be reverse-engineered by anyone
+      with access to a complete functioning application bundle or binary.
+    pentestTestable: true
+    public: true
+    fullyMitigated: false
+    countermeasures:
+      - ID: 5.2.3.1_CLIENT_CHECK1
+        title: Checks on client's security policy
+        description: |
+          Don't issue secrets to public clients or clients with
+          inappropriate security policy
+        operational: true
+        inPlace: no
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+      - ID: 5.2.3.2.User_Consent1
+        title: Require User Consent for Public Clients without Secret
+        description: |
+          Authorization servers should not allow automatic authorization for
+          public clients.  The authorization server may issue an individual
+          client id but should require that all authorizations are approved by
+          the end user.  For clients without secrets, this is a countermeasure
+          against the following threat:
+            -  Impersonation of public client applications.
+        operational: true
+        inPlace: no
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+      - ID: 5.2.3.3_client_id_to_redirect_uri
+        title: Issue a "client_id" Only in Combination with "redirect_uri"
+        description: |
+          The authorization server may issue a "client_id" and bind the
+            "client_id" to a certain pre-configured "redirect_uri".  Any
+            authorization request with another redirect URI is refused
+            automatically.  Alternatively, the authorization server should not
+            accept any dynamic redirect URI for such a "client_id" and instead
+            should always redirect to the well-known pre-configured redirect URI.
+            This is a countermeasure for clients without secrets against the
+            following threats:
+
+            -  Cross-site scripting attacks
+
+            -  Impersonation of public client applications
+        operational: true
+        inPlace: no
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+      - ID: 5.2.3.4_specific_Client_Secrets
+        title:  Issue Installation-Specific Client Secrets
+        description: |
+          An authorization server may issue separate client identifiers and
+          corresponding secrets to the different installations of a particular
+          client (i.e., software package).  The effect of such an approach
+          would be to turn otherwise "public" clients back into "confidential"
+          clients.
+
+          For web applications, this could mean creating one "client_id" and
+          "client_secret" for each web site on which a software package is
+          installed.  So, the provider of that particular site could request a
+          client id and secret from the authorization server during the setup
+          of the web site.  This would also allow the validation of some of the
+          properties of that web site, such as redirect URI, web site URL, and
+          whatever else proves useful.  The web site provider has to ensure the
+          security of the client secret on the site.
+
+          For native applications, things are more complicated because every
+          copy of a particular application on any device is a different
+          installation.  Installation-specific secrets in this scenario will
+          require obtaining a "client_id" and "client_secret" either
+
+          1.  during the download process from the application market, or
+
+          2.  during installation on the device.
+
+          Either approach will require an automated mechanism for issuing
+          client ids and secrets, which is currently not defined by OAuth.
+
+          The first approach would allow the achievement of a certain level of
+          trust in the authenticity of the application, whereas the second
+          option only allows the authentication of the installation but not the
+          validation of properties of the client.  But this would at least help
+          to prevent several replay attacks.  Moreover, installation-specific
+          "client_ids" and secrets allow the selective revocation of all
+          refresh tokens of a specific installation at once.
+        operational: true
+        inPlace: no
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+      - ID: 5.2.3.5_Validate_redirect_uri
+        title:  Validate Pre-Registered "redirect_uri"
+        description: |
+          An authorization server should require all clients to register their
+          "redirect_uri", and the "redirect_uri" should be the full URI as
+          defined in [RFC6749].  The way that this registration is performed is
+          out of scope of this document.  As per the core spec, every actual
+          redirect URI sent with the respective "client_id" to the end-user
+          authorization endpoint must match the registered redirect URI.  Where
+          it does not match, the authorization server should assume that the
+          inbound GET request has been sent by an attacker and refuse it.
+          Note: The authorization server should not redirect the user agent
+          back to the redirect URI of such an authorization request.
+          Validating the pre-registered "redirect_uri" is a countermeasure
+          against the following threats:
+
+          o  Authorization "code" leakage through counterfeit web site: allows
+              authorization servers to detect attack attempts after the first
+              redirect to an end-user authorization endpoint (Section 4.4.1.7).
+
+          o  Open redirector attack via a client redirection endpoint
+              (Section 4.1.5).
+
+          o  Open redirector phishing attack via an authorization server
+              redirection endpoint (Section 4.2.4).
+
+          The underlying assumption of this measure is that an attacker will
+          need to use another redirect URI in order to get access to the
+          authorization "code".  Deployments might consider the possibility of
+          an attacker using spoofing attacks to a victim's device to circumvent
+          this security measure.
+
+          Note: Pre-registering clients might not scale in some deployments
+          (manual process) or require dynamic client registration (not
+          specified yet).  With the lack of dynamic client registration, a
+          pre-registered "redirect_uri" only works for clients bound to certain
+          deployments at development/configuration time.  As soon as dynamic
+          resource server discovery is required, the pre-registered
+          "redirect_uri" may no longer be feasible.
+
+        operational: true
+        inPlace: false
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+
+
+  - ID: TOO_MUCH_GRANT
+    title: User Unintentionally Grants Too Much Access Scope
+    impact: Disclosure of  RESOURCE_OWNER's RESOURCES
+    impacts:
+      - REFID: CONFIDENTIALITY
+    assets:
+      # - ID: 
+    CVSS:
+      vector: CVSS:3.0/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      When obtaining end-user authorization, the end user may not
+      understand the scope of the access being granted and to whom, or they
+      may end up providing a client with access to resources that should
+      not be permitted.
+    pentestTestable: true
+    public: true
+    fullyMitigated: false
+    countermeasures:
+      - ID: AUTH_SERVER_RE_CHECK_GRANTS
+        title: AUTHORIZATION_SERVER policy discretional decision
+        description: |
+          Narrow the scope, based on the client.  When obtaining end-user
+          authorization and where the client requests scope, the
+          authorization server may want to consider whether to honor that
+          scope based on the client identifier.  That decision is between
+          the client and authorization server and is outside the scope of
+          this spec.  The authorization server may also want to consider
+          what scope to grant based on the client type, e.g., providing
+          lower scope to public clients (Section 5.1.5.1).
+        operational: true
+        inPlace: no
+        public: true
+        operator: AUTHORIZATION_SERVER
+
+      - ID: USER_AUTH_AWARENESS
+        title: Users educated to avoid phishing attacks
+        description: |
+          Authorization servers should attempt to educate users about the
+          risks posed by phishing attacks and should provide mechanisms that
+          make it easy for users to confirm the authenticity of their sites.
+          Section 5.1.2).
+        operator: AUTHORIZATION_SERVER
+        operational: true
+        inPlace: no
+        public: true
