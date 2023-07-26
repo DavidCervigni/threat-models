@@ -227,7 +227,7 @@ threats:
 
 
 
-  - ID: EAVESDROPPING_ACCESS_TOKENS1
+  - ID: 4.3.1_EAVESDROPPING_ACCESS_TOKENS1
     title:  Eavesdropping Access Tokens
     impact: |
       The attacker is able to access all resources with the
@@ -262,3 +262,67 @@ threats:
         public: true
 
       - REFID: REDUCED_ACCESS_TOKEN_SCOPE
+
+
+  - ID: 4.3.2_AS_DB_TOKEN_DISCLOSURE
+    title: Obtaining Access Tokens from  Authorization Server Database
+    impact: |
+      The attacker is able to access all resources for all tokens in Auth Server.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: ACCESS_TOKEN
+      - REFID: AUTH_SERVER
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker may obtain access
+      tokens from the authorization server’s database by gaining access to
+      the database or launching a SQL injection attack. 
+      
+      This threat is applicable if the authorization server stores access
+      tokens as handles in a database.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+
+    countermeasures:
+      - ID: 5.1.4.1.3_HASHED_TOKEN_DB
+        title: Store access token hashes only (Section 5.1.4.1.3).
+        description: |
+          Store access token hashes only (Section 5.1.4.1.3).
+        operational: false
+        inPlace: true
+        public: true
+
+      - ID: 5.1.4.1.1_SYS_SEC
+        title: Enforce Standard System Security Means
+        description: |
+          A server system may be locked down so that no attacker may get access
+          to sensitive configuration files and databases.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+      - ID: 5.1.4.1.2_SQL_SEC
+        title: Enforce Standard SQL Injection Countermeasures
+        description: |
+          If a client identifier or other authentication component is queried
+          or compared against a SQL database, it may become possible for an
+          injection attack to occur if parameters received are not validated
+          before submission to the database.
+          o Ensure that server code is using the minimum database privileges
+          possible to reduce the "surface" of possible attacks.
+          o Avoid dynamic SQL using concatenated input. If possible, use
+          static SQL.
+          o When using dynamic SQL, parameterize queries using bind arguments.
+          Bind arguments eliminate the possibility of SQL injections.
+          o Filter and sanitize the input. For example, if an identifier has
+          a known format, ensure that the supplied value matches the
+          identifier syntax rules.
+        operational: false
+        inPlace: false
+        public: true
