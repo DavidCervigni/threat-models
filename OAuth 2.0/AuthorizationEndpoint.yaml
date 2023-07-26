@@ -7,12 +7,6 @@ scope:
   description:
   diagram:
 
-    assets:
-    - ID: token
-      type: credential
-      title: 
-      description: 
-      inScope: true
 
   assumptions:
     - ID:
@@ -131,4 +125,84 @@ threats:
         operator: AUTHORIZATION_SERVER
         operational: true
         inPlace: no
+        public: true
+
+
+  - ID: OPEN_REDIRECTOR
+    title:  Authorization server open redirect
+    impact: Phishing attacks can be executed exploiting AUTH_SERVER open redirect
+    # impacts:
+    #   - REFID: NON_REPUDIATION
+    assets:
+      - REFID: DF_AUTH_REDIRECT
+      - REFID: AUTH_SERVER
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:C/C:H/I:L/A:N
+    threatType: Spoofing, Information Disclosure
+    attack: |
+      An attacker could use the end-user authorization endpoint and the
+      redirect URI parameter to abuse the authorization server as an open
+      redirector. An open redirector is an endpoint using a parameter to
+      automatically redirect a user agent to the location specified by the
+      parameter value without any validation.
+    pentestTestable: true
+    public: true
+    fullyMitigated: false
+
+    countermeasures:
+      - ID: PRE-REGISTERED_REDIRECT_URI
+        title: Pre-registered redirect URI
+        description: |
+          Require clients to register any full redirect URIs (Section 5.2.3.5).
+          Don’t redirect to a redirect URI if the client identifier or
+          redirect URI can’t be verified (Section 5.2.3.5).
+          Authorization servers should not automatically process repeat
+          authorizations to public clients unless the client is validated
+          using a pre-registered redirect URI (Section 5.2.3.5).
+        operational: false
+        inPlace: true
+        public: true
+
+
+
+  - ID: PUBLIC_CLIENT_SPOOFING1
+    title:  Malicious Client Obtains Existing Authorization by Fraud
+    impact: Disclosure of RESOURCE_OWNER's RESOURCES
+    impacts:
+      - REFID: CONFIDENTIALITY
+    assets:
+      - REFID: DF_AUTH_REDIRECT
+      - REFID: PUBLIC_CLIENT
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      Authorization servers may wish to automatically process authorization
+      requests from clients that have been previously authorized by the
+      user. When the user is redirected to the authorization server's end-
+      user authorization endpoint to grant access, the authorization server
+      detects that the user has already granted access to that particular
+      client. Instead of prompting the user for approval, the
+      authorization server automatically redirects the user back to the
+      client.
+
+      A malicious client may exploit that feature and try to obtain such an
+      authorization "code" instead of the legitimate client.
+    pentestTestable: true
+    public: true
+    fullyMitigated: false
+
+    countermeasures:
+      - REFID: PRE-REGISTERED_REDIRECT_URI
+
+
+      - ID: REDUCED_ACCESS_TOKEN_SCOPE
+        title: Limiting the scope of access tokens obtained through automated approvals
+        description: |
+          Authorization servers can mitigate the risks associated with
+          automatic processing by limiting the scope of access tokens
+          obtained through automated approvals (Section 5.1.5.1).
+        operator: AUTHORIZATION_SERVER
+        operational: true
+        inPlace: false
         public: true
