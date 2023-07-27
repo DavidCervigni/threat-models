@@ -6,12 +6,10 @@ parent: OAuth2.0
 children:
   - ID: Flows_AuthCode
 
-scope:  
-  description:
-     This section covers threats that are specific to certain flows
-      utilized to obtain access tokens. Each flow is characterized by
-      response types and/or grant types on the end-user authorization and
-      token endpoint, respectively.
+scope:
+  description: This section covers threats that are specific to certain flows utilized
+    to obtain access tokens. Each flow is characterized by response types and/or grant
+    types on the end-user authorization and token endpoint, respectively.
 
   diagram:
 
@@ -47,7 +45,6 @@ scope:
     #   description: |
     #     Client app
     #   inScope: true
-  
 analysis:
 
  

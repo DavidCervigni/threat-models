@@ -3,7 +3,7 @@
 ID: Client
 title: Client
 parent: OAuth2.0
-scope:  
+scope:
   description:
   diagram:
 analysis:
@@ -11,7 +11,7 @@ analysis:
  
 threats:
   - ID: Client_Secrets_disclosure
-    title: Client Secrets Disclosure and impersonation 
+    title: Client Secrets Disclosure and impersonation
     impactDesc: |
       - Client authentication of access to the authorization server can be
       bypassed.
@@ -83,8 +83,8 @@ threats:
         public: true
         operator: AUTHORIZATION_SERVER
 
-      - ID: 5.2.3.4_specific_Client_Secrets
-        title:  Issue Installation-Specific Client Secrets
+      - ID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
+        title: Issue Installation-Specific Client Secrets
         description: |
           An authorization server may issue separate client identifiers and
           corresponding secrets to the different installations of a particular
@@ -123,10 +123,10 @@ threats:
         operational: true
         inPlace: no
         public: true
-        operator: AUTHORIZATION_SERVER
+        operator: AUTHORIZATION_SERVER_OPERATOR
 
-      - ID: 5.2.3.5_Validate_redirect_uri
-        title:  Validate Pre-Registered "redirect_uri"
+      - ID: 5.2.3.5_VALIDATE_REDIRECT_URI
+        title: Validate Pre-Registered "redirect_uri"
         description: |
           An authorization server should require all clients to register their
           "redirect_uri", and the "redirect_uri" should be the full URI as
@@ -164,6 +164,20 @@ threats:
           deployments at development/configuration time.  As soon as dynamic
           resource server discovery is required, the pre-registered
           "redirect_uri" may no longer be feasible.
+          5_Validate_redirect_uri
+          
+          Note: An invalid redirect URI indicates an
+          invalid client, whereas a valid redirect URI does not necessarily
+          indicate a valid client. The level of confidence depends on the
+          client type. For web applications, the level of confidence is
+          high, since the redirect URI refers to the globally unique network
+          endpoint of this application, whose fully qualified domain name
+          (FQDN) is also validated using HTTPS server authentication by the
+          user agent. In contrast, for native clients, the redirect URI
+          typically refers to device local resources, e.g., a custom scheme.
+          So, a malicious client on a particular device can use the valid
+          redirect URI the legitimate client uses on all other devices.
+
 
         operational: true
         inPlace: false

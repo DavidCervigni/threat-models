@@ -3,7 +3,7 @@
 ID: AuthorizationServer
 title: Authorization Server
 parent: OAuth2.0
-scope:  
+scope:
   description:
   diagram:
 
@@ -39,7 +39,7 @@ scope:
       description: |
         Client app
       inScope: true
-  
+
 analysis:
 
  
@@ -77,7 +77,7 @@ threats:
           layer security for any requests where the authenticity of the
           authorization server or of request responses is an issue (see
           Section 5.1.2).
-          
+
           HTTPS server authentication or similar means can be used to
           authenticate the identity of a server. The goal is to reliably bind
           the fully qualified domain name of the server to the public key
@@ -163,7 +163,7 @@ threats:
 
 
   - ID: OPEN_REDIRECTOR
-    title:  Authorization server open redirect
+    title: Authorization server open redirect
     impact: Phishing attacks can be executed exploiting AUTH_SERVER open redirect
     # impacts:
     #   - REFID: NON_REPUDIATION
@@ -201,7 +201,7 @@ threats:
 
 
   - ID: PUBLIC_CLIENT_SPOOFING1
-    title:  Malicious Client Obtains Existing Authorization by Fraud
+    title: Malicious Client Obtains Existing Authorization by Fraud
     impact: Disclosure of RESOURCE_OWNER's RESOURCES
     impacts:
       - REFID: CONFIDENTIALITY
@@ -246,7 +246,7 @@ threats:
 
 
   - ID: 4.3.1_EAVESDROPPING_ACCESS_TOKENS1
-    title:  Eavesdropping Access Tokens
+    title: Eavesdropping Access Tokens
     impact: |
       The attacker is able to access all resources with the
       permissions covered by the scope of the particular access token.
@@ -299,7 +299,7 @@ threats:
       An attacker may obtain access
       tokens from the authorization server’s database by gaining access to
       the database or launching a SQL injection attack. 
-      
+
       This threat is applicable if the authorization server stores access
       tokens as handles in a database.
     pentestTestable: true
@@ -396,7 +396,7 @@ threats:
         operator: CLIENT_OPERATOR
         inPlace: true
         public: true
-  
+
       - ID: CONFIDENTIAL_CREDENTIALS_REQUESTS
         title: Do not send plaintext credentials
         description: |
@@ -441,12 +441,12 @@ threats:
         operational: true
         operator: AUTHORIZATION_SERVER_OPERATOR
         inPlace: false
-        public: true       
+        public: true
 
   - ID: 4.3.5_CLIENT_SECRET_BRUTE_FORCE
     title: Obtaining Client Secret by Online Guessing
     impact: |
-       Disclosure of a single "client_id"/secret pair.
+      Disclosure of a single "client_id"/secret pair.
     impacts:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
@@ -485,7 +485,7 @@ threats:
           Note: This measure can be abused to lock down legitimate service users.
         operational: false
         inPlace: false
-        public: true       
+        public: true
 
       - ID: 5.2.3.7_STRONG_CLIENT_AUTHENTICATION
         title: Use strong client authentication
@@ -498,4 +498,4 @@ threats:
           process. (e.g., client_assertion/client_token)
         operational: false
         inPlace: false
-        public: true       
+        public: true

@@ -3,52 +3,37 @@
 ID: Flows_AuthCode
 title: Authorization "code" flow
 parent: Flows
-scope:  
-  description:
-     Authorization "code" flow
-   The authorization code is obtained by using an authorization server
-   as an intermediary between the client and resource owner.  Instead of
-   requesting authorization directly from the resource owner, the client
-   directs the resource owner to an authorization server (via its
-   user-agent as defined in [RFC2616]), which in turn directs the
-   resource owner back to the client with the authorization code.
-
-   Before directing the resource owner back to the client with the
-   authorization code, the authorization server authenticates the
-   resource owner and obtains authorization.  Because the resource owner
-   only authenticates with the authorization server, the resource
-   owner's credentials are never shared with the client.
-
-   The authorization code provides a few important security benefits,
-   such as the ability to authenticate the client, as well as the
-   transmission of the access token directly to the client without
-   passing it through the resource owner's user-agent and potentially
-   exposing it to others, including the resource owner.
-
-     **Implicit**
-
-   The implicit grant is a simplified authorization code flow optimized
-   for clients implemented in a browser using a scripting language such
-   as JavaScript.  In the implicit flow, instead of issuing the client
-   an authorization code, the client is issued an access token directly
-   (as the result of the resource owner authorization).  The grant type
-   is implicit, as no intermediate credentials (such as an authorization
-   code) are issued (and later used to obtain an access token).
-
-   When issuing an access token during the implicit grant flow, the
-   authorization server does not authenticate the client.  In some
-   cases, the client identity can be verified via the redirection URI
-   used to deliver the access token to the client.  The access token may
-   be exposed to the resource owner or other applications with access to
-   the resource owner's user-agent.
-
-   Implicit grants improve the responsiveness and efficiency of some
-   clients (such as a client implemented as an in-browser application),
-   since it reduces the number of round trips required to obtain an
-   access token.  However, this convenience should be weighed against
-   the security implications of using implicit grants, such as those
-   described in Sections 10.3 and 10.16, especially when the
-   authorization code grant type is available.
+scope:
+  description: "Authorization \"code\" flow The authorization code is obtained by
+    using an authorization server as an intermediary between the client and resource
+    owner.  Instead of requesting authorization directly from the resource owner,
+    the client directs the resource owner to an authorization server (via its user-agent
+    as defined in [RFC2616]), which in turn directs the resource owner back to the
+    client with the authorization code.\nBefore directing the resource owner back
+    to the client with the authorization code, the authorization server authenticates
+    the resource owner and obtains authorization.  Because the resource owner only
+    authenticates with the authorization server, the resource owner's credentials
+    are never shared with the client.\nThe authorization code provides a few important
+    security benefits, such as the ability to authenticate the client, as well as
+    the transmission of the access token directly to the client without passing it
+    through the resource owner's user-agent and potentially exposing it to others,
+    including the resource owner.\n**Implicit**\nThe implicit grant is a simplified
+    authorization code flow optimized for clients implemented in a browser using a
+    scripting language such as JavaScript.  In the implicit flow, instead of issuing
+    the client an authorization code, the client is issued an access token directly
+    (as the result of the resource owner authorization).  The grant type is implicit,
+    as no intermediate credentials (such as an authorization code) are issued (and
+    later used to obtain an access token).\nWhen issuing an access token during the
+    implicit grant flow, the authorization server does not authenticate the client.\
+    \  In some cases, the client identity can be verified via the redirection URI
+    used to deliver the access token to the client.  The access token may be exposed
+    to the resource owner or other applications with access to the resource owner's
+    user-agent.\nImplicit grants improve the responsiveness and efficiency of some
+    clients (such as a client implemented as an in-browser application), since it
+    reduces the number of round trips required to obtain an access token.  However,
+    this convenience should be weighed against the security implications of using
+    implicit grants, such as those described in Sections 10.3 and 10.16, especially
+    when the authorization code grant type is available."
   diagram:
 
   assets:
@@ -89,10 +74,18 @@ scope:
 
 
   assumptions:
-    # - ID:
-    #   description: |
-    #     A Auth server may host several ...
-
+    - ID: USER_AGENT_PROTECTION1
+      description: |
+         It is not the task of the authorization server to protect
+          the end-user’s device from malicious software. This is the
+          responsibility of the platform running on the particular device,
+          probably in cooperation with other components of the respective
+          ecosystem (e.g., an application management infrastructure). The sole
+          responsibility of the authorization server is to control access to
+          the end-user’s resources maintained in resource servers and to
+          prevent unauthorized access to them via the OAuth protocol. Based on
+          this assumption, the following countermeasures are available to cope
+          with the threat. (REF: 4.4.1.4)
   attackers:
     # - ID: ANONYMOUS
     #   description: |
@@ -103,16 +96,15 @@ scope:
     #   description: |
     #     Client app
     #   inScope: true
-  
 analysis:
 
  
 threats:
 
   - ID: 4.4.1.1_AUTH_CODE_DISCLOSURE
-    title: Eavesdropping or Leaking Authorization "codes"
+    title: Eavesdropping or Leaking Authorization codes
     impact: |
-       Auth codes can be used to 
+      Auth codes can be used to 
     impacts:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
@@ -174,7 +166,7 @@ threats:
         operational: true
         operator: AUTHORIZATION_SERVER_OPERATOR
         inPlace: true
-        public: true       
+        public: true
 
       - ID: 5.1.5.3_SHORT_EXPIRY_CODE
         title: Use Short Expiration Time
@@ -238,3 +230,186 @@ threats:
         operator: CLIENT_OPERATOR
         inPlace: false
         public: true
+
+
+
+  - ID: 4.4.1.2_AUTH_CODE_DISCLOSURE_DB
+    title: Obtaining Authorization codes from AuthorizationServer Database
+    impact: |
+      Disclosure of all authorization "codes", most likely along
+       with the respective "redirect_uri" and "client_id" values.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTH_SERVER
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      This threat is applicable if the authorization server stores
+       authorization "codes" as handles in a database. An attacker may
+       obtain authorization "codes" from the authorization server’s database
+       by gaining access to the database or launching a SQL injection
+       attack.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.1.4.1.1_SYS_SEC
+      - REFID: 5.1.4.1.2_SQL_SEC
+      - REFID: 5.1.4.1.3_HASHED_TOKEN_DB
+
+
+  - ID: 4.4.1.3_AUTH_CODE_BRUTE_FORCE
+    title: Online Guessing of Authorization codes
+    impact: |
+      Disclosure of a single access token and probably also an
+       associated refresh token.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker may try to guess valid authorization "code" values and
+       send the guessed code value using the grant type "code" in order to
+       obtain a valid access token.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.1.4.2.2_HIGH_ENTROPY_SECRETS
+      - ID: 5.1.5.9_SIGNED_TOKEN
+        title: Sign Self-Contained Tokens
+        description: |
+          Self-contained tokens should be signed in order to detect any attempt
+          to modify or produce faked tokens (e.g., Hash-based Message
+          Authentication Code or digital signatures).
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+      - REFID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
+      - ID: 5.2.4.5_REDIRECT_CODE_BINDING
+        title: Binding of Authorization "code" to "redirect_uri"
+        description: |
+          The authorization server should be able to bind every authorization
+          "code" to the actual redirect URI used as the redirect target of the
+          client in the end-user authorization process. This binding should be
+          validated when the client attempts to exchange the respective
+          authorization "code" for an access token. This measure is a
+          countermeasure against authorization "code" leakage through
+          counterfeit web sites, since an attacker cannot use another redirect
+          URI to exchange an authorization "code" into a token.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+      - REFID: 5.1.5.3_SHORT_EXPIRY_CODE
+
+
+  - ID: 4.4.1.4_AUTH_CODE_BRUTE_FORCE
+    title: Malicious Client Obtains Authorization
+    impact: |
+      Disclosure of a single access token and probably also an
+       associated refresh token.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      # - REFID: USER_AGENT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      A malicious client could pretend to be a valid client and obtain an
+      access authorization in this way. The malicious client could even
+      utilize screen-scraping techniques in order to simulate a user’s
+      consent in the authorization flow.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
+      - REFID: 5.2.3.5_VALIDATE_REDIRECT_URI
+      - ID: 5.2.4.3_VALIDATION_OF_CLIENT_BY_END_USER
+        title: Validation of Client Properties by End User
+        description: |
+          In the authorization process, the user is typically asked to approve
+          a client’s request for authorization. This is an important security
+          mechanism by itself because the end user can be involved in the
+          validation of client properties, such as whether the client name
+          known to the authorization server fits the name of the web site or
+          the application the end user is using. This measure is especially
+          helpful in situations where the authorization server is unable to
+          authenticate the client. It is a countermeasure against:
+          o A malicious application
+          o A client application masquerading as another client
+        operational: true
+        operator: RESOURCE_OWNER
+        inPlace: false
+        public: true
+
+      - ID: 5.2.4.1_REPEAT_VALIDATE_CLIENT
+        title: Automatic Processing of Repeated Authorizations Requires Client Validation
+        description: |
+          Authorization servers should NOT automatically process repeat
+          authorizations where the client is not authenticated through a client
+          secret or some other authentication mechanism such as a signed
+          authentication assertion certificate (Section 5.2.3.7) or validation
+          of a pre-registered redirect URI (Section 5.2.3.5).
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+      - ID: REQUIRE_USER_MANUAL_STEP
+        title: Automatic Processing of Repeated Authorizations Requires Client Validation
+        description: |
+          If the authorization server automatically authenticates the end
+          user, it may nevertheless require some user input in order to
+          prevent screen scraping. Examples are CAPTCHAs (Completely
+          Automated Public Turing tests to tell Computers and Humans Apart)
+          or other multi-factor authentication techniques such as random
+          questions, token code generators, etc.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true      
+      
+      - ID: 5.1.5.1_LIMITED_SCOPE_TOKEN
+        title: Limit Token Scope
+        description: |
+          The authorization server may decide to reduce or limit the scope
+          associated with a token. The basis of this decision is out of scope;
+          examples are:
+          o a client-specific policy, e.g., issue only less powerful tokens to
+          public clients,
+          o a service-specific policy, e.g., it is a very sensitive service,
+          o a resource-owner-specific setting, or
+          o combinations of such policies and preferences.
+          
+          The authorization server may allow different scopes dependent on the
+          grant type. For example, end-user authorization via direct
+          interaction with the end user (authorization "code") might be
+          considered more reliable than direct authorization via grant type
+          "username"/"password". This means will reduce the impact of the
+          following threats:
+          o token leakage
+          o token issuance to malicious software
+          o unintended issuance of powerful tokens with resource owner
+          credentials flow
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true      

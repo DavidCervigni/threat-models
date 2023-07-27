@@ -159,7 +159,7 @@ scope:
     - ID: CLIENT_REVOKE_ACCESS
       title: Revoke CLIENT access to RESOURCE_OWNER's assets and data
       description: |
-         Revoke access to CLIENT over time
+        Revoke access to CLIENT over time
       contributesTo:
         - REFID: CLIENT_ACCESS_LIMITATION
       group: Business specific
@@ -167,7 +167,7 @@ scope:
     - ID: CLIENT_LIMIT_ACCESS
       title: Limits CLIENT access to some RESOURCE_OWNER's assets and data
       description: |
-         Limit the set of resources accessed by CLIENT (authorization)
+        Limit the set of resources accessed by CLIENT (authorization)
       contributesTo:
         - REFID: CLIENT_ACCESS_LIMITATION
       group: Business specific
@@ -175,7 +175,7 @@ scope:
     - ID: NOT_SHARING_OWNER_CREDENTIAL
       title: Not sharing RESOURCE_OWNER credentials
       description: |
-         Not sharing RESOURCE_OWNER credential with third parties
+        Not sharing RESOURCE_OWNER credential with third parties
       contributesTo:
         - REFID: CLIENT_ACCESS_LIMITATION
       group: Advanced security features
@@ -183,7 +183,7 @@ scope:
     - ID: USER_AGENT_RESILIENCY
       title: Compromised USER_AGENT resiliency
       description: |
-         Resiliency for RESOURCE_OWNER's USER_AGENT against attacks like XSS
+        Resiliency for RESOURCE_OWNER's USER_AGENT against attacks like XSS
       contributesTo:
         - REFID: CLIENT_ACCESS_LIMITATION
       group: Advanced security features
@@ -191,7 +191,7 @@ scope:
     - ID: CLIENT_RESILIENCY
       title: Compromised CLIENT resiliency
       description: |
-         Resiliency for RESOURCE_OWNER's RESOURCES against compromised CLIENT
+        Resiliency for RESOURCE_OWNER's RESOURCES against compromised CLIENT
       contributesTo:
         - REFID: CLIENT_ACCESS_LIMITATION
       group: Advanced security features
@@ -287,10 +287,8 @@ scope:
     #   type: system
     #   title: Client credentials
     #   description: |
-        
     #   inScope: true
 
-    
 
     - ID: CLIENT_SECRETS
       type: credentials
@@ -310,19 +308,22 @@ scope:
     - ID: DF_AUTH_REDIRECT
       type: dataflow
       title: Auth User Agent Redirection
-      description: User Agent Redirection for Client authorization request. this is part of DF_AUTH_REQUEST
+      description: User Agent Redirection for Client authorization request. this is
+        part of DF_AUTH_REQUEST
       inScope: true
 
     - ID: DF_ACCESS_TOKEN_CL
       type: dataflow
       title: Auth server sending the access token to the client
-      description: Auth server sending the access token to the client after resource owner approval
+      description: Auth server sending the access token to the client after resource
+        owner approval
       inScope: true
 
     - ID: DF_AUTH_GRANT_AS
       type: dataflow
-      title: Client requesting Authorization Server for the Access Token 
-      description: Client requesting Authorization Server for the Access Token after resource owner approval
+      title: Client requesting Authorization Server for the Access Token
+      description: Client requesting Authorization Server for the Access Token after
+        resource owner approval
       inScope: true
 
     - ID: CONFIDENTIAL_CLIENT
@@ -400,22 +401,22 @@ scope:
 
     - ID: ARC2
       description: |
-           The following data elements are stored or accessible on the
-            authorization server:
+        The following data elements are stored or accessible on the
+         authorization server:
 
-            o  usernames and passwords
+         o  usernames and passwords
 
-            o  client ids and secrets
+         o  client ids and secrets
 
-            o  client-specific refresh tokens
+         o  client-specific refresh tokens
 
-            o  client-specific access tokens (in the case of handle-based design;
-                see Section 3.1)
+         o  client-specific access tokens (in the case of handle-based design;
+             see Section 3.1)
 
-            o  HTTPS certificate/key
+         o  HTTPS certificate/key
 
-            o  per-authorization process (in the case of handle-based design;
-                Section 3.1): "redirect_uri", "client_id", authorization "code"
+         o  per-authorization process (in the case of handle-based design;
+             Section 3.1): "redirect_uri", "client_id", authorization "code"
 
     - ID: ARC3
       description: |
@@ -498,4 +499,4 @@ scope:
 analysis:
 
  
-threats: 
+threats:
