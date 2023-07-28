@@ -46,8 +46,8 @@ analysis:
 threats:
   - ID: AuthServerPhishing1
     title: Password Phishing by Counterfeit Authorization Server
-    impact: Steal users' passwords
-    impacts:
+    impactDesc: Steal users' passwords
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
     assets:
       # - ID: 
@@ -116,8 +116,8 @@ threats:
 
   - ID: TOO_MUCH_GRANT
     title: User Unintentionally Grants Too Much Access Scope
-    impact: Disclosure of  RESOURCE_OWNER's RESOURCES
-    impacts:
+    impactDesc: Disclosure of  RESOURCE_OWNER's RESOURCES
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
     assets:
       # - ID: 
@@ -164,9 +164,7 @@ threats:
 
   - ID: OPEN_REDIRECTOR
     title: Authorization server open redirect
-    impact: Phishing attacks can be executed exploiting AUTH_SERVER open redirect
-    # impacts:
-    #   - REFID: NON_REPUDIATION
+    impactDesc: Phishing attacks can be executed exploiting AUTH_SERVER open redirect
     assets:
       - REFID: DF_AUTH_REDIRECT
       - REFID: AUTH_SERVER
@@ -202,8 +200,8 @@ threats:
 
   - ID: PUBLIC_CLIENT_SPOOFING1
     title: Malicious Client Obtains Existing Authorization by Fraud
-    impact: Disclosure of RESOURCE_OWNER's RESOURCES
-    impacts:
+    impactDesc: Disclosure of RESOURCE_OWNER's RESOURCES
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
     assets:
       - REFID: DF_AUTH_REDIRECT
@@ -247,10 +245,10 @@ threats:
 
   - ID: 4.3.1_EAVESDROPPING_ACCESS_TOKENS1
     title: Eavesdropping Access Tokens
-    impact: |
+    impactDesc: |
       The attacker is able to access all resources with the
       permissions covered by the scope of the particular access token.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -284,9 +282,9 @@ threats:
 
   - ID: 4.3.2_AS_DB_TOKEN_DISCLOSURE
     title: Obtaining Access Tokens from Authorization Server Database
-    impact: |
+    impactDesc: |
       The attacker is able to access all resources for all tokens in Auth Server.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -348,9 +346,9 @@ threats:
 
   - ID: 4.3.3_CLIENT_CREDENTIALS_DISCLOSURE
     title: Disclosure of Client Credentials during Transmission
-    impact: |
+    impactDesc: |
       Revelation of a client credential enabling phishing or impersonation of a client service.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -410,10 +408,10 @@ threats:
 
   - ID: 4.3.4_CLIENT_CREDENTIALS_DISCLOSURE
     title: Obtaining Client Secret from Authorization Server Database
-    impact: |
+    impactDesc: |
       Disclosure of all "client_id"/secret combinations. This
       allows the attacker to act on behalf of legitimate clients.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -445,9 +443,9 @@ threats:
 
   - ID: 4.3.5_CLIENT_SECRET_BRUTE_FORCE
     title: Obtaining Client Secret by Online Guessing
-    impact: |
+    impactDesc: |
       Disclosure of a single "client_id"/secret pair.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:

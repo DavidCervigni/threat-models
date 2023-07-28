@@ -188,8 +188,8 @@ threats:
 
   - ID: TOO_MUCH_GRANT
     title: User Unintentionally Grants Too Much Access Scope
-    impact: Disclosure of  RESOURCE_OWNER's RESOURCES
-    impacts:
+    impactDesc: Disclosure of  RESOURCE_OWNER's RESOURCES
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
     assets:
       # - ID: 

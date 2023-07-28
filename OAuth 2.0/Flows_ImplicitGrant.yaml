@@ -4,14 +4,14 @@ ID: Flows_ImplicitGrant
 title: Implicit Grant flow
 parent: Flows
 scope:
-  description: | 
-      In the implicit grant type flow, the access token is directly
-      returned to the client as a fragment part of the redirect URI. It is
-      assumed that the token is not sent to the redirect URI target, as
-      HTTP user agents do not send the fragment part of URIs to HTTP
-      servers. Thus, an attacker cannot eavesdrop the access token on this
-      communication path, and the token cannot leak through HTTP referrer
-      headers.
+  description: |
+    In the implicit grant type flow, the access token is directly
+    returned to the client as a fragment part of the redirect URI. It is
+    assumed that the token is not sent to the redirect URI target, as
+    HTTP user agents do not send the fragment part of URIs to HTTP
+    servers. Thus, an attacker cannot eavesdrop the access token on this
+    communication path, and the token cannot leak through HTTP referrer
+    headers.
 
   diagram:
 
@@ -22,11 +22,10 @@ threats:
 
   - ID: 4.4.2.1_TOKEN_LEAK1_NETWORK
     title: Access Token Leak in Transport/Endpoints
-    impact: |
+    impactDesc: |
       The attacker would be able to assume the same rights granted
       by the token.
- 
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -43,13 +42,14 @@ threats:
       the token could be leaked by parsing the returned URI.
     countermeasures:
       - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
-    
+
+    fullyMitigated: false
   - ID: 4.4.2.2_TOKEN_LEAK2_BROWSER_HISTORY
     title: Access Token Leak in Browser History
-    impact: |
+    impactDesc: |
       The attacker would be able to assume the same rights granted
       by the token. 
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -74,12 +74,13 @@ threats:
         public: true
 
 
+    fullyMitigated: false
   - ID: 4.4.2.2_TOKEN_LEAK2_BROWSER_HISTORY
     title: Malicious Client Obtains Authorization
-    impact: |
+    impactDesc: |
       The attacker would be able to assume the same rights granted
       by the token. 
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -99,12 +100,13 @@ threats:
       - REFID: 5.1.5.1_LIMITED_SCOPE_TOKEN
 
 
+    fullyMitigated: false
   - ID: 4.4.2.4_MANIPULATION_SCRIPTS
-    title:  Manipulation of Scripts
-    impact: |
+    title: Manipulation of Scripts
+    impactDesc: |
       The attacker could obtain user credential information and
       assume the full identity of the user.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -137,9 +139,10 @@ threats:
         public: true
 
 
+    fullyMitigated: false
   - ID: 4.4.2.5_CSRF_IMPLICIT
     title: CSRF Attack against redirect-uri
-    impact: |
+    impactDesc: |
       The user accesses resources on behalf of the attacker. The
       effective impact depends on the type of resource accessed. For
       example, the user may upload private items to an attacker’s
@@ -149,7 +152,7 @@ threats:
       easily access the victim’s data at the client by logging in from
       another device with his credentials at the external Identity
       Provider.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -185,3 +188,4 @@ threats:
         inPlace: false
         public: true
       - REFID: USER_EDUCATION
+    fullyMitigated: false

@@ -103,9 +103,9 @@ threats:
 
   - ID: 4.4.1.1_AUTH_CODE_DISCLOSURE
     title: Eavesdropping or Leaking Authorization codes
-    impact: |
+    impactDesc: |
       Auth codes can be used to 
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -235,10 +235,10 @@ threats:
 
   - ID: 4.4.1.2_AUTH_CODE_DISCLOSURE_DB
     title: Obtaining Authorization codes from AuthorizationServer Database
-    impact: |
+    impactDesc: |
       Disclosure of all authorization "codes", most likely along
        with the respective "redirect_uri" and "client_id" values.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -265,10 +265,10 @@ threats:
 
   - ID: 4.4.1.3_AUTH_CODE_BRUTE_FORCE
     title: Online Guessing of Authorization codes
-    impact: |
+    impactDesc: |
       Disclosure of a single access token and probably also an
        associated refresh token.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -318,9 +318,9 @@ threats:
 
   - ID: 4.4.1.4_CLIENT_SPOOFING1
     title: Malicious Client Obtains Authorization
-    impact: |
+    impactDesc: |
       Disclosure of a single access token and probably also an associated refresh token.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -416,12 +416,11 @@ threats:
 
   - ID: 4.4.1.5_CLIENT_SPOOFING2
     title: Authorization code Phishing
-    impact: |
+    impactDesc: |
       This affects web applications and may lead to a disclosure of
       authorization "codes" and, potentially, the corresponding access and
       refresh tokens.
-
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -448,7 +447,7 @@ threats:
 
   - ID: 4.4.1.6_CLIENT_SPOOFING3
     title: Authorization code Phishing
-    impact: |
+    impactDesc: |
       An attacker who intercepts the authorization "code" as it is
       sent by the browser to the callback endpoint can gain access to
       protected resources by submitting the authorization "code" to the
@@ -463,8 +462,7 @@ threats:
       Note: Authenticating the client during authorization "code" exchange
       will not help to detect such an attack, as it is the legitimate
       client that obtains the tokens.
-
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
     assets:
@@ -492,9 +490,9 @@ threats:
   - ID: 4.4.1.7_CLIENT_SPOOFING4
     title: Authorization code Leakage through Counterfeit Client
 
-    impact: |
+    impactDesc: |
       The attacker gains access to the victim’s resources as associated with his account on the client site.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
       - REFID: NON_REPUDIATION
@@ -579,7 +577,7 @@ threats:
 
   - ID: 4.4.1.8_CSRF_ON_REDIRECT
     title: CSRF Attack against redirect-uri
-    impact: |
+    impactDesc: |
       The user accesses resources on behalf of the attacker. The
       effective impact depends on the type of resource accessed. For
       example, the user may upload private items to an attacker’s
@@ -589,7 +587,7 @@ threats:
       easily access the victim’s data at the client by logging in from
       another device with his credentials at the external Identity
       Provider.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: NON_REPUDIATION
     assets:
@@ -619,31 +617,26 @@ threats:
     countermeasures:
       - ID: 5.3.5_ANTI_CSRF_STATE_PARAM
         title: Link the state Parameter to User Agent Session (anti CSRF)
-        description:
-          The "state" parameter is used to link client requests and prevent
-          CSRF attacks, for example, attacks against the redirect URI. An
-          attacker could inject their own authorization "code" or access token,
-          which can result in the client using an access token associated with
-          the attacker’s protected resources rather than the victim’s (e.g.,
-          save the victim’s bank account information to a protected resource
-          controlled by the attacker).
-          The client should utilize the "state" request parameter to send the
-          authorization server a value that binds the request to the user
-          agent’s authenticated state (e.g., a hash of the session cookie used
-          to authenticate the user agent) when making an authorization request.
-          Once authorization has been obtained from the end user, the
-          authorization server redirects the end-user’s user agent back to the
-          client with the required binding value contained in the "state"
-          parameter.
-          The binding value enables the client to verify the validity of the
-          request by matching the binding value to the user agent’s
-          authenticated state.
+        description: The "state" parameter is used to link client requests and prevent
+          CSRF attacks, for example, attacks against the redirect URI. An attacker
+          could inject their own authorization "code" or access token, which can result
+          in the client using an access token associated with the attacker’s protected
+          resources rather than the victim’s (e.g., save the victim’s bank account
+          information to a protected resource controlled by the attacker). The client
+          should utilize the "state" request parameter to send the authorization server
+          a value that binds the request to the user agent’s authenticated state (e.g.,
+          a hash of the session cookie used to authenticate the user agent) when making
+          an authorization request. Once authorization has been obtained from the
+          end user, the authorization server redirects the end-user’s user agent back
+          to the client with the required binding value contained in the "state" parameter.
+          The binding value enables the client to verify the validity of the request
+          by matching the binding value to the user agent’s authenticated state.
         operational: true
         operator: CLIENT_OPERATOR
         inPlace: false
         public: true
       - ID: USER_EDUCATION
-        title:  Users can be educated to not follow untrusted URLs
+        title: Users can be educated to not follow untrusted URLs
         description: |
           Client developers and end users can be educated to not follow
           untrusted URLs.    
@@ -656,9 +649,9 @@ threats:
   - ID: 4.4.1.9_CLICKJACKING
     title: Clickjacking Attack against Authorization
 
-    impact: |
+    impactDesc: |
       An attacker can steal a user’s authentication credentials and access their resources.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: NON_REPUDIATION
     assets:
@@ -709,7 +702,7 @@ threats:
     title: Resource Owner Impersonation
     # impact: |
     #   An attacker can steal a user’s authentication credentials and access their resources.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: NON_REPUDIATION
     assets:
@@ -797,7 +790,7 @@ threats:
     title: Resource Owner Impersonation
     # impact: |
     #   An attacker can steal a user’s authentication credentials and access their resources.
-    impacts:
+    impactedSecObj:
       - REFID: AVAILABILITY
     assets:
       - REFID: DF_AUTH_REDIRECT
@@ -807,13 +800,13 @@ threats:
       vector: CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H
     threatType: Denial of Service
     attack: |
-       If an authorization server includes a nontrivial amount of entropy in
-        authorization "codes" or access tokens (limiting the number of
-        possible codes/tokens) and automatically grants either without user
-        intervention and has no limit on codes or access tokens per user, an
-        attacker could exhaust the pool of authorization "codes" by
-        repeatedly directing the user’s browser to request authorization
-         "codes" or access tokens.
+      If an authorization server includes a nontrivial amount of entropy in
+       authorization "codes" or access tokens (limiting the number of
+       possible codes/tokens) and automatically grants either without user
+       intervention and has no limit on codes or access tokens per user, an
+       attacker could exhaust the pool of authorization "codes" by
+       repeatedly directing the user’s browser to request authorization
+        "codes" or access tokens.
     pentestTestable: true
     public: true
     fullyMitigated: true
@@ -838,8 +831,8 @@ threats:
         public: true
 
   - ID: 4.4.1.12_DOS2
-    title:  DoS Using Manufactured Authorization "codes"
-    impact: |
+    title: DoS Using Manufactured Authorization "codes"
+    impactDesc: |
       There are a few effects that the attacker can accomplish with
       this OAuth flow that they cannot easily achieve otherwise.
       1. Connection laundering: With the clients as the relay between the
@@ -863,7 +856,7 @@ threats:
       difficult, as it seems nontrivial to synchronize a large number
       of users to simultaneously visit a particular site under the
       attacker’s control.
-    impacts:
+    impactedSecObj:
       - REFID: AVAILABILITY
     assets:
       - REFID: AUTH_SERVER
@@ -873,20 +866,20 @@ threats:
       vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:H
     threatType: Denial of Service
     attack: |
-       An attacker who owns a botnet can locate the redirect URIs of clients
-        that listen on HTTP, access them with random authorization "codes",
-        and cause a large number of HTTPS connections to be concentrated onto
-        the authorization server. This can result in a denial-of-service
-        (DoS) attack on the authorization server.
-        This attack can still be effective even when CSRF defense/the "state"
-        parameter (see Section 4.4.1.8) is deployed on the client side. With
-        such a defense, the attacker might need to incur an additional HTTP
-        request to obtain a valid CSRF code/"state" parameter. This
-        apparently cuts down the effectiveness of the attack by a factor of
-        2. However, if the HTTPS/HTTP cost ratio is higher than 2 (the cost
-        factor is estimated to be around 3.5x at [SSL-Latency]), the attacker
-        still achieves a magnification of resource utilization at the expense
-        of the authorization server.
+      An attacker who owns a botnet can locate the redirect URIs of clients
+       that listen on HTTP, access them with random authorization "codes",
+       and cause a large number of HTTPS connections to be concentrated onto
+       the authorization server. This can result in a denial-of-service
+       (DoS) attack on the authorization server.
+       This attack can still be effective even when CSRF defense/the "state"
+       parameter (see Section 4.4.1.8) is deployed on the client side. With
+       such a defense, the attacker might need to incur an additional HTTP
+       request to obtain a valid CSRF code/"state" parameter. This
+       apparently cuts down the effectiveness of the attack by a factor of
+       2. However, if the HTTPS/HTTP cost ratio is higher than 2 (the cost
+       factor is estimated to be around 3.5x at [SSL-Latency]), the attacker
+       still achieves a magnification of resource utilization at the expense
+       of the authorization server.
     pentestTestable: true
     public: true
     fullyMitigated: true
@@ -917,11 +910,11 @@ threats:
         public: true
 
   - ID: 4.4.1.13_CODE_SUBSTITUTION
-    title:  DoS Using Manufactured Authorization "codes"
-    impact: |
+    title: DoS Using Manufactured Authorization "codes"
+    impactDesc: |
       The attacker gains access to an application and user-specific
       data within the application.
-    impacts:
+    impactedSecObj:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
       - REFID: NON_REPUDIATION
@@ -933,38 +926,38 @@ threats:
       vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:L/A:N
     threatType: Denial of Service
     attack: |
-       An attacker could attempt to log into an application or web site
-        using a victim’s identity. Applications relying on identity data
-        provided by an OAuth protected service API to login users are
-        vulnerable to this threat. This pattern can be found in so-called
-        "social login" scenarios.
-        As a prerequisite, a resource server offers an API to obtain personal
-        information about a user that could be interpreted as having obtained
-        a user identity. In this sense, the client is treating the resource
-        server API as an "identity" API. A client utilizes OAuth to obtain
-        an access token for the identity API. It then queries the identity
-        API for an identifier and uses it to look up its internal user
-        account data (login). The client assumes that, because it was able
-        to obtain information about the user, the user has been
-        authenticated.
-        If the client uses the grant type "code", the attacker needs to
-        gather a valid authorization "code" of the respective victim from the
-        same Identity Provider used by the target client application. The
-        attacker tricks the victim into logging into a malicious app (which
-        may appear to be legitimate to the Identity Provider) using the same
-        Identity Provider as the target application. This results in the
-        Identity Provider’s authorization server issuing an authorizatio
-        "code" for the respective identity API. The malicious app then sends
-        this code to the attacker, which in turn triggers a login process
-        within the target application. The attacker now manipulates the
-        authorization response and substitutes their code (bound to their
-        identity) for the victim’s code. This code is then exchanged by the
-        client for an access token, which in turn is accepted by the identity
-        API, since the audience, with respect to the resource server, is
-        correct. But since the identifier returned by the identity API is
-        determined by the identity in the access token (issued based on the
-        victim’s code), the attacker is logged into the target application
-        under the victim’s identity.
+      An attacker could attempt to log into an application or web site
+       using a victim’s identity. Applications relying on identity data
+       provided by an OAuth protected service API to login users are
+       vulnerable to this threat. This pattern can be found in so-called
+       "social login" scenarios.
+       As a prerequisite, a resource server offers an API to obtain personal
+       information about a user that could be interpreted as having obtained
+       a user identity. In this sense, the client is treating the resource
+       server API as an "identity" API. A client utilizes OAuth to obtain
+       an access token for the identity API. It then queries the identity
+       API for an identifier and uses it to look up its internal user
+       account data (login). The client assumes that, because it was able
+       to obtain information about the user, the user has been
+       authenticated.
+       If the client uses the grant type "code", the attacker needs to
+       gather a valid authorization "code" of the respective victim from the
+       same Identity Provider used by the target client application. The
+       attacker tricks the victim into logging into a malicious app (which
+       may appear to be legitimate to the Identity Provider) using the same
+       Identity Provider as the target application. This results in the
+       Identity Provider’s authorization server issuing an authorizatio
+       "code" for the respective identity API. The malicious app then sends
+       this code to the attacker, which in turn triggers a login process
+       within the target application. The attacker now manipulates the
+       authorization response and substitutes their code (bound to their
+       identity) for the victim’s code. This code is then exchanged by the
+       client for an access token, which in turn is accepted by the identity
+       API, since the audience, with respect to the resource server, is
+       correct. But since the identifier returned by the identity API is
+       determined by the identity in the access token (issued based on the
+       victim’s code), the attacker is logged into the target application
+       under the victim’s identity.
     pentestTestable: true
     public: true
     fullyMitigated: true
