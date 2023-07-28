@@ -72,9 +72,8 @@ threats:
         operator: AUTHORIZATION_SERVER_OPERATOR
         inPlace: false
         public: true
-
-
     fullyMitigated: false
+
   - ID: 4.4.2.2_TOKEN_LEAK2_BROWSER_HISTORY
     title: Malicious Client Obtains Authorization
     impactDesc: |
@@ -137,9 +136,8 @@ threats:
         operator: CLIENT_OPERATOR
         inPlace: false
         public: true
-
-
     fullyMitigated: false
+
   - ID: 4.4.2.5_CSRF_IMPLICIT
     title: CSRF Attack against redirect-uri
     impactDesc: |
@@ -170,7 +168,7 @@ threats:
       trick the user into following the redirect URI and the client does
       not have protection against this attack, the user may have the
       attacker’s access token authorized within their client.
-
+    fullyMitigated: false
     countermeasures:
 
       - ID: STATE_PARAM_VALIDATION
@@ -188,4 +186,55 @@ threats:
         inPlace: false
         public: true
       - REFID: USER_EDUCATION
+
+  - ID: 4.4.2.6_TOKEN_SUBSTITUTION
+    title: Token Substitution (OAuth Login)
+    impactDesc: |
+      The attacker gains access to an application and user-specific
+       data within the application.
+
+    impactedSecObj:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:L/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker could attempt to log into an application or web site
+      using a victim’s identity. Applications relying on identity data
+      provided by an OAuth protected service API to login users are
+      vulnerable to this threat. This pattern can be found in so-called
+      "social login" scenarios.
+      As a prerequisite, a resource server offers an API to obtain personal
+      information about a user that could be interpreted as having obtained
+      a user identity. In this sense, the client is treating the resource
+      server API as an "identity" API. A client utilizes OAuth to obtain
+      an access token for the identity API. It then queries the identity
+      API for an identifier and uses it to look up its internal user
+      account data (login). The client assumes that, because it was able
+      to obtain information about the user, the user has been
+      authenticated.
+      To succeed, the attacker needs to gather a valid access token of the
+      respective victim from the same Identity Provider used by the target
+      client application. The attacker tricks the victim into logging into
+      a malicious app (which may appear to be legitimate to the Identity
+      Provider) using the same Identity Provider as the target application.
+      This results in the Identity Provider’s authorization server issuing
+      an access token for the respective identity API. The malicious app
+      then sends this access token to the attacker, which in turn triggers
+      a login process within the target application. The attacker now
+      manipulates the authorization response and substitutes their access
+      token (bound to their identity) for the victim’s access token. This
+      token is accepted by the identity API, since the audience, with
+      respect to the resource server, is correct. But since the identifier
+      returned by the identity API is determined by the identity in the
+      access token, the attacker is logged into the target application
+      under the victim’s identity.
     fullyMitigated: false
+    countermeasures:
+      - REFID: SECURE_USER_LOGIN_PROTOCOL
+
