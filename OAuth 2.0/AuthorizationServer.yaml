@@ -90,9 +90,9 @@ threats:
           purpose. Clients should carefully select those trusted CAs and
           protect the storage for trusted CA certificates from modifications.
           This is a countermeasure against the following threats:
-          o Spoofing
-          o Proxying
-          o Phishing by counterfeit servers
+          <br/>o Spoofing
+          <br/>o Proxying
+          <br/>o Phishing by counterfeit servers
 
 
         operational: true
@@ -332,13 +332,13 @@ threats:
           or compared against a SQL database, it may become possible for an
           injection attack to occur if parameters received are not validated
           before submission to the database.
-          o Ensure that server code is using the minimum database privileges
+          <br/>o Ensure that server code is using the minimum database privileges
           possible to reduce the "surface" of possible attacks.
-          o Avoid dynamic SQL using concatenated input. If possible, use
+          <br/>o Avoid dynamic SQL using concatenated input. If possible, use
           static SQL.
-          o When using dynamic SQL, parameterize queries using bind arguments.
+          <br/>o When using dynamic SQL, parameterize queries using bind arguments.
           Bind arguments eliminate the possibility of SQL injections.
-          o Filter and sanitize the input. For example, if an identifier has
+          <br/>o Filter and sanitize the input. For example, if an identifier has
           a known format, ensure that the supplied value matches the
           identifier syntax rules.
         operational: false
@@ -386,12 +386,12 @@ threats:
           center edge) must refine this threat model in order to account for
           the additional (mainly insider) threat this may cause.
           This is a countermeasure against the following threats:
-          o Replay of access tokens obtained on the token’s endpoint or the
+          <br/>o Replay of access tokens obtained on the token’s endpoint or the
           resource server’s endpoint
-          o Replay of refresh tokens obtained on the token’s endpoint
+          <br/>o Replay of refresh tokens obtained on the token’s endpoint
           Replay of authorization "codes" obtained on the token’s endpoint
           (redirect?)
-          o Replay of user passwords and client secrets
+          <br/>o Replay of user passwords and client secrets
         operational: true
         operator: CLIENT_OPERATOR
         inPlace: true

@@ -76,16 +76,16 @@ scope:
   assumptions:
     - ID: USER_AGENT_PROTECTION1
       description: |
-         It is not the task of the authorization server to protect
-          the end-user’s device from malicious software. This is the
-          responsibility of the platform running on the particular device,
-          probably in cooperation with other components of the respective
-          ecosystem (e.g., an application management infrastructure). The sole
-          responsibility of the authorization server is to control access to
-          the end-user’s resources maintained in resource servers and to
-          prevent unauthorized access to them via the OAuth protocol. Based on
-          this assumption, the following countermeasures are available to cope
-          with the threat. (REF: 4.4.1.4)
+        It is not the task of the authorization server to protect
+         the end-user’s device from malicious software. This is the
+         responsibility of the platform running on the particular device,
+         probably in cooperation with other components of the respective
+         ecosystem (e.g., an application management infrastructure). The sole
+         responsibility of the authorization server is to control access to
+         the end-user’s resources maintained in resource servers and to
+         prevent unauthorized access to them via the OAuth protocol. Based on
+         this assumption, the following countermeasures are available to cope
+         with the threat. (REF: 4.4.1.4)
   attackers:
     # - ID: ANONYMOUS
     #   description: |
@@ -121,19 +121,19 @@ threats:
       authorization "codes" are passed via the browser, which may
       unintentionally leak those codes to untrusted web sites and attackers
       in different ways:
-      o Referrer headers: Browsers frequently pass a "referer" header when
+      <br/>o Referrer headers: Browsers frequently pass a "referer" header when
       a web page embeds content, or when a user travels from one web
       page to another web page. These referrer headers may be sent even
       when the origin site does not trust the destination site. The
       referrer header is commonly logged for traffic analysis purposes.
-      o Request logs: Web server request logs commonly include query
+      <br/>o Request logs: Web server request logs commonly include query
       parameters on requests.
-      o Open redirectors: Web sites sometimes need to send users to
+      <br/>o Open redirectors: Web sites sometimes need to send users to
       another destination via a redirector. Open redirectors pose a
       particular risk to web-based delegation protocols because the
       redirector can leak verification codes to untrusted destination
       sites.
-      o Browser history: Web browsers commonly record visited URLs in the
+      <br/>o Browser history: Web browsers commonly record visited URLs in the
       browser history. Another user of the same web browser may be able
       to view URLs that were visited by previous users.
       Note: A description of similar attacks on the SAML protocol can be
@@ -151,10 +151,10 @@ threats:
           The authorization server should bind every authorization "code" to
           the id of the respective client that initiated the end-user
           authorization process. This measure is a countermeasure against:
-          o Replay of authorization "codes" with different client credentials,
+          <br/>o Replay of authorization "codes" with different client credentials,
           since an attacker cannot use another "client_id" to exchange an
           authorization "code" into a token
-          o Online guessing of authorization "codes"
+          <br/>o Online guessing of authorization "codes"
           Note: This binding should be protected from unauthorized
           modifications (e.g., using protected memory and/or a secure
           database).
@@ -173,9 +173,9 @@ threats:
         description: |
           A short expiration time for tokens is a means of protection against
           the following threats:
-          o replay
-          o token leak (a short expiration time will reduce impact)
-          o online guessing (a short expiration time will reduce the
+          <br/>o replay
+          <br/>o token leak (a short expiration time will reduce impact)
+          <br/>o online guessing (a short expiration time will reduce the
           likelihood of success)
           Note: Short token duration requires more precise clock
           synchronization between the authorization server and resource server.
@@ -193,8 +193,8 @@ threats:
           The authorization server may restrict the number of requests or
           operations that can be performed with a certain token. This
           mechanism can be used to mitigate the following threats:
-          o replay of tokens
-          o guessing
+          <br/>o replay of tokens
+          <br/>o guessing
           For example, if an authorization server observes more than one
           attempt to redeem an authorization "code", the authorization server
           may want to revoke all access tokens granted based on the
@@ -316,11 +316,10 @@ threats:
       - REFID: 5.1.5.3_SHORT_EXPIRY_CODE
 
 
-  - ID: 4.4.1.4_AUTH_CODE_BRUTE_FORCE
+  - ID: 4.4.1.4_CLIENT_SPOOFING1
     title: Malicious Client Obtains Authorization
     impact: |
-      Disclosure of a single access token and probably also an
-       associated refresh token.
+      Disclosure of a single access token and probably also an associated refresh token.
     impacts:
       - REFID: CONFIDENTIALITY
       - REFID: INTEGRITY
@@ -353,8 +352,8 @@ threats:
           the application the end user is using. This measure is especially
           helpful in situations where the authorization server is unable to
           authenticate the client. It is a countermeasure against:
-          o A malicious application
-          o A client application masquerading as another client
+          <br/>o A malicious application
+          <br/>o A client application masquerading as another client
         operational: true
         operator: RESOURCE_OWNER
         inPlace: false
@@ -385,31 +384,536 @@ threats:
         operational: true
         operator: AUTHORIZATION_SERVER_OPERATOR
         inPlace: false
-        public: true      
-      
+        public: true
+
       - ID: 5.1.5.1_LIMITED_SCOPE_TOKEN
         title: Limit Token Scope
         description: |
           The authorization server may decide to reduce or limit the scope
           associated with a token. The basis of this decision is out of scope;
           examples are:
-          o a client-specific policy, e.g., issue only less powerful tokens to
+
+          <br/>o a client-specific policy, e.g., issue only less powerful tokens to
           public clients,
-          o a service-specific policy, e.g., it is a very sensitive service,
-          o a resource-owner-specific setting, or
-          o combinations of such policies and preferences.
-          
+          <br/>o a service-specific policy, e.g., it is a very sensitive service,
+          <br/>o a resource-owner-specific setting, or
+          <br/>o combinations of such policies and preferences.
+
           The authorization server may allow different scopes dependent on the
           grant type. For example, end-user authorization via direct
           interaction with the end user (authorization "code") might be
           considered more reliable than direct authorization via grant type
           "username"/"password". This means will reduce the impact of the
           following threats:
-          o token leakage
-          o token issuance to malicious software
-          o unintended issuance of powerful tokens with resource owner
+          <br/>o token leakage
+          <br/>o token issuance to malicious software
+          <br/>o unintended issuance of powerful tokens with resource owner
           credentials flow
         operational: true
         operator: AUTHORIZATION_SERVER_OPERATOR
         inPlace: false
-        public: true      
+        public: true
+
+  - ID: 4.4.1.5_CLIENT_SPOOFING2
+    title: Authorization code Phishing
+    impact: |
+      This affects web applications and may lead to a disclosure of
+      authorization "codes" and, potentially, the corresponding access and
+      refresh tokens.
+
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      # - REFID: USER_AGENT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:L
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      A hostile party could impersonate the client site and get access to
+      the authorization "code". This could be achieved using DNS or ARP
+      spoofing. This applies to clients, which are web applications; thus,
+      the redirect URI is not local to the host where the user’s browser is
+      running.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.1.2_AUTH_SERVER_AUTHENTICATION
+      - REFID: 5.2.4.4_CLIENT_TO_CODE_BINDING
+
+
+
+  - ID: 4.4.1.6_CLIENT_SPOOFING3
+    title: Authorization code Phishing
+    impact: |
+      An attacker who intercepts the authorization "code" as it is
+      sent by the browser to the callback endpoint can gain access to
+      protected resources by submitting the authorization "code" to the
+      client. The client will exchange the authorization "code" for an
+      access token and use the access token to access protected resources
+      for the benefit of the attacker, delivering protected resources to
+      the attacker, or modifying protected resources as directed by the
+      attacker. If OAuth is used by the client to delegate authentication
+      to a social site (e.g., as in the implementation of a "Login" button
+      on a third-party social network site), the attacker can use the
+      intercepted authorization "code" to log into the client as the user.
+      Note: Authenticating the client during authorization "code" exchange
+      will not help to detect such an attack, as it is the legitimate
+      client that obtains the tokens.
+
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      # - REFID: USER_AGENT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:L
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      A hostile party could impersonate the client site and impersonate the
+      user’s session on this client. This could be achieved using DNS or
+      ARP spoofing. This applies to clients, which are web applications;
+      thus, the redirect URI is not local to the host where the user’s
+      browser is running.
+
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.1.2_AUTH_SERVER_AUTHENTICATION
+
+
+
+  - ID: 4.4.1.7_CLIENT_SPOOFING4
+    title: Authorization code Leakage through Counterfeit Client
+
+    impact: |
+      The attacker gains access to the victim’s resources as associated with his account on the client site.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+      - REFID: NON_REPUDIATION
+    assets:
+      # - REFID: 
+    attackers:
+      - REFID: CLIENT_OPERATOR
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      The attacker leverages the authorization "code" grant type in an
+      attempt to get another user (victim) to log in, authorize access to
+      his/her resources, and subsequently obtain the authorization "code"
+      and inject it into a client application using the attacker’s account.
+      The goal is to associate an access authorization for resources of the
+      victim with the user account of the attacker on a client site.
+      The attacker abuses an existing client application and combines it
+      with his own counterfeit client web site. The attacker depends on
+      the victim expecting the client application to request access to a
+      certain resource server. The victim, seeing only a normal request
+      from an expected application, approves the request. The attacker
+      then uses the victim’s authorization to gain access to the
+      information unknowingly authorized by the victim.
+      The attacker conducts the following flow:
+
+      1. The attacker accesses the client web site (or application) and
+      initiates data access to a particular resource server. The
+      client web site in turn initiates an authorization request to the
+      resource server’s authorization server. Instead of proceeding
+      with the authorization process, the attacker modifies the
+      authorization server end-user authorization URL as constructed by
+      the client to include a redirect URI parameter referring to a web
+      site under his control (attacker’s web site).
+
+      2. The attacker tricks another user (the victim) into opening that
+      modified end-user authorization URI and authorizing access (e.g.,
+      via an email link or blog link). The way the attacker achieves
+      this goal is out of scope.
+
+      3. Having clicked the link, the victim is requested to authenticate
+      and authorize the client site to have access.
+
+      4. After completion of the authorization process, the authorization
+      server redirects the user agent to the attacker’s web site
+      instead of the original client web site.
+
+      5. The attacker obtains the authorization "code" from his web site
+      by means that are out of scope of this document.
+
+      6. He then constructs a redirect URI to the target web site (or
+      application) based on the original authorization request’s
+      redirect URI and the newly obtained authorization "code", and
+      directs his user agent to this URL. The authorization "code" is
+      injected into the original client site (or application).
+
+      7. The client site uses the authorization "code" to fetch a token
+      from the authorization server and associates this token with the
+      attacker’s user account on this site.
+
+      8. The attacker may now access the victim’s resources using the
+      client site.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.2.4.5_REDIRECT_CODE_BINDING
+      - REFID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
+      - REFID: 5.2.4.4_CLIENT_TO_CODE_BINDING
+      - ID: IMPLICIT_GRANT_FLOW
+        title: Implicit grant flow
+        description: |
+          The client may consider using other flows that are not vulnerable
+          to this kind of attack, such as the implicit grant type (see
+          Section 4.4.2) or resource owner password credentials (see
+          Section 4.4.3).
+        operational: false
+        # operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+
+  - ID: 4.4.1.8_CSRF_ON_REDIRECT
+    title: CSRF Attack against redirect-uri
+    impact: |
+      The user accesses resources on behalf of the attacker. The
+      effective impact depends on the type of resource accessed. For
+      example, the user may upload private items to an attacker’s
+      resources. Or, when using OAuth in 3rd-party login scenarios, the
+      user may associate his client account with the attacker’s identity at
+      the external Identity Provider. In this way, the attacker could
+      easily access the victim’s data at the client by logging in from
+      another device with his credentials at the external Identity
+      Provider.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: NON_REPUDIATION
+    assets:
+      - REFID: DF_AUTH_REDIRECT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Repudiation, Information Disclosure
+    attack: |
+      Cross-site request forgery (CSRF) is a web-based attack whereby HTTP
+      requests are transmitted from a user that the web site trusts or has
+      authenticated (e.g., via HTTP redirects or HTML forms). CSRF attacks
+      on OAuth approvals can allow an attacker to obtain authorization to
+      OAuth protected resources without the consent of the user.
+      This attack works against the redirect URI used in the authorization
+      "code" flow. An attacker could authorize an authorization "code" to
+      their own protected resources on an authorization server. He then
+      aborts the redirect flow back to the client on his device and tricks
+      the victim into executing the redirect back to the client. The
+      client receives the redirect, fetches the token(s) from the
+      authorization server, and associates the victim’s client session with
+      the resources accessible using the token.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - ID: 5.3.5_ANTI_CSRF_STATE_PARAM
+        title: Link the state Parameter to User Agent Session (anti CSRF)
+        description:
+          The "state" parameter is used to link client requests and prevent
+          CSRF attacks, for example, attacks against the redirect URI. An
+          attacker could inject their own authorization "code" or access token,
+          which can result in the client using an access token associated with
+          the attacker’s protected resources rather than the victim’s (e.g.,
+          save the victim’s bank account information to a protected resource
+          controlled by the attacker).
+          The client should utilize the "state" request parameter to send the
+          authorization server a value that binds the request to the user
+          agent’s authenticated state (e.g., a hash of the session cookie used
+          to authenticate the user agent) when making an authorization request.
+          Once authorization has been obtained from the end user, the
+          authorization server redirects the end-user’s user agent back to the
+          client with the required binding value contained in the "state"
+          parameter.
+          The binding value enables the client to verify the validity of the
+          request by matching the binding value to the user agent’s
+          authenticated state.
+        operational: true
+        operator: CLIENT_OPERATOR
+        inPlace: false
+        public: true
+      - ID: USER_EDUCATION
+        title:  Users can be educated to not follow untrusted URLs
+        description: |
+          Client developers and end users can be educated to not follow
+          untrusted URLs.    
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+
+  - ID: 4.4.1.9_CLICKJACKING
+    title: Clickjacking Attack against Authorization
+
+    impact: |
+      An attacker can steal a user’s authentication credentials and access their resources.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: NON_REPUDIATION
+    assets:
+      - REFID: DF_AUTH_REDIRECT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Repudiation, Information Disclosure
+    attack: |
+      With clickjacking, a malicious site loads the target site in a
+      transparent iFrame (see [iFrame]) overlaid on top of a set of dummy
+      buttons that are carefully constructed to be placed directly under
+      important buttons on the target site. When a user clicks a visible
+      button, they are actually clicking a button (such as an "Authorize"
+      button) on the hidden page.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - ID: 5.2.2.6_X-FRAME-OPTIONS
+        title: Link the state Parameter to User Agent Session (anti CSRF)
+        description: |
+          For newer browsers, avoidance of iFrames can be enforced on the
+            server side by using the X-FRAME-OPTIONS header (see
+            [X-Frame-Options]). This header can have two values, "DENY" and
+            "SAMEORIGIN", which will block any framing or any framing by sites
+            with a different origin, respectively. The value "ALLOW-FROM"
+            specifies a list of trusted origins that iFrames may originate from.
+             This is a countermeasure against the following threat:
+
+            o Clickjacking attacks
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+      - ID: FRAMEBUSTING
+        title: JavaScript frame-busting
+        description: |
+          For older browsers, JavaScript frame-busting (see [Framebusting])
+          techniques can be used but may not be effective in all browsers. 
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+  - ID: 4.4.1.10_RESOURCE_OWNER_SPOOFING1
+    title: Resource Owner Impersonation
+    # impact: |
+    #   An attacker can steal a user’s authentication credentials and access their resources.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: NON_REPUDIATION
+    assets:
+      - REFID: DF_AUTH_REDIRECT
+    attackers:
+      - REFID: CLIENT_OPERATOR
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Repudiation, Information Disclosure
+    attack: |
+      When a client requests access to protected resources, the
+      authorization flow normally involves the resource owner’s explicit
+      response to the access request, either granting or denying access to
+      the protected resources. A malicious client can exploit knowledge of
+      the structure of this flow in order to gain authorization without the
+      resource owner’s consent, by transmitting the necessary requests
+      programmatically and simulating the flow against the authorization
+      server. That way, the client may gain access to the victim’s
+      resources without her approval. An authorization server will be
+      vulnerable to this threat if it uses non-interactive authentication
+      mechanisms or splits the authorization flow across multiple pages.
+      The malicious client might embed a hidden HTML user agent, interpret
+      the HTML forms sent by the authorization server, and automatically
+      send the corresponding form HTTP POST requests. As a prerequisite,
+      the attacker must be able to execute the authorization process in the
+      context of an already-authenticated session of the resource owner
+      with the authorization server. There are different ways to achieve
+      this:
+
+      o The malicious client could abuse an existing session in an
+      external browser or cross-browser cookies on the particular
+      device.
+
+        o The malicious client could also request authorization for an
+      initial scope acceptable to the user and then silently abuse the
+      resulting session in his browser instance to "silently" request
+      another scope.
+
+      o Alternatively, the attacker might exploit an authorization
+      server’s ability to authenticate the resource owner automatically
+      and without user interactions, e.g., based on certificates.
+      In all cases, such an attack is limited to clients running on the
+      victim’s device, either within the user agent or as a native app.
+      Please note: Such attacks cannot be prevented using CSRF
+      countermeasures, since the attacker just "executes" the URLs as
+      prepared by the authorization server including any nonce, etc.
+
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - ID: INTERACTIVE_APPROVAL
+        title: Interactive (non automatic) user approval
+        description: |
+          Authorization servers should decide, based on an analysis of the risk
+          associated with this threat, whether to detect and prevent this
+          threat.
+          In order to prevent such an attack, the authorization server may
+          force a user interaction based on non-predictable input values as
+          part of the user consent approval. The authorization server could
+
+          o combine password authentication and user consent in a single form,
+
+          o make use of CAPTCHAs, or
+
+          o use one-time secrets sent out of band to the resource owner (e.g.,
+          via text or instant message).
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+      - ID: NOTIFY_APPROVAL
+        title: Notify User's approval
+        description: |
+          In order to allow the resource owner to detect abuse,
+          the authorization server could notify the resource owner of any
+          approval by appropriate means, e.g., text or instant message, or
+          email.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+  - ID: 4.4.1.11_DOS_TOKEN_ENTROPY
+    title: Resource Owner Impersonation
+    # impact: |
+    #   An attacker can steal a user’s authentication credentials and access their resources.
+    impacts:
+      - REFID: AVAILABILITY
+    assets:
+      - REFID: DF_AUTH_REDIRECT
+    attackers:
+      - REFID: CLIENT_OPERATOR
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:H
+    threatType: Denial of Service
+    attack: |
+       If an authorization server includes a nontrivial amount of entropy in
+        authorization "codes" or access tokens (limiting the number of
+        possible codes/tokens) and automatically grants either without user
+        intervention and has no limit on codes or access tokens per user, an
+        attacker could exhaust the pool of authorization "codes" by
+        repeatedly directing the user’s browser to request authorization
+         "codes" or access tokens.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - ID: AUTH_SERVER_PER_USER_LIMIT
+        title: Limit access tokens granted per user
+        description: |
+          The authorization server should consider limiting the number of
+          access tokens granted per user.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+      - ID: AUTH_CODE_HIGH_ENTROPY
+        title: High entropy codes
+        description: |
+          The authorization server should include a nontrivial amount of
+          entropy in authorization "codes".
+        operational: false
+        # operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+  - ID: 4.4.1.12_DOS2
+    title:  DoS Using Manufactured Authorization "codes"
+    impact: |
+      There are a few effects that the attacker can accomplish with
+      this OAuth flow that they cannot easily achieve otherwise.
+      1. Connection laundering: With the clients as the relay between the
+      attacker and the authorization server, the authorization server
+      learns little or no information about the identity of the
+      attacker. Defenses such as rate-limiting on the offending
+      attacker machines are less effective because it is difficult to
+      identify the attacking machines. Although an attacker could also
+      launder its connections through an anonymizing system such as
+      Tor, the effectiveness of that approach depends on the capacity
+      of the anonymizing system. On the other hand, a potentially
+      large number of OAuth clients could be utilized for this attack.
+      2. Asymmetric resource utilization: The attacker incurs the cost of
+      an HTTP connection and causes an HTTPS connection to be made on
+      the authorization server; the attacker can coordinate the timing
+      of such HTTPS connections across multiple clients relatively
+      easily. Although the attacker could achieve something similar,
+      say, by including an iFrame pointing to the HTTPS URL of the
+      authorization server in an HTTP web page and luring web users to
+      visit that page, timing attacks using such a scheme may be more
+      difficult, as it seems nontrivial to synchronize a large number
+      of users to simultaneously visit a particular site under the
+      attacker’s control.
+    impacts:
+      - REFID: AVAILABILITY
+    assets:
+      # - REFID: AUTH_SERVER
+    attackers:
+      - REFID: CLIENT_OPERATOR
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:N/I:N/A:H
+    threatType: Denial of Service
+    attack: |
+       An attacker who owns a botnet can locate the redirect URIs of clients
+        that listen on HTTP, access them with random authorization "codes",
+        and cause a large number of HTTPS connections to be concentrated onto
+        the authorization server. This can result in a denial-of-service
+        (DoS) attack on the authorization server.
+        This attack can still be effective even when CSRF defense/the "state"
+        parameter (see Section 4.4.1.8) is deployed on the client side. With
+        such a defense, the attacker might need to incur an additional HTTP
+        request to obtain a valid CSRF code/"state" parameter. This
+        apparently cuts down the effectiveness of the attack by a factor of
+        2. However, if the HTTPS/HTTP cost ratio is higher than 2 (the cost
+        factor is estimated to be around 3.5x at [SSL-Latency]), the attacker
+        still achieves a magnification of resource utilization at the expense
+        of the authorization server.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.3.5_ANTI_CSRF_STATE_PARAM
+      - ID: CLIENT_LIMITS_PER_USER
+        title: Client limits authenticated users codes
+        description: |
+          If the client authenticates the user, either through a single-
+          sign-on protocol or through local authentication, the client
+          should suspend the access by a user account if the number of
+          invalid authorization "codes" submitted by this user exceeds a
+          certain threshold.
+        operational: true
+        operator: CLIENT_OPERATOR
+        inPlace: false
+        public: true
+      - ID: AUTH_RATE_LIMIT
+        title: Client limits authenticated users codes
+        description: |
+          The authorization server should send an error response to the
+          client reporting an invalid authorization "code" and rate-limit or
+          disallow connections from clients whose number of invalid requests
+          exceeds a threshold.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+        

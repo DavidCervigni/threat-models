@@ -165,7 +165,7 @@ threats:
           resource server discovery is required, the pre-registered
           "redirect_uri" may no longer be feasible.
           5_Validate_redirect_uri
-          
+
           Note: An invalid redirect URI indicates an
           invalid client, whereas a valid redirect URI does not necessarily
           indicate a valid client. The level of confidence depends on the
