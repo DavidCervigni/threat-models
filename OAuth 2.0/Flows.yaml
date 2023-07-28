@@ -5,6 +5,7 @@ title: Flows
 parent: OAuth2.0
 children:
   - ID: Flows_AuthCode
+  - ID: Flows_ImplicitGrant
 
 scope:
   description: This section covers threats that are specific to certain flows utilized

@@ -1,0 +1,187 @@
+#based on: https://datatracker.ietf.org/doc/html/rfc6819
+
+ID: Flows_ImplicitGrant
+title: Implicit Grant flow
+parent: Flows
+scope:
+  description: | 
+      In the implicit grant type flow, the access token is directly
+      returned to the client as a fragment part of the redirect URI. It is
+      assumed that the token is not sent to the redirect URI target, as
+      HTTP user agents do not send the fragment part of URIs to HTTP
+      servers. Thus, an attacker cannot eavesdrop the access token on this
+      communication path, and the token cannot leak through HTTP referrer
+      headers.
+
+  diagram:
+
+analysis:
+
+ 
+threats:
+
+  - ID: 4.4.2.1_TOKEN_LEAK1_NETWORK
+    title: Access Token Leak in Transport/Endpoints
+    impact: |
+      The attacker would be able to assume the same rights granted
+      by the token.
+ 
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:A/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      This token might be eavesdropped by an attacker. The token is sent
+      from the server to the client via a URI fragment of the redirect URI.
+      If the communication is not secured or the endpoint is not secured,
+      the token could be leaked by parsing the returned URI.
+    countermeasures:
+      - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
+    
+  - ID: 4.4.2.2_TOKEN_LEAK2_BROWSER_HISTORY
+    title: Access Token Leak in Browser History
+    impact: |
+      The attacker would be able to assume the same rights granted
+      by the token. 
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:L/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker could obtain the token from the browser’s history. Note
+      that this means the attacker needs access to the particular device.
+    countermeasures:
+      - REFID: 5.1.5.3_SHORT_EXPIRY_CODE
+      - ID: NON_CACHEABLE_RESPONSES
+        title: Make responses non-cacheable.
+        description: |
+          Make responses non-cacheable.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+
+
+  - ID: 4.4.2.2_TOKEN_LEAK2_BROWSER_HISTORY
+    title: Malicious Client Obtains Authorization
+    impact: |
+      The attacker would be able to assume the same rights granted
+      by the token. 
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      A malicious client could attempt to obtain a token by fraud.
+    countermeasures:
+      - REFID: 5.2.3.5_VALIDATE_REDIRECT_URI
+      - REFID: 5.2.4.3_VALIDATION_OF_CLIENT_BY_END_USER
+      - REFID: 5.2.4.1_REPEAT_VALIDATE_CLIENT
+      - REFID: REQUIRE_USER_MANUAL_STEP
+      - REFID: 5.1.5.1_LIMITED_SCOPE_TOKEN
+
+
+  - ID: 4.4.2.4_MANIPULATION_SCRIPTS
+    title:  Manipulation of Scripts
+    impact: |
+      The attacker could obtain user credential information and
+      assume the full identity of the user.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:A/AC:H/PR:L/UI:N/S:U/C:H/I:L/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      A hostile party could act as the client web server and replace or
+      modify the actual implementation of the client (script). This could
+      be achieved using DNS or ARP spoofing. This applies to clients
+      implemented within the web browser in a scripting language.
+
+    countermeasures:
+      - REFID: 5.1.2_AUTH_SERVER_AUTHENTICATION
+      - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
+      - ID: ONE-TIME_PER-USE_SECRET
+        title: One-time, per-use secrets (e.g., "client_secret")
+        description: |
+          Introduce one-time, per-use secrets (e.g., "client_secret") values
+          that can only be used by scripts in a small time window once
+          loaded from a server. The intention would be to reduce the
+          effectiveness of copying client-side scripts for re-use in an
+          attacker’s modified code.
+        operational: true
+        operator: CLIENT_OPERATOR
+        inPlace: false
+        public: true
+
+
+  - ID: 4.4.2.5_CSRF_IMPLICIT
+    title: CSRF Attack against redirect-uri
+    impact: |
+      The user accesses resources on behalf of the attacker. The
+      effective impact depends on the type of resource accessed. For
+      example, the user may upload private items to an attacker’s
+      resources. Or, when using OAuth in 3rd-party login scenarios, the
+      user may associate his client account with the attacker’s identity at
+      the external Identity Provider. In this way, the attacker could
+      easily access the victim’s data at the client by logging in from
+      another device with his credentials at the external Identity
+      Provider.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:A/AC:H/PR:L/UI:N/S:U/C:H/I:L/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      CSRF attacks (see Section 4.4.1.8) also work against the redirect URI
+      used in the implicit grant flow. An attacker could acquire an access
+      token to their own protected resources. He could then construct a
+      redirect URI and embed their access token in that URI. If he can
+      trick the user into following the redirect URI and the client does
+      not have protection against this attack, the user may have the
+      attacker’s access token authorized within their client.
+
+    countermeasures:
+
+      - ID: STATE_PARAM_VALIDATION
+        title: Link the authorization request with the redirect URI (state param)
+        description: |
+          The "state" parameter should be used to link the authorization
+          request with the redirect URI used to deliver the access token.
+          This will ensure that the client is not tricked into completing
+          any redirect callback unless it is linked to an authorization
+          request initiated by the client. The "state" parameter should not
+          be guessable, and the client should be capable of keeping the
+          "state" parameter secret.
+        operational: true
+        operator: CLIENT_OPERATOR
+        inPlace: false
+        public: true
+      - REFID: USER_EDUCATION
