@@ -866,7 +866,7 @@ threats:
     impacts:
       - REFID: AVAILABILITY
     assets:
-      # - REFID: AUTH_SERVER
+      - REFID: AUTH_SERVER
     attackers:
       - REFID: CLIENT_OPERATOR
     CVSS:
@@ -916,4 +916,79 @@ threats:
         inPlace: false
         public: true
 
-        
+  - ID: 4.4.1.13_CODE_SUBSTITUTION
+    title:  DoS Using Manufactured Authorization "codes"
+    impact: |
+      The attacker gains access to an application and user-specific
+      data within the application.
+    impacts:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+      - REFID: NON_REPUDIATION
+    assets:
+      # - REFID: 
+    attackers:
+      - REFID: CLIENT_OPERATOR
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:R/S:U/C:H/I:L/A:N
+    threatType: Denial of Service
+    attack: |
+       An attacker could attempt to log into an application or web site
+        using a victim’s identity. Applications relying on identity data
+        provided by an OAuth protected service API to login users are
+        vulnerable to this threat. This pattern can be found in so-called
+        "social login" scenarios.
+        As a prerequisite, a resource server offers an API to obtain personal
+        information about a user that could be interpreted as having obtained
+        a user identity. In this sense, the client is treating the resource
+        server API as an "identity" API. A client utilizes OAuth to obtain
+        an access token for the identity API. It then queries the identity
+        API for an identifier and uses it to look up its internal user
+        account data (login). The client assumes that, because it was able
+        to obtain information about the user, the user has been
+        authenticated.
+        If the client uses the grant type "code", the attacker needs to
+        gather a valid authorization "code" of the respective victim from the
+        same Identity Provider used by the target client application. The
+        attacker tricks the victim into logging into a malicious app (which
+        may appear to be legitimate to the Identity Provider) using the same
+        Identity Provider as the target application. This results in the
+        Identity Provider’s authorization server issuing an authorizatio
+        "code" for the respective identity API. The malicious app then sends
+        this code to the attacker, which in turn triggers a login process
+        within the target application. The attacker now manipulates the
+        authorization response and substitutes their code (bound to their
+        identity) for the victim’s code. This code is then exchanged by the
+        client for an access token, which in turn is accepted by the identity
+        API, since the audience, with respect to the resource server, is
+        correct. But since the identifier returned by the identity API is
+        determined by the identity in the access token (issued based on the
+        victim’s code), the attacker is logged into the target application
+        under the victim’s identity.
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - ID: IN_REQUEST_CLIENTID
+        title: Clients indicate their ids in requests
+        description: |
+          All clients must indicate their client ids with every request to
+          exchange an authorization "code" for an access token. The
+          authorization server must validate whether the particular
+          authorization "code" has been issued to the particular client. If
+          possible, the client shall be authenticated beforehand.
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: false
+        public: true
+      - ID: SECURE_USER_LOGIN_PROTOCOL
+        title: Secure User Login Protocol
+        description: |
+          Clients should use an appropriate protocol, such as OpenID (cf.
+          [OPENID]) or SAML (cf. [OASIS.sstc-saml-bindings-1.1]) to
+          implement user login. Both support audience restrictions on
+          clients.
+        operational: true
+        operator: CLIENT_OPERATOR
+        inPlace: false
+        public: true
