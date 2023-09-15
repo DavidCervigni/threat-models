@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Directory fullBuild (html and diagrams/images)",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.fullBuildDirectory",
+            "justMyCode": false,
+            "args": [
+                "--TMDirectory",
+                "threatModels",
+                "--browserSync",
+                "--outputDir",
+                "build/",
+                "--template",
+                "TM_templateFull",
+                "--formatYAML",
+                // "--assetDir",
+                // "threatModels/assets"
+            ]
+        } ,
+       {
+            "name": "Build HTML for OAuth2.0",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/OAuth2/OAuth2.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/OAuth2/",
+                "--template",
+                "TM_templateFull",
+                "--assetDir",
+                "threatModels/OAuth2/assets",
+                "--formatYAML"
+            ]
+
+        }
+    ]
+}

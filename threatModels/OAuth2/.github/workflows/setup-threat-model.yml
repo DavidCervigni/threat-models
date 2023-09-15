@@ -1,0 +1,54 @@
+name: Setup Threat Model
+
+permissions:
+  contents: read
+  
+on:
+  workflow_call:
+    inputs:
+      yaml-path:
+        required: true
+        type: string  
+    outputs:
+      title:
+        description: "Threat Model Title"
+        value: ${{ jobs.yaml_vars.outputs.title }}
+      version:
+        description: "Threat Model version"
+        value: ${{ jobs.yaml_vars.outputs.version }}
+
+jobs:
+  yaml_vars:
+    name: Generate Threat Model Variables
+    runs-on: ubuntu-latest
+
+    outputs:
+      title: ${{ steps.setvars.outputs.title }}
+      version: ${{ steps.setvars.outputs.version }}
+      
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: SetVariables
+      id: setvars
+      shell: python
+      run: |
+        import yaml
+        import os
+        from datetime import datetime
+        print('cwd:', os.getcwd())
+
+        def export(key, value):
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as gho:
+            print(f"{key}={value}", file=gho)
+            print(f"{key}={value}")      
+            
+        with open("${{ inputs.yaml-path }}", 'r') as file:
+          tm = yaml.safe_load(file)
+          title = tm['title']
+          version = tm['version']
+          
+          #export(f"title={title}\nversion={version}")
+          export("title", title)
+          export("version", version)

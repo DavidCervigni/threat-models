@@ -20,7 +20,7 @@ analysis:
  
 threats:
 
-  - ID: 4.4.2.1_TOKEN_LEAK1_NETWORK
+  - ID: 4_4_2_1_TOKEN_LEAK1_NETWORK
     title: Access Token Leak in Transport/Endpoints
     impactDesc: |
       The attacker would be able to assume the same rights granted
@@ -41,10 +41,10 @@ threats:
       If the communication is not secured or the endpoint is not secured,
       the token could be leaked by parsing the returned URI.
     countermeasures:
-      - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
+      - REFID: 5_1_1_CONFIDENTIAL_REQUESTS
 
     fullyMitigated: false
-  - ID: 4.4.2.2_TOKEN_LEAK2_BROWSER_HISTORY
+  - ID: 4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY
     title: Access Token Leak in Browser History
     impactDesc: |
       The attacker would be able to assume the same rights granted
@@ -63,7 +63,7 @@ threats:
       An attacker could obtain the token from the browser’s history. Note
       that this means the attacker needs access to the particular device.
     countermeasures:
-      - REFID: 5.1.5.3_SHORT_EXPIRY_CODE
+      - REFID: 5_1_5_3_SHORT_EXPIRY_CODE
       - ID: NON_CACHEABLE_RESPONSES
         title: Make responses non-cacheable.
         description: |
@@ -74,7 +74,7 @@ threats:
         public: true
     fullyMitigated: false
 
-  - ID: 4.4.2.2_TOKEN_LEAK2_BROWSER_HISTORY
+  - ID: 4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY
     title: Malicious Client Obtains Authorization
     impactDesc: |
       The attacker would be able to assume the same rights granted
@@ -92,15 +92,15 @@ threats:
     attack: |
       A malicious client could attempt to obtain a token by fraud.
     countermeasures:
-      - REFID: 5.2.3.5_VALIDATE_REDIRECT_URI
-      - REFID: 5.2.4.3_VALIDATION_OF_CLIENT_BY_END_USER
-      - REFID: 5.2.4.1_REPEAT_VALIDATE_CLIENT
+      - REFID: 5_2_3_5_VALIDATE_REDIRECT_URI
+      - REFID: 5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER
+      - REFID: 5_2_4_1_REPEAT_VALIDATE_CLIENT
       - REFID: REQUIRE_USER_MANUAL_STEP
-      - REFID: 5.1.5.1_LIMITED_SCOPE_TOKEN
+      - REFID: 5_1_5_1_LIMITED_SCOPE_TOKEN
 
 
     fullyMitigated: false
-  - ID: 4.4.2.4_MANIPULATION_SCRIPTS
+  - ID: 4_4_2_4_MANIPULATION_SCRIPTS
     title: Manipulation of Scripts
     impactDesc: |
       The attacker could obtain user credential information and
@@ -122,9 +122,9 @@ threats:
       implemented within the web browser in a scripting language.
 
     countermeasures:
-      - REFID: 5.1.2_AUTH_SERVER_AUTHENTICATION
-      - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
-      - ID: ONE-TIME_PER-USE_SECRET
+      - REFID: 5_1_2_AUTH_SERVER_AUTHENTICATION
+      - REFID: 5_1_1_CONFIDENTIAL_REQUESTS
+      - ID: ONE_TIME_PER_USE_SECRET
         title: One-time, per-use secrets (e.g., "client_secret")
         description: |
           Introduce one-time, per-use secrets (e.g., "client_secret") values
@@ -138,7 +138,7 @@ threats:
         public: true
     fullyMitigated: false
 
-  - ID: 4.4.2.5_CSRF_IMPLICIT
+  - ID: 4_4_2_5_CSRF_IMPLICIT
     title: CSRF Attack against redirect-uri
     impactDesc: |
       The user accesses resources on behalf of the attacker. The
@@ -187,7 +187,7 @@ threats:
         public: true
       - REFID: USER_EDUCATION
 
-  - ID: 4.4.2.6_TOKEN_SUBSTITUTION
+  - ID: 4_4_2_6_TOKEN_SUBSTITUTION
     title: Token Substitution (OAuth Login)
     impactDesc: |
       The attacker gains access to an application and user-specific

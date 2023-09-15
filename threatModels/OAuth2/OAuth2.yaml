@@ -7,11 +7,8 @@ children:
   - ID: Client
   - ID: AuthorizationServer
   - ID: Flows
-
 authors: |
-  Example by Security Research team at *R3* based on: https://datatracker.ietf.org/doc/html/rfc6819
-
-  - David Cervigni
+  Example by David Cervigni, based on: https://datatracker.ietf.org/doc/html/rfc6819
 
 # history: |
 #   - 2023.1 Draft  2023-07-xx: First release
@@ -201,6 +198,14 @@ scope:
   diagram:
 
   assets:
+
+    - ID: CLIENT
+      type: system
+      title: Client
+      description: |
+        An application requesting access from the RESOURCE_OWNER (TODO: refine this description)
+      inScope: true
+
     # - ID: AUTH_SERVER_TOKEN_ENDPOINT
     #   type: endpoint
     #   title: Authorization server token endpoint

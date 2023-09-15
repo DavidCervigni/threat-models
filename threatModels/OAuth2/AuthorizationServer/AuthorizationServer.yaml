@@ -2,7 +2,7 @@
 
 ID: AuthorizationServer
 title: Authorization Server
-parent: OAuth2.0
+parent: OAuth2
 scope:
   description:
   diagram:
@@ -69,7 +69,7 @@ threats:
     public: true
     fullyMitigated: false
     countermeasures:
-      - ID: 5.1.2_AUTH_SERVER_AUTHENTICATION
+      - ID: 5_1_2_AUTH_SERVER_AUTHENTICATION
         title: TLS for the authorization server
         description: |
           Authorization servers should consider such attacks when developing
@@ -183,7 +183,7 @@ threats:
     fullyMitigated: false
 
     countermeasures:
-      - ID: PRE-REGISTERED_REDIRECT_URI
+      - ID: PRE_REGISTERED_REDIRECT_URI
         title: Pre-registered redirect URI
         description: |
           Require clients to register any full redirect URIs (Section 5.2.3.5).
@@ -227,7 +227,7 @@ threats:
     fullyMitigated: false
 
     countermeasures:
-      - REFID: PRE-REGISTERED_REDIRECT_URI
+      - REFID: PRE_REGISTERED_REDIRECT_URI
 
 
       - ID: REDUCED_ACCESS_TOKEN_SCOPE
@@ -243,7 +243,7 @@ threats:
 
 
 
-  - ID: 4.3.1_EAVESDROPPING_ACCESS_TOKENS1
+  - ID: 4_3_1_EAVESDROPPING_ACCESS_TOKENS1
     title: Eavesdropping Access Tokens
     impactDesc: |
       The attacker is able to access all resources with the
@@ -280,7 +280,7 @@ threats:
       - REFID: REDUCED_ACCESS_TOKEN_SCOPE
 
 
-  - ID: 4.3.2_AS_DB_TOKEN_DISCLOSURE
+  - ID: 4_3_2_AS_DB_TOKEN_DISCLOSURE
     title: Obtaining Access Tokens from Authorization Server Database
     impactDesc: |
       The attacker is able to access all resources for all tokens in Auth Server.
@@ -305,7 +305,7 @@ threats:
     fullyMitigated: true
 
     countermeasures:
-      - ID: 5.1.4.1.3_HASHED_TOKEN_DB
+      - ID: 5_1_4_1_3_HASHED_TOKEN_DB
         title: Store access token hashes only (Section 5.1.4.1.3).
         description: |
           Store access token hashes only (Section 5.1.4.1.3).
@@ -313,7 +313,7 @@ threats:
         inPlace: true
         public: true
 
-      - ID: 5.1.4.1.1_SYS_SEC
+      - ID: 5_1_4_1_1_SYS_SEC
         title: Enforce Standard System Security Means
         description: |
           A server system may be locked down so that no attacker may get access
@@ -323,7 +323,7 @@ threats:
         inPlace: false
         public: true
 
-      - ID: 5.1.4.1.2_SQL_SEC
+      - ID: 5_1_4_1_2_SQL_SEC
         title: Enforce Standard SQL Injection Countermeasures
         description: |
           If a client identifier or other authentication component is queried
@@ -344,7 +344,7 @@ threats:
         public: true
 
 
-  - ID: 4.3.3_CLIENT_CREDENTIALS_DISCLOSURE
+  - ID: 4_3_3_CLIENT_CREDENTIALS_DISCLOSURE
     title: Disclosure of Client Credentials during Transmission
     impactDesc: |
       Revelation of a client credential enabling phishing or impersonation of a client service.
@@ -365,7 +365,7 @@ threats:
     fullyMitigated: true
 
     countermeasures:
-      - ID: 5.1.1_CONFIDENTIAL_REQUESTS
+      - ID: 5_1_1_CONFIDENTIAL_REQUESTS
         title: Ensure Confidentiality of Requests (TLS)
         description: |
           This is applicable to all requests sent from the client to the
@@ -406,7 +406,7 @@ threats:
         public: true
 
 
-  - ID: 4.3.4_CLIENT_CREDENTIALS_DISCLOSURE
+  - ID: 4_3_4_CLIENT_CREDENTIALS_DISCLOSURE
     title: Obtaining Client Secret from Authorization Server Database
     impactDesc: |
       Disclosure of all "client_id"/secret combinations. This
@@ -427,9 +427,9 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.1.4.1.2_SQL_SEC
-      - REFID: 5.1.4.1.1_SYS_SEC
-      - ID: 5.1.4.1_CRED_PROTECTION
+      - REFID: 5_1_4_1_2_SQL_SEC
+      - REFID: 5_1_4_1_1_SYS_SEC
+      - ID: 5_1_4_1_CRED_PROTECTION
         title: Enforce Credential Storage Protection Best Practices
         description: |
           Administrators should undertake industry best practices to protect
@@ -441,7 +441,7 @@ threats:
         inPlace: false
         public: true
 
-  - ID: 4.3.5_CLIENT_SECRET_BRUTE_FORCE
+  - ID: 4_3_5_CLIENT_SECRET_BRUTE_FORCE
     title: Obtaining Client Secret by Online Guessing
     impactDesc: |
       Disclosure of a single "client_id"/secret pair.
@@ -461,7 +461,7 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - ID: 5.1.4.2.2_HIGH_ENTROPY_SECRETS
+      - ID: 5_1_4_2_2_HIGH_ENTROPY_SECRETS
         title: Use High Entropy for Secrets
         description: |
           When creating secrets not intended for usage by human users (e.g.,
@@ -475,7 +475,7 @@ threats:
         inPlace: false
         public: true
 
-      - ID: 5.1.4.2.3_LOCK_ACCOUNTS
+      - ID: 5_1_4_2_3_LOCK_ACCOUNTS
         title: Lock Accounts
         description: |
           Online attacks on passwords can be mitigated by locking the
@@ -485,7 +485,7 @@ threats:
         inPlace: false
         public: true
 
-      - ID: 5.2.3.7_STRONG_CLIENT_AUTHENTICATION
+      - ID: 5_2_3_7_STRONG_CLIENT_AUTHENTICATION
         title: Use strong client authentication
         description: |
           By using an alternative form of authentication such as client

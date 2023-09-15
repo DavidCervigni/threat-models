@@ -2,7 +2,7 @@
 
 ID: Client
 title: Client
-parent: OAuth2.0
+parent: OAuth2
 scope:
   description:
   diagram:
@@ -39,7 +39,7 @@ threats:
     public: true
     fullyMitigated: false
     countermeasures:
-      - ID: 5.2.3.1_CLIENT_CHECK1
+      - ID: 5_2_3_1_CLIENT_CHECK1
         title: Checks on client's security policy
         description: |
           Don't issue secrets to public clients or clients with
@@ -49,7 +49,7 @@ threats:
         public: true
         operator: AUTHORIZATION_SERVER
 
-      - ID: 5.2.3.2.User_Consent1
+      - ID: 5_2_3_2_USER_CONSENT1
         title: Require User Consent for Public Clients without Secret
         description: |
           Authorization servers should not allow automatic authorization for
@@ -63,7 +63,7 @@ threats:
         public: true
         operator: AUTHORIZATION_SERVER
 
-      - ID: 5.2.3.3_client_id_to_redirect_uri
+      - ID: 5_2_3_3_CLIENT_ID_TO_REDIRECT_URI
         title: Issue a "client_id" Only in Combination with "redirect_uri"
         description: |
           The authorization server may issue a "client_id" and bind the
@@ -83,7 +83,7 @@ threats:
         public: true
         operator: AUTHORIZATION_SERVER
 
-      - ID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
+      - ID: 5_2_3_4_SPECIFIC_CLIENT_SECRETS
         title: Issue Installation-Specific Client Secrets
         description: |
           An authorization server may issue separate client identifiers and
@@ -125,7 +125,7 @@ threats:
         public: true
         operator: AUTHORIZATION_SERVER_OPERATOR
 
-      - ID: 5.2.3.5_VALIDATE_REDIRECT_URI
+      - ID: 5_2_3_5_VALIDATE_REDIRECT_URI
         title: Validate Pre-Registered "redirect_uri"
         description: |
           An authorization server should require all clients to register their

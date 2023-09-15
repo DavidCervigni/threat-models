@@ -101,7 +101,7 @@ analysis:
  
 threats:
 
-  - ID: 4.4.1.1_AUTH_CODE_DISCLOSURE
+  - ID: 4_4_1_1_AUTH_CODE_DISCLOSURE
     title: Eavesdropping or Leaking Authorization codes
     impactDesc: |
       Auth codes can be used to 
@@ -144,8 +144,8 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
-      - ID: 5.2.4.4_CLIENT_TO_CODE_BINDING
+      - REFID: 5_1_1_CONFIDENTIAL_REQUESTS
+      - ID: 5_2_4_4_CLIENT_TO_CODE_BINDING
         title: Binding of Authorization "code" to "client_id"
         description: |
           The authorization server should bind every authorization "code" to
@@ -168,7 +168,7 @@ threats:
         inPlace: true
         public: true
 
-      - ID: 5.1.5.3_SHORT_EXPIRY_CODE
+      - ID: 5_1_5_3_SHORT_EXPIRY_CODE
         title: Use Short Expiration Time
         description: |
           A short expiration time for tokens is a means of protection against
@@ -187,7 +187,7 @@ threats:
         inPlace: false
         public: true
 
-      - ID: 5.1.5.4_ONE_TIME_USE_TOKEN
+      - ID: 5_1_5_4_ONE_TIME_USE_TOKEN
         title: Limit Number of Usages or One-Time Usage
         description: |
           The authorization server may restrict the number of requests or
@@ -209,7 +209,7 @@ threats:
         inPlace: false
         public: true
 
-      - ID: 5.2.1.1_TOKEN_ABUSE_DETECTION
+      - ID: 5_2_1_1_TOKEN_ABUSE_DETECTION
         title: Automatic Revocation of Derived Tokens If Abuse Is Detected
         description: |
           If an authorization server observes multiple attempts to redeem an
@@ -233,7 +233,7 @@ threats:
 
 
 
-  - ID: 4.4.1.2_AUTH_CODE_DISCLOSURE_DB
+  - ID: 4_4_1_2_AUTH_CODE_DISCLOSURE_DB
     title: Obtaining Authorization codes from AuthorizationServer Database
     impactDesc: |
       Disclosure of all authorization "codes", most likely along
@@ -258,12 +258,12 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.1.4.1.1_SYS_SEC
-      - REFID: 5.1.4.1.2_SQL_SEC
-      - REFID: 5.1.4.1.3_HASHED_TOKEN_DB
+      - REFID: 5_1_4_1_1_SYS_SEC
+      - REFID: 5_1_4_1_2_SQL_SEC
+      - REFID: 5_1_4_1_3_HASHED_TOKEN_DB
 
 
-  - ID: 4.4.1.3_AUTH_CODE_BRUTE_FORCE
+  - ID: 4_4_1_3_AUTH_CODE_BRUTE_FORCE
     title: Online Guessing of Authorization codes
     impactDesc: |
       Disclosure of a single access token and probably also an
@@ -286,8 +286,8 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.1.4.2.2_HIGH_ENTROPY_SECRETS
-      - ID: 5.1.5.9_SIGNED_TOKEN
+      - REFID: 5_1_4_2_2_HIGH_ENTROPY_SECRETS
+      - ID: 5_1_5_9_SIGNED_TOKEN
         title: Sign Self-Contained Tokens
         description: |
           Self-contained tokens should be signed in order to detect any attempt
@@ -297,8 +297,8 @@ threats:
         operator: AUTHORIZATION_SERVER_OPERATOR
         inPlace: false
         public: true
-      - REFID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
-      - ID: 5.2.4.5_REDIRECT_CODE_BINDING
+      - REFID: 5_2_3_4_SPECIFIC_CLIENT_SECRETS
+      - ID: 5_2_4_5_REDIRECT_CODE_BINDING
         title: Binding of Authorization "code" to "redirect_uri"
         description: |
           The authorization server should be able to bind every authorization
@@ -313,10 +313,10 @@ threats:
         operator: AUTHORIZATION_SERVER_OPERATOR
         inPlace: false
         public: true
-      - REFID: 5.1.5.3_SHORT_EXPIRY_CODE
+      - REFID: 5_1_5_3_SHORT_EXPIRY_CODE
 
 
-  - ID: 4.4.1.4_CLIENT_SPOOFING1
+  - ID: 4_4_1_4_CLIENT_SPOOFING1
     title: Malicious Client Obtains Authorization
     impactDesc: |
       Disclosure of a single access token and probably also an associated refresh token.
@@ -339,9 +339,9 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
-      - REFID: 5.2.3.5_VALIDATE_REDIRECT_URI
-      - ID: 5.2.4.3_VALIDATION_OF_CLIENT_BY_END_USER
+      - REFID: 5_2_3_4_SPECIFIC_CLIENT_SECRETS
+      - REFID: 5_2_3_5_VALIDATE_REDIRECT_URI
+      - ID: 5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER
         title: Validation of Client Properties by End User
         description: |
           In the authorization process, the user is typically asked to approve
@@ -359,7 +359,7 @@ threats:
         inPlace: false
         public: true
 
-      - ID: 5.2.4.1_REPEAT_VALIDATE_CLIENT
+      - ID: 5_2_4_1_REPEAT_VALIDATE_CLIENT
         title: Automatic Processing of Repeated Authorizations Requires Client Validation
         description: |
           Authorization servers should NOT automatically process repeat
@@ -386,7 +386,7 @@ threats:
         inPlace: false
         public: true
 
-      - ID: 5.1.5.1_LIMITED_SCOPE_TOKEN
+      - ID: 5_1_5_1_LIMITED_SCOPE_TOKEN
         title: Limit Token Scope
         description: |
           The authorization server may decide to reduce or limit the scope
@@ -414,7 +414,7 @@ threats:
         inPlace: false
         public: true
 
-  - ID: 4.4.1.5_CLIENT_SPOOFING2
+  - ID: 4_4_1_5_CLIENT_SPOOFING2
     title: Authorization code Phishing
     impactDesc: |
       This affects web applications and may lead to a disclosure of
@@ -440,12 +440,12 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.1.2_AUTH_SERVER_AUTHENTICATION
-      - REFID: 5.2.4.4_CLIENT_TO_CODE_BINDING
+      - REFID: 5_1_2_AUTH_SERVER_AUTHENTICATION
+      - REFID: 5_2_4_4_CLIENT_TO_CODE_BINDING
 
 
 
-  - ID: 4.4.1.6_CLIENT_SPOOFING3
+  - ID: 4_4_1_6_CLIENT_SPOOFING3
     title: Authorization code Phishing
     impactDesc: |
       An attacker who intercepts the authorization "code" as it is
@@ -483,11 +483,11 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.1.2_AUTH_SERVER_AUTHENTICATION
+      - REFID: 5_1_2_AUTH_SERVER_AUTHENTICATION
 
 
 
-  - ID: 4.4.1.7_CLIENT_SPOOFING4
+  - ID: 4_4_1_7_CLIENT_SPOOFING4
     title: Authorization code Leakage through Counterfeit Client
 
     impactDesc: |
@@ -559,9 +559,9 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.2.4.5_REDIRECT_CODE_BINDING
-      - REFID: 5.2.3.4_SPECIFIC_CLIENT_SECRETS
-      - REFID: 5.2.4.4_CLIENT_TO_CODE_BINDING
+      - REFID: 5_2_4_5_REDIRECT_CODE_BINDING
+      - REFID: 5_2_3_4_SPECIFIC_CLIENT_SECRETS
+      - REFID: 5_2_4_4_CLIENT_TO_CODE_BINDING
       - ID: IMPLICIT_GRANT_FLOW
         title: Implicit grant flow
         description: |
@@ -575,7 +575,7 @@ threats:
         public: true
 
 
-  - ID: 4.4.1.8_CSRF_ON_REDIRECT
+  - ID: 4_4_1_8_CSRF_ON_REDIRECT
     title: CSRF Attack against redirect-uri
     impactDesc: |
       The user accesses resources on behalf of the attacker. The
@@ -615,7 +615,7 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - ID: 5.3.5_ANTI_CSRF_STATE_PARAM
+      - ID: 5_3_5_ANTI_CSRF_STATE_PARAM
         title: Link the state Parameter to User Agent Session (anti CSRF)
         description: The "state" parameter is used to link client requests and prevent
           CSRF attacks, for example, attacks against the redirect URI. An attacker
@@ -646,7 +646,7 @@ threats:
         public: true
 
 
-  - ID: 4.4.1.9_CLICKJACKING
+  - ID: 4_4_1_9_CLICKJACKING
     title: Clickjacking Attack against Authorization
 
     impactDesc: |
@@ -672,7 +672,7 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - ID: 5.2.2.6_X-FRAME-OPTIONS
+      - ID: 5_2_2_6_X_FRAME_OPTION
         title: Link the state Parameter to User Agent Session (anti CSRF)
         description: |
           For newer browsers, avoidance of iFrames can be enforced on the
@@ -698,7 +698,7 @@ threats:
         inPlace: false
         public: true
 
-  - ID: 4.4.1.10_RESOURCE_OWNER_SPOOFING1
+  - ID: 4_4_1_10_RESOURCE_OWNER_SPOOFING1
     title: Resource Owner Impersonation
     # impact: |
     #   An attacker can steal a user’s authentication credentials and access their resources.
@@ -786,7 +786,7 @@ threats:
         inPlace: false
         public: true
 
-  - ID: 4.4.1.11_DOS_TOKEN_ENTROPY
+  - ID: 4_4_1_11_DOS_TOKEN_ENTROPY
     title: Resource Owner Impersonation
     # impact: |
     #   An attacker can steal a user’s authentication credentials and access their resources.
@@ -830,7 +830,7 @@ threats:
         inPlace: false
         public: true
 
-  - ID: 4.4.1.12_DOS2
+  - ID: 4_4_1_12_DOS2
     title: DoS Using Manufactured Authorization "codes"
     impactDesc: |
       There are a few effects that the attacker can accomplish with
@@ -884,7 +884,7 @@ threats:
     public: true
     fullyMitigated: true
     countermeasures:
-      - REFID: 5.3.5_ANTI_CSRF_STATE_PARAM
+      - REFID: 5_3_5_ANTI_CSRF_STATE_PARAM
       - ID: CLIENT_LIMITS_PER_USER
         title: Client limits authenticated users codes
         description: |
@@ -909,7 +909,7 @@ threats:
         inPlace: false
         public: true
 
-  - ID: 4.4.1.13_CODE_SUBSTITUTION
+  - ID: 4_4_1_13_CODE_SUBSTITUTION
     title: DoS Using Manufactured Authorization "codes"
     impactDesc: |
       The attacker gains access to an application and user-specific

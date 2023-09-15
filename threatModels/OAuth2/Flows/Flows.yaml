@@ -2,7 +2,7 @@
 
 ID: Flows
 title: Flows
-parent: OAuth2.0
+parent: OAuth2
 children:
   - ID: Flows_AuthCode
   - ID: Flows_ImplicitGrant
