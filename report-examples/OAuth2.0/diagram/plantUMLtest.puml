@@ -1,0 +1,34 @@
+@startyaml
+threats:
+
+  - ID: 4.4.1.1_AUTH_CODE_DISCLOSURE
+    title: Eavesdropping or Leaking Authorization codes
+    impactDesc: |
+      Auth codes can be used to 
+    impactedSecObj:
+      - REFID: CONFIDENTIALITY
+      - REFID: INTEGRITY
+    assets:
+      - REFID: AUTHORIZATION_GRANT
+    attackers:
+      - REFID: ANONYMOUS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:H/I:H/A:N
+    threatType: Spoofing, Elevation of privileges, Information Disclosure
+    attack: |
+      An attacker could try to eavesdrop
+    pentestTestable: true
+    public: true
+    fullyMitigated: true
+    countermeasures:
+      - REFID: 5.1.1_CONFIDENTIAL_REQUESTS
+      - ID: 5.2.4.4_CLIENT_TO_CODE_BINDING
+        title: Binding of Authorization "code" to "client_id"
+        description: |
+          The authorization 
+        operational: true
+        operator: AUTHORIZATION_SERVER_OPERATOR
+        inPlace: true
+        public: true
+
+@endyaml

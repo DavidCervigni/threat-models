@@ -1,0 +1,58 @@
+ 
+
+@startuml
+digraph G {
+rankdir="BT";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    TOO_MUCH_GRANT [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Threat</b><br/> 
+
+Spoofing, Elevation of privileges, Information Disclosure
+</td></tr>
+     <tr><td><table border="0" cellborder="0" cellspacing="8"><tr>
+                ret += secObj.linkedImpactMDText()
+     <td align="center" href="#OAuth2.0.CONFIDENTIALITY" bgcolor="#EEEEEE"><font color="blue">CONFIDENTIALITY</font></td>
+     </tr></table></td></tr>   
+   </table>>
+   ];
+    
+TOO_MUCH_GRANT_attack [ fillcolor="#f5f5f5", style=filled, shape=polygon, color="#666666", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Attack</b><br/>
+
+When obtaining end-user authorization, the end user may not understand the scope<br/>of the access being granted and to whom, or they may end up providing a client<br/>with access to resources that should not be permitted.
+</td></tr>
+   </table>>
+    ]
+
+TOO_MUCH_GRANT_attack -> TOO_MUCH_GRANT  [label = " exploits"]
+
+    TOO_MUCH_GRANT_countermeasure0 [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+AUTHORIZATION_SERVER policy discretional decision
+</td></tr>
+   </table>>
+   ]
+
+     TOO_MUCH_GRANT_countermeasure0 -> TOO_MUCH_GRANT_attack [label = " mitigates"]
+
+    TOO_MUCH_GRANT_countermeasure1 [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Users educated to avoid phishing attacks
+</td></tr>
+   </table>>
+   ]
+
+     TOO_MUCH_GRANT_countermeasure1 -> TOO_MUCH_GRANT_attack [label = " mitigates"]
+
+}
+@enduml
+

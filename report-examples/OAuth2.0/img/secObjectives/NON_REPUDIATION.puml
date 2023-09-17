@@ -1,0 +1,29 @@
+
+
+
+
+
+
+
+
+@startuml
+digraph G {
+rankdir="RL";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    
+NON_REPUDIATION [fillcolor="#bae9ff", style=filled shape=ellipse, color="#2bbcff", label="NON_REPUDIATION", label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>NON_REPUDIATION</b><br/>
+
+Ability to have available evidence of the users and actor mains actions,<br/>including:   - Trackign of CLIENT access to RESOURCE_OWNER's assets and data
+</td></tr>
+   </table>>]
+
+
+
+
+
+
+}
+
+@enduml

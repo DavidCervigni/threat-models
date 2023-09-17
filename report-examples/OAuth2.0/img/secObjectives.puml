@@ -1,0 +1,50 @@
+
+
+
+
+
+ 
+ 
+
+
+
+
+
+
+
+@startuml
+digraph G {
+ rankdir="BT";
+ ranksep=2;
+  node [fontname="Arial" fontsize="14" color=LightGray style=filled shape="box"];
+
+    
+
+INTEGRITY -> FULL_CIA ## [label = "contributes to"]
+subgraph cluster_General_security_Objectives {  label = "General security Objectives";  INTEGRITY; }
+CONFIDENTIALITY -> FULL_CIA ## [label = "contributes to"]
+subgraph cluster_General_security_Objectives {  label = "General security Objectives";  CONFIDENTIALITY; }
+AVAILABILITY -> FULL_CIA ## [label = "contributes to"]
+subgraph cluster_General_security_Objectives {  label = "General security Objectives";  AVAILABILITY; }
+COMPLIANCE -> AVAILABILITY ## [label = "contributes to"]
+subgraph cluster_Business_specific {  label = "Business specific";  COMPLIANCE; }
+NON_REPUDIATION -> COMPLIANCE ## [label = "contributes to"]
+subgraph cluster_Business_specific {  label = "Business specific";  NON_REPUDIATION; }
+CLIENT_ACCESS_LIMITATION -> FULL_CIA ## [label = "contributes to"]
+subgraph cluster_Business_specific {  label = "Business specific";  CLIENT_ACCESS_LIMITATION; }
+CLIENT_ACCESS_LIMITATION -> COMPLIANCE ## [label = "contributes to"]
+subgraph cluster_Business_specific {  label = "Business specific";  CLIENT_ACCESS_LIMITATION; }
+CLIENT_REVOKE_ACCESS -> CLIENT_ACCESS_LIMITATION ## [label = "contributes to"]
+subgraph cluster_Business_specific {  label = "Business specific";  CLIENT_REVOKE_ACCESS; }
+CLIENT_LIMIT_ACCESS -> CLIENT_ACCESS_LIMITATION ## [label = "contributes to"]
+subgraph cluster_Business_specific {  label = "Business specific";  CLIENT_LIMIT_ACCESS; }
+NOT_SHARING_OWNER_CREDENTIAL -> CLIENT_ACCESS_LIMITATION ## [label = "contributes to"]
+subgraph cluster_Advanced_security_features {  label = "Advanced security features";  NOT_SHARING_OWNER_CREDENTIAL; }
+USER_AGENT_RESILIENCY -> CLIENT_ACCESS_LIMITATION ## [label = "contributes to"]
+subgraph cluster_Advanced_security_features {  label = "Advanced security features";  USER_AGENT_RESILIENCY; }
+CLIENT_RESILIENCY -> CLIENT_ACCESS_LIMITATION ## [label = "contributes to"]
+subgraph cluster_Advanced_security_features {  label = "Advanced security features";  CLIENT_RESILIENCY; }
+
+}
+@enduml
+
