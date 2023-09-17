@@ -1,0 +1,284 @@
+
+
+
+
+
+
+
+
+@startuml
+digraph G {
+rankdir="RL";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    
+"NON_REPUDIATION" [fillcolor="#bae9ff", style=filled shape=ellipse, color="#2bbcff", label="NON_REPUDIATION", label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>NON_REPUDIATION</b><br/>
+
+Ability to have available evidence of the users and actor mains actions,<br/>including:   - Trackign of CLIENT access to RESOURCE_OWNER&#x27;s assets and<br/>data
+</td></tr>
+   </table>>]
+
+               "4_4_1_7_CLIENT_SPOOFING4" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>4_4_1_7_CLIENT_SPOOFING4 ATTACK</b> <br/></td></tr>
+     <tr><td align="center">
+
+The attacker leverages the authorization &quot;code&quot; grant type in an<br/>attempt to get another user (victim) to log in, authorize access to his/her<br/>resources, and subsequently obtain the authorization &quot;code&quot; and inject<br/>it into a client application using the attacker’s account. The goal is to<br/>associate an access au[...]
+</td></tr>
+   </table>>
+   ];
+    
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Binding of Authorization &quot;code&quot; to &quot;redirect_uri&quot;
+ (5_2_4_5_REDIRECT_CODE_BINDING) </b><br/><br/> 
+
+The authorization server should be able to bind every authorization<br/>&quot;code&quot; to the actual redirect URI used as the redirect target of the<br/>client in the end-user authorization process. This binding should be validated<br/>when the client attempts to exchange the respective authorization<br/>&quot;code&quot; for an access token[...]
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure0" -> "4_4_1_7_CLIENT_SPOOFING4" [label = " mitigates"]
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure1" [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Issue Installation-Specific Client Secrets
+ (5_2_3_4_SPECIFIC_CLIENT_SECRETS) </b><br/><br/> 
+
+An authorization server may issue separate client identifiers and corresponding<br/>secrets to the different installations of a particular client (i.e., software<br/>package).  The effect of such an approach would be to turn otherwise<br/>&quot;public&quot; clients back into &quot;confidential&quot; clients. For web<br/>applications, this co[...]
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure1" -> "4_4_1_7_CLIENT_SPOOFING4" [label = " mitigates"]
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure2" [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Binding of Authorization &quot;code&quot; to &quot;client_id&quot;
+ (5_2_4_4_CLIENT_TO_CODE_BINDING) </b><br/><br/> 
+
+The authorization server should bind every authorization &quot;code&quot; to the<br/>id of the respective client that initiated the end-user authorization process.<br/>This measure is a countermeasure against: &lt;br/&gt;o Replay of authorization<br/>&quot;codes&quot; with different client credentials, since an attacker cannot<br/>use another &quot;clie[...]
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure2" -> "4_4_1_7_CLIENT_SPOOFING4" [label = " mitigates"]
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure3" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Implicit grant flow
+ (IMPLICIT_GRANT_FLOW) </b><br/><br/> 
+
+The client may consider using other flows that are not vulnerable to this kind<br/>of attack, such as the implicit grant type (see Section 4.4.2) or resource owner<br/>password credentials (see Section 4.4.3).
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_7_CLIENT_SPOOFING4_countermeasure3" -> "4_4_1_7_CLIENT_SPOOFING4" [label = " mitigates"]
+
+
+
+               "4_4_1_7_CLIENT_SPOOFING4" -> "NON_REPUDIATION" [label = " impacts"]
+               "4_4_1_8_CSRF_ON_REDIRECT" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>4_4_1_8_CSRF_ON_REDIRECT ATTACK</b> <br/></td></tr>
+     <tr><td align="center">
+
+Cross-site request forgery (CSRF) is a web-based attack whereby HTTP requests<br/>are transmitted from a user that the web site trusts or has authenticated (e.g.,<br/>via HTTP redirects or HTML forms). CSRF attacks on OAuth approvals can allow an<br/>attacker to obtain authorization to OAuth protected resources without[...]
+</td></tr>
+   </table>>
+   ];
+    
+
+    "4_4_1_8_CSRF_ON_REDIRECT_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Link the state Parameter to User Agent Session (anti CSRF)
+ (5_3_5_ANTI_CSRF_STATE_PARAM) </b><br/><br/> 
+
+The &quot;state&quot; parameter is used to link client requests and prevent CSRF<br/>attacks, for example, attacks against the redirect URI. An attacker could inject<br/>their own authorization &quot;code&quot; or access token, which can result in<br/>the client using an access token associated with the attacker’s protected<br/>resources rath[...]
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_8_CSRF_ON_REDIRECT_countermeasure0" -> "4_4_1_8_CSRF_ON_REDIRECT" [label = " mitigates"]
+
+    "4_4_1_8_CSRF_ON_REDIRECT_countermeasure1" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Users can be educated to not follow untrusted URLs
+ (USER_EDUCATION) </b><br/><br/> 
+
+Client developers and end users can be educated to not follow untrusted URLs.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_8_CSRF_ON_REDIRECT_countermeasure1" -> "4_4_1_8_CSRF_ON_REDIRECT" [label = " mitigates"]
+
+
+
+               "4_4_1_8_CSRF_ON_REDIRECT" -> "NON_REPUDIATION" [label = " impacts"]
+               "4_4_1_9_CLICKJACKING" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>4_4_1_9_CLICKJACKING ATTACK</b> <br/></td></tr>
+     <tr><td align="center">
+
+With clickjacking, a malicious site loads the target site in a transparent<br/>iFrame (see [iFrame]) overlaid on top of a set of dummy buttons that are<br/>carefully constructed to be placed directly under important buttons on the<br/>target site. When a user clicks a visible button, they are actually clicking a<br/>button[...]
+</td></tr>
+   </table>>
+   ];
+    
+
+    "4_4_1_9_CLICKJACKING_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Link the state Parameter to User Agent Session (anti CSRF)
+ (5_2_2_6_X_FRAME_OPTION) </b><br/><br/> 
+
+For newer browsers, avoidance of iFrames can be enforced on the   server side by<br/>using the X-FRAME-OPTIONS header (see   [X-Frame-Options]). This header can have<br/>two values, &quot;DENY&quot; and   &quot;SAMEORIGIN&quot;, which will block any<br/>framing or any framing by sites   with a different origin, respectively. The<br/>value &quot;AL[...]
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_9_CLICKJACKING_countermeasure0" -> "4_4_1_9_CLICKJACKING" [label = " mitigates"]
+
+    "4_4_1_9_CLICKJACKING_countermeasure1" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+JavaScript frame-busting
+ (FRAMEBUSTING) </b><br/><br/> 
+
+For older browsers, JavaScript frame-busting (see [Framebusting]) techniques can<br/>be used but may not be effective in all browsers.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_9_CLICKJACKING_countermeasure1" -> "4_4_1_9_CLICKJACKING" [label = " mitigates"]
+
+
+
+               "4_4_1_9_CLICKJACKING" -> "NON_REPUDIATION" [label = " impacts"]
+               "4_4_1_10_RESOURCE_OWNER_SPOOFING1" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>4_4_1_10_RESOURCE_OWNER_SPOOFING1 ATTACK</b> <br/></td></tr>
+     <tr><td align="center">
+
+When a client requests access to protected resources, the authorization flow<br/>normally involves the resource owner’s explicit response to the access request,<br/>either granting or denying access to the protected resources. A malicious client<br/>can exploit knowledge of the structure of this flow in order to gain a[...]
+</td></tr>
+   </table>>
+   ];
+    
+
+    "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Interactive (non automatic) user approval
+ (INTERACTIVE_APPROVAL) </b><br/><br/> 
+
+Authorization servers should decide, based on an analysis of the risk associated<br/>with this threat, whether to detect and prevent this threat. In order to prevent<br/>such an attack, the authorization server may force a user interaction based on<br/>non-predictable input values as part of the user consent approval. [...]
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure0" -> "4_4_1_10_RESOURCE_OWNER_SPOOFING1" [label = " mitigates"]
+
+    "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure1" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Notify User&#x27;s approval
+ (NOTIFY_APPROVAL) </b><br/><br/> 
+
+In order to allow the resource owner to detect abuse, the authorization server<br/>could notify the resource owner of any approval by appropriate means, e.g., text<br/>or instant message, or email.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure1" -> "4_4_1_10_RESOURCE_OWNER_SPOOFING1" [label = " mitigates"]
+
+
+
+               "4_4_1_10_RESOURCE_OWNER_SPOOFING1" -> "NON_REPUDIATION" [label = " impacts"]
+               "4_4_1_13_CODE_SUBSTITUTION" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>4_4_1_13_CODE_SUBSTITUTION ATTACK</b> <br/></td></tr>
+     <tr><td align="center">
+
+An attacker could attempt to log into an application or web site  using a<br/>victim’s identity. Applications relying on identity data  provided by an OAuth<br/>protected service API to login users are  vulnerable to this threat. This<br/>pattern can be found in so-called  &quot;social login&quot; scenarios.  As a<br/>prerequisite, [...]
+</td></tr>
+   </table>>
+   ];
+    
+
+    "4_4_1_13_CODE_SUBSTITUTION_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Clients indicate their ids in requests
+ (IN_REQUEST_CLIENTID) </b><br/><br/> 
+
+All clients must indicate their client ids with every request to exchange an<br/>authorization &quot;code&quot; for an access token. The authorization server<br/>must validate whether the particular authorization &quot;code&quot; has been<br/>issued to the particular client. If possible, the client shall be authenticated<br/>beforehand.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_13_CODE_SUBSTITUTION_countermeasure0" -> "4_4_1_13_CODE_SUBSTITUTION" [label = " mitigates"]
+
+    "4_4_1_13_CODE_SUBSTITUTION_countermeasure1" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Secure User Login Protocol
+ (SECURE_USER_LOGIN_PROTOCOL) </b><br/><br/> 
+
+Clients should use an appropriate protocol, such as OpenID (cf. [OPENID]) or<br/>SAML (cf. [OASIS.sstc-saml-bindings-1.1]) to implement user login. Both support<br/>audience restrictions on clients.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_13_CODE_SUBSTITUTION_countermeasure1" -> "4_4_1_13_CODE_SUBSTITUTION" [label = " mitigates"]
+
+
+
+               "4_4_1_13_CODE_SUBSTITUTION" -> "NON_REPUDIATION" [label = " impacts"]
+
+
+
+
+
+}
+
+@enduml

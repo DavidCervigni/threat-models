@@ -1,0 +1,29 @@
+
+
+
+
+
+
+
+
+@startuml
+digraph G {
+rankdir="RL";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    
+"CLIENT_RESILIENCY" [fillcolor="#bae9ff", style=filled shape=ellipse, color="#2bbcff", label="CLIENT_RESILIENCY", label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>CLIENT_RESILIENCY</b><br/>
+
+Resiliency for RESOURCE_OWNER&#x27;s RESOURCES against compromised CLIENT
+</td></tr>
+   </table>>]
+
+
+
+
+
+
+}
+
+@enduml

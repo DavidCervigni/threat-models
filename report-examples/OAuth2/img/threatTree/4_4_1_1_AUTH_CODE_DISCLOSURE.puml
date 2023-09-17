@@ -1,0 +1,108 @@
+ 
+
+@startuml
+digraph G {
+rankdir="BT";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    "4_4_1_1_AUTH_CODE_DISCLOSURE" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Threat</b><br/> 
+
+Spoofing, Elevation of privileges, Information Disclosure in Authorization Grant
+</td></tr>
+     <tr><td><table border="0" cellborder="0" cellspacing="8"><tr>
+                ret += secObj.linkedImpactMDText()
+     <td align="center" href="#OAuth2.CONFIDENTIALITY" bgcolor="#EEEEEE"><font color="blue">CONFIDENTIALITY</font></td>
+                ret += secObj.linkedImpactMDText()
+     <td align="center" href="#OAuth2.INTEGRITY" bgcolor="#EEEEEE"><font color="blue">INTEGRITY</font></td>
+     </tr></table></td></tr>   
+   </table>>
+   ];
+    
+"4_4_1_1_AUTH_CODE_DISCLOSURE_attack" [ fillcolor="#f5f5f5", style=filled, shape=polygon, color="#666666", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Attack</b><br/>
+
+An attacker could try to eavesdrop transmission of the authorization<br/>&quot;code&quot; between the authorization server and client. Furthermore,<br/>authorization &quot;codes&quot; are passed via the browser, which may<br/>unintentionally leak those codes to untrusted web sites and attackers in<br/>different ways: &lt;br/&gt;o Referrer headers: [...]
+</td></tr>
+   </table>>
+    ]
+
+"4_4_1_1_AUTH_CODE_DISCLOSURE_attack" -> "4_4_1_1_AUTH_CODE_DISCLOSURE"  [label = " exploits"]
+
+    "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure0" [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Ensure Confidentiality of Requests (TLS)
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure0" -> "4_4_1_1_AUTH_CODE_DISCLOSURE_attack" [label = " mitigates"]
+
+    "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure1" [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Binding of Authorization &quot;code&quot; to &quot;client_id&quot;
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure1" -> "4_4_1_1_AUTH_CODE_DISCLOSURE_attack" [label = " mitigates"]
+
+    "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure2" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Use Short Expiration Time
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure2" -> "4_4_1_1_AUTH_CODE_DISCLOSURE_attack" [label = " mitigates"]
+
+    "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure3" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Limit Number of Usages or One-Time Usage
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure3" -> "4_4_1_1_AUTH_CODE_DISCLOSURE_attack" [label = " mitigates"]
+
+    "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure4" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Automatic Revocation of Derived Tokens If Abuse Is Detected
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure4" -> "4_4_1_1_AUTH_CODE_DISCLOSURE_attack" [label = " mitigates"]
+
+    "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure5" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Reload the target page
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_1_AUTH_CODE_DISCLOSURE_countermeasure5" -> "4_4_1_1_AUTH_CODE_DISCLOSURE_attack" [label = " mitigates"]
+
+}
+@enduml
+

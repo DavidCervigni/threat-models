@@ -1,0 +1,42 @@
+ 
+
+@startuml
+digraph G {
+rankdir="BT";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    "OPEN_REDIRECTOR" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Threat</b><br/> 
+
+Spoofing, Information Disclosure in Auth User Agent Redirection, Authorization<br/>server, Authorization endpoint for resource owner
+</td></tr>
+   </table>>
+   ];
+    
+"OPEN_REDIRECTOR_attack" [ fillcolor="#f5f5f5", style=filled, shape=polygon, color="#666666", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Attack</b><br/>
+
+An attacker could use the end-user authorization endpoint and the redirect URI<br/>parameter to abuse the authorization server as an open redirector. An open<br/>redirector is an endpoint using a parameter to automatically redirect a user<br/>agent to the location specified by the parameter value without any<br/>validation[...]
+</td></tr>
+   </table>>
+    ]
+
+"OPEN_REDIRECTOR_attack" -> "OPEN_REDIRECTOR"  [label = " exploits"]
+
+    "OPEN_REDIRECTOR_countermeasure0" [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Pre-registered redirect URI
+</td></tr>
+   </table>>
+   ]
+
+     "OPEN_REDIRECTOR_countermeasure0" -> "OPEN_REDIRECTOR_attack" [label = " mitigates"]
+
+}
+@enduml
+

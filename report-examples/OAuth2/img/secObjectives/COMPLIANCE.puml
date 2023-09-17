@@ -1,0 +1,29 @@
+
+
+
+
+
+
+
+
+@startuml
+digraph G {
+rankdir="RL";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    
+"COMPLIANCE" [fillcolor="#bae9ff", style=filled shape=ellipse, color="#2bbcff", label="COMPLIANCE", label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>COMPLIANCE</b><br/>
+
+Ability to obtain and maintain maintain compliance with required regulations
+</td></tr>
+   </table>>]
+
+
+
+
+
+
+}
+
+@enduml

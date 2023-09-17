@@ -1,0 +1,60 @@
+ 
+
+@startuml
+digraph G {
+rankdir="BT";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    "4_4_1_5_CLIENT_SPOOFING2" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Threat</b><br/> 
+
+Spoofing, Elevation of privileges, Information Disclosure
+</td></tr>
+     <tr><td><table border="0" cellborder="0" cellspacing="8"><tr>
+                ret += secObj.linkedImpactMDText()
+     <td align="center" href="#OAuth2.CONFIDENTIALITY" bgcolor="#EEEEEE"><font color="blue">CONFIDENTIALITY</font></td>
+                ret += secObj.linkedImpactMDText()
+     <td align="center" href="#OAuth2.INTEGRITY" bgcolor="#EEEEEE"><font color="blue">INTEGRITY</font></td>
+     </tr></table></td></tr>   
+   </table>>
+   ];
+    
+"4_4_1_5_CLIENT_SPOOFING2_attack" [ fillcolor="#f5f5f5", style=filled, shape=polygon, color="#666666", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Attack</b><br/>
+
+A hostile party could impersonate the client site and get access to the<br/>authorization &quot;code&quot;. This could be achieved using DNS or ARP<br/>spoofing. This applies to clients, which are web applications; thus, the<br/>redirect URI is not local to the host where the user’s browser is running.
+</td></tr>
+   </table>>
+    ]
+
+"4_4_1_5_CLIENT_SPOOFING2_attack" -> "4_4_1_5_CLIENT_SPOOFING2"  [label = " exploits"]
+
+    "4_4_1_5_CLIENT_SPOOFING2_countermeasure0" [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+TLS for the authorization server
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_5_CLIENT_SPOOFING2_countermeasure0" -> "4_4_1_5_CLIENT_SPOOFING2_attack" [label = " mitigates"]
+
+    "4_4_1_5_CLIENT_SPOOFING2_countermeasure1" [ 
+       fillcolor="#D5E8D4", style=filled, shape=polygon, color="#82B366", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Binding of Authorization &quot;code&quot; to &quot;client_id&quot;
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_5_CLIENT_SPOOFING2_countermeasure1" -> "4_4_1_5_CLIENT_SPOOFING2_attack" [label = " mitigates"]
+
+}
+@enduml
+

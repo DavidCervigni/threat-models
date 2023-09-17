@@ -1,0 +1,134 @@
+
+
+
+
+
+
+
+
+@startuml
+digraph G {
+rankdir="RL";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    
+"AVAILABILITY" [fillcolor="#bae9ff", style=filled shape=ellipse, color="#2bbcff", label="AVAILABILITY", label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>AVAILABILITY</b><br/>
+
+Ability to maintain fundamental availability of the system
+</td></tr>
+   </table>>]
+
+               "4_4_1_11_DOS_TOKEN_ENTROPY" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>4_4_1_11_DOS_TOKEN_ENTROPY ATTACK</b> <br/></td></tr>
+     <tr><td align="center">
+
+If an authorization server includes a nontrivial amount of entropy in<br/>authorization &quot;codes&quot; or access tokens (limiting the number of<br/>possible codes/tokens) and automatically grants either without user<br/>intervention and has no limit on codes or access tokens per user, an  attacker<br/>could exhaust the pool of[...]
+</td></tr>
+   </table>>
+   ];
+    
+
+    "4_4_1_11_DOS_TOKEN_ENTROPY_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Limit access tokens granted per user
+ (AUTH_SERVER_PER_USER_LIMIT) </b><br/><br/> 
+
+The authorization server should consider limiting the number of access tokens<br/>granted per user.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_11_DOS_TOKEN_ENTROPY_countermeasure0" -> "4_4_1_11_DOS_TOKEN_ENTROPY" [label = " mitigates"]
+
+    "4_4_1_11_DOS_TOKEN_ENTROPY_countermeasure1" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+High entropy codes
+ (AUTH_CODE_HIGH_ENTROPY) </b><br/><br/> 
+
+The authorization server should include a nontrivial amount of entropy in<br/>authorization &quot;codes&quot;.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_11_DOS_TOKEN_ENTROPY_countermeasure1" -> "4_4_1_11_DOS_TOKEN_ENTROPY" [label = " mitigates"]
+
+
+
+               "4_4_1_11_DOS_TOKEN_ENTROPY" -> "AVAILABILITY" [label = " impacts"]
+               "4_4_1_12_DOS2" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>4_4_1_12_DOS2 ATTACK</b> <br/></td></tr>
+     <tr><td align="center">
+
+An attacker who owns a botnet can locate the redirect URIs of clients  that<br/>listen on HTTP, access them with random authorization &quot;codes&quot;,  and<br/>cause a large number of HTTPS connections to be concentrated onto  the<br/>authorization server. This can result in a denial-of-service  (DoS) attack on<br/>the authorizati[...]
+</td></tr>
+   </table>>
+   ];
+    
+
+    "4_4_1_12_DOS2_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Link the state Parameter to User Agent Session (anti CSRF)
+ (5_3_5_ANTI_CSRF_STATE_PARAM) </b><br/><br/> 
+
+The &quot;state&quot; parameter is used to link client requests and prevent CSRF<br/>attacks, for example, attacks against the redirect URI. An attacker could inject<br/>their own authorization &quot;code&quot; or access token, which can result in<br/>the client using an access token associated with the attacker’s protected<br/>resources rath[...]
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_12_DOS2_countermeasure0" -> "4_4_1_12_DOS2" [label = " mitigates"]
+
+    "4_4_1_12_DOS2_countermeasure1" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Client limits authenticated users codes
+ (CLIENT_LIMITS_PER_USER) </b><br/><br/> 
+
+If the client authenticates the user, either through a single- sign-on protocol<br/>or through local authentication, the client should suspend the access by a user<br/>account if the number of invalid authorization &quot;codes&quot; submitted by<br/>this user exceeds a certain threshold.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_12_DOS2_countermeasure1" -> "4_4_1_12_DOS2" [label = " mitigates"]
+
+    "4_4_1_12_DOS2_countermeasure2" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b> 
+
+Client limits authenticated users codes
+ (AUTH_RATE_LIMIT) </b><br/><br/> 
+
+The authorization server should send an error response to the client reporting<br/>an invalid authorization &quot;code&quot; and rate-limit or disallow connections<br/>from clients whose number of invalid requests exceeds a threshold.
+ </td></tr>
+   </table>>
+   ]
+
+    "4_4_1_12_DOS2_countermeasure2" -> "4_4_1_12_DOS2" [label = " mitigates"]
+
+
+
+               "4_4_1_12_DOS2" -> "AVAILABILITY" [label = " impacts"]
+
+
+
+
+
+}
+
+@enduml

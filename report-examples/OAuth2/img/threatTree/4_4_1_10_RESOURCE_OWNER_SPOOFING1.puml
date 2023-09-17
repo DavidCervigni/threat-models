@@ -1,0 +1,60 @@
+ 
+
+@startuml
+digraph G {
+rankdir="BT";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    "4_4_1_10_RESOURCE_OWNER_SPOOFING1" [ fillcolor="#F8CECC", style=filled, shape=polygon, color="#B85450"
+    label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Threat</b><br/> 
+
+Spoofing, Repudiation, Information Disclosure in Auth User Agent Redirection
+</td></tr>
+     <tr><td><table border="0" cellborder="0" cellspacing="8"><tr>
+                ret += secObj.linkedImpactMDText()
+     <td align="center" href="#OAuth2.CONFIDENTIALITY" bgcolor="#EEEEEE"><font color="blue">CONFIDENTIALITY</font></td>
+                ret += secObj.linkedImpactMDText()
+     <td align="center" href="#OAuth2.NON_REPUDIATION" bgcolor="#EEEEEE"><font color="blue">NON_REPUDIATION</font></td>
+     </tr></table></td></tr>   
+   </table>>
+   ];
+    
+"4_4_1_10_RESOURCE_OWNER_SPOOFING1_attack" [ fillcolor="#f5f5f5", style=filled, shape=polygon, color="#666666", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>Attack</b><br/>
+
+When a client requests access to protected resources, the authorization flow<br/>normally involves the resource owner’s explicit response to the access request,<br/>either granting or denying access to the protected resources. A malicious client<br/>can exploit knowledge of the structure of this flow in order to gain a[...]
+</td></tr>
+   </table>>
+    ]
+
+"4_4_1_10_RESOURCE_OWNER_SPOOFING1_attack" -> "4_4_1_10_RESOURCE_OWNER_SPOOFING1"  [label = " exploits"]
+
+    "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure0" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Interactive (non automatic) user approval
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure0" -> "4_4_1_10_RESOURCE_OWNER_SPOOFING1_attack" [label = " mitigates"]
+
+    "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure1" [ 
+       fillcolor="#FFF2CC", style=filled, shape=polygon, color="#D6B656", label =     
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="left"><b>Countermeasure</b><br/> 
+
+Notify User&#x27;s approval
+</td></tr>
+   </table>>
+   ]
+
+     "4_4_1_10_RESOURCE_OWNER_SPOOFING1_countermeasure1" -> "4_4_1_10_RESOURCE_OWNER_SPOOFING1_attack" [label = " mitigates"]
+
+}
+@enduml
+

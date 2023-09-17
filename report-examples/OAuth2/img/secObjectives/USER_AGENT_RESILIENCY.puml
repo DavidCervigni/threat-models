@@ -1,0 +1,29 @@
+
+
+
+
+
+
+
+
+@startuml
+digraph G {
+rankdir="RL";
+  node [shape=plaintext, fontname="Arial" fontsize="12"];
+    
+"USER_AGENT_RESILIENCY" [fillcolor="#bae9ff", style=filled shape=ellipse, color="#2bbcff", label="USER_AGENT_RESILIENCY", label= 
+    <<table border="0" cellborder="0" cellspacing="0">
+     <tr><td align="center"><b>USER_AGENT_RESILIENCY</b><br/>
+
+Resiliency for RESOURCE_OWNER&#x27;s USER_AGENT against attacks like XSS
+</td></tr>
+   </table>>]
+
+
+
+
+
+
+}
+
+@enduml
