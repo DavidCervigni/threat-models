@@ -9,7 +9,7 @@ rankdir="BT";
     <<table border="0" cellborder="0" cellspacing="0">
      <tr><td align="center"><b>Threat</b><br/> 
 
-Denial of Service in Auth User Agent Redirection
+Denial of Service in: dataflow Auth User Agent Redirection
 </td></tr>
      <tr><td><table border="0" cellborder="0" cellspacing="8"><tr>
                 ret += secObj.linkedImpactMDText()

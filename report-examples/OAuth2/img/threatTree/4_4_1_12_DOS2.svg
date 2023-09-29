@@ -12,11 +12,11 @@
 <!-- 4_4_1_12_DOS2 -->
 <g id="node1" class="node">
 <title>4_4_1_12_DOS2</title>
-<polygon fill="#f8cecc" stroke="#b85450" points="656.5,-295 391.5,-295 391.5,-222 656.5,-222 656.5,-295"/>
+<polygon fill="#f8cecc" stroke="#b85450" points="681.5,-295 366.5,-295 366.5,-222 681.5,-222 681.5,-295"/>
 <text text-anchor="start" x="501.5" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="402" y="-267.9" font-family="Arial" font-size="12.00"> Denial of Service in Authorization server</text>
+<text text-anchor="start" x="377" y="-267.9" font-family="Arial" font-size="12.00"> Denial of Service in: system Authorization server</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.AVAILABILITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="410,-235.5 410,-252.5 639,-252.5 639,-235.5 410,-235.5"/>
+<polygon fill="#eeeeee" stroke="transparent" points="385,-235.5 385,-252.5 664,-252.5 664,-235.5 385,-235.5"/>
 <text text-anchor="start" x="484.5" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">AVAILABILITY</text>
 </a>
 </g>

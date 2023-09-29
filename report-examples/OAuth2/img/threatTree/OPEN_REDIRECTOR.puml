@@ -9,7 +9,7 @@ rankdir="BT";
     <<table border="0" cellborder="0" cellspacing="0">
      <tr><td align="center"><b>Threat</b><br/> 
 
-Spoofing, Information Disclosure in Auth User Agent Redirection, Authorization<br/>server, Authorization endpoint for resource owner
+Spoofing, Information Disclosure in: dataflow Auth User Agent Redirection,<br/>system Authorization server, endpoint Authorization endpoint for resource owner
 </td></tr>
    </table>>
    ];

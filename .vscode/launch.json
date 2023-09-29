@@ -15,10 +15,11 @@
                 "threatModels",
                 "--browserSync",
                 "--outputDir",
-                "build/",
+                "report-examples/",
                 "--template",
                 "TM_templateFull",
                 "--formatYAML",
+                "--generatePDF"
                 // "--assetDir",
                 // "threatModels/assets"
             ]
@@ -42,6 +43,25 @@
                 "--formatYAML"
             ]
 
+        },
+        {
+            "name": "Directory fullBuild (html and diagrams/images)",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.fullBuildDirectory",
+            "justMyCode": false,
+            "args": [
+                "--TMDirectory",
+                "threatModels",
+                "--browserSync",
+                "--outputDir",
+                "build/",
+                "--template",
+                "TM_templateFull",
+                "--formatYAML",
+                "--assetDir",
+                "threatModels/assets"
+            ]
         }
     ]
 }

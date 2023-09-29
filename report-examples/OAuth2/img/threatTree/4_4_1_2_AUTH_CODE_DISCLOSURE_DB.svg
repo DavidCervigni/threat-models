@@ -12,18 +12,18 @@
 <!-- 4_4_1_2_AUTH_CODE_DISCLOSURE_DB -->
 <g id="node1" class="node">
 <title>4_4_1_2_AUTH_CODE_DISCLOSURE_DB</title>
-<polygon fill="#f8cecc" stroke="#b85450" points="677,-295 222,-295 222,-210 677,-210 677,-295"/>
-<text text-anchor="start" x="427" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="232.5" y="-267.9" font-family="Arial" font-size="12.00"> Spoofing, Elevation of privileges, Information Disclosure in Authorization</text>
-<text text-anchor="start" x="430.5" y="-255.9" font-family="Arial" font-size="12.00">server</text>
+<polygon fill="#f8cecc" stroke="#b85450" points="660.5,-295 238.5,-295 238.5,-210 660.5,-210 660.5,-295"/>
+<text text-anchor="start" x="426.5" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
+<text text-anchor="start" x="248.5" y="-267.9" font-family="Arial" font-size="12.00"> Spoofing, Elevation of privileges, Information Disclosure in: system</text>
+<text text-anchor="start" x="388.5" y="-255.9" font-family="Arial" font-size="12.00">Authorization server</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.CONFIDENTIALITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="240.5,-223.5 240.5,-240.5 468.5,-240.5 468.5,-223.5 240.5,-223.5"/>
-<text text-anchor="start" x="300" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="256.5,-223.5 256.5,-240.5 468.5,-240.5 468.5,-223.5 256.5,-223.5"/>
+<text text-anchor="start" x="308" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
 </a>
 </g>
 <g id="a_node1_1"><a xlink:href="#OAuth2.INTEGRITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="476.5,-223.5 476.5,-240.5 659.5,-240.5 659.5,-223.5 476.5,-223.5"/>
-<text text-anchor="start" x="536" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">INTEGRITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="476.5,-223.5 476.5,-240.5 642.5,-240.5 642.5,-223.5 476.5,-223.5"/>
+<text text-anchor="start" x="527.5" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">INTEGRITY</text>
 </a>
 </g>
 </g>
