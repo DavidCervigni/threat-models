@@ -14,7 +14,7 @@
         <body><p><a name='oauth-2.0-threat-model'></a></p>
 <h1>OAuth 2.0 Threat Model</h1>
 <p>Version: rfc6819</p>
-<p>Last update: 2023-09-29 14:53:03 </p>
+<p>Last update: 2023-11-18 17:11:03 </p>
 <p>Authors: Example by David Cervigni, based on: https://datatracker.ietf.org/doc/html/rfc6819</p>
 <div class="pagebreak"></div>
 
@@ -28,47 +28,29 @@
 <li><strong><a href="#overview">Overview</a></strong></li>
 <li><strong><a href="#security-objectives">Security Objectives</a></strong></li>
 <li><strong><a href="#linked-threat-models">Linked threat Models</a></strong></li>
-<li><strong><a href="#diagrams">Diagrams</a></strong></li>
-<li><strong><a href="#attackers">Attackers</a></strong></li>
+<li><strong><a href="#actors">Actors</a></strong></li>
 <li><strong><a href="#assumptions">Assumptions</a></strong></li>
 <li><strong><a href="#assets">Assets</a></strong><ul>
 <li><strong><a href="#summary-table">Summary Table</a></strong></li>
 <li><strong><a href="#details">Details</a></strong></li>
 </ul>
 </li>
-<li><strong><a href="#oauth-2.0-analysis">OAuth 2.0 Analysis</a></strong></li>
-<li><strong><a href="#oauth-2.0-threats">OAuth 2.0 Threats</a></strong></li>
 </ul>
 </li>
 <li><strong><a href="#client-threat-model">Client Threat Model</a></strong><ul>
-<li><strong><a href="#client---scope-of-analysis">Client - scope of analysis</a></strong></li>
-<li><strong><a href="#overview">Overview</a></strong></li>
-<li><strong><a href="#security-objectives">Security Objectives</a></strong></li>
-<li><strong><a href="#diagrams">Diagrams</a></strong></li>
-<li><strong><a href="#assets">Assets</a></strong><ul>
-<li><strong><a href="#summary-table">Summary Table</a></strong></li>
-<li><strong><a href="#details">Details</a></strong></li>
-</ul>
-</li>
-<li><strong><a href="#client-analysis">Client Analysis</a></strong></li>
 <li><strong><a href="#client-threats">Client Threats</a></strong></li>
 <li><strong><a href="#(client_secrets_disclosure)-client-secrets-disclosure-and-impersonation"><code>(Client_Secrets_disclosure)</code> Client Secrets Disclosure and impersonation</a></strong></li>
 <li><strong><a href="#(too_much_grant)-user-unintentionally-grants-too-much-access-scope"><code>(TOO_MUCH_GRANT)</code> User Unintentionally Grants Too Much Access Scope</a></strong></li>
 </ul>
 </li>
 <li><strong><a href="#authorization-server-threat-model">Authorization Server Threat Model</a></strong><ul>
-<li><strong><a href="#authorization-server---scope-of-analysis">Authorization Server - scope of analysis</a></strong></li>
-<li><strong><a href="#overview">Overview</a></strong></li>
-<li><strong><a href="#security-objectives">Security Objectives</a></strong></li>
-<li><strong><a href="#diagrams">Diagrams</a></strong></li>
-<li><strong><a href="#attackers">Attackers</a></strong></li>
+<li><strong><a href="#actors">Actors</a></strong></li>
 <li><strong><a href="#assumptions">Assumptions</a></strong></li>
 <li><strong><a href="#assets">Assets</a></strong><ul>
 <li><strong><a href="#summary-table">Summary Table</a></strong></li>
 <li><strong><a href="#details">Details</a></strong></li>
 </ul>
 </li>
-<li><strong><a href="#authorization-server-analysis">Authorization Server Analysis</a></strong></li>
 <li><strong><a href="#authorization-server-threats">Authorization Server Threats</a></strong></li>
 <li><strong><a href="#(authserverphishing1)-password-phishing-by-counterfeit-authorization-server"><code>(AuthServerPhishing1)</code> Password Phishing by Counterfeit Authorization Server</a></strong></li>
 <li><strong><a href="#(too_much_grant)-user-unintentionally-grants-too-much-access-scope"><code>(TOO_MUCH_GRANT)</code> User Unintentionally Grants Too Much Access Scope</a></strong></li>
@@ -84,30 +66,18 @@
 <li><strong><a href="#flows-threat-model">Flows Threat Model</a></strong><ul>
 <li><strong><a href="#flows---scope-of-analysis">Flows - scope of analysis</a></strong></li>
 <li><strong><a href="#overview">Overview</a></strong></li>
-<li><strong><a href="#security-objectives">Security Objectives</a></strong></li>
 <li><strong><a href="#linked-threat-models">Linked threat Models</a></strong></li>
-<li><strong><a href="#diagrams">Diagrams</a></strong></li>
-<li><strong><a href="#assets">Assets</a></strong><ul>
-<li><strong><a href="#summary-table">Summary Table</a></strong></li>
-<li><strong><a href="#details">Details</a></strong></li>
-</ul>
-</li>
-<li><strong><a href="#flows-analysis">Flows Analysis</a></strong></li>
-<li><strong><a href="#flows-threats">Flows Threats</a></strong></li>
 </ul>
 </li>
 <li><strong><a href="#authorization-&quot;code&quot;-flow-threat-model">Authorization "code" flow Threat Model</a></strong><ul>
 <li><strong><a href="#authorization-&quot;code&quot;-flow---scope-of-analysis">Authorization "code" flow - scope of analysis</a></strong></li>
 <li><strong><a href="#overview">Overview</a></strong></li>
-<li><strong><a href="#security-objectives">Security Objectives</a></strong></li>
-<li><strong><a href="#diagrams">Diagrams</a></strong></li>
 <li><strong><a href="#assumptions">Assumptions</a></strong></li>
 <li><strong><a href="#assets">Assets</a></strong><ul>
 <li><strong><a href="#summary-table">Summary Table</a></strong></li>
 <li><strong><a href="#details">Details</a></strong></li>
 </ul>
 </li>
-<li><strong><a href="#authorization-&quot;code&quot;-flow-analysis">Authorization "code" flow Analysis</a></strong></li>
 <li><strong><a href="#authorization-&quot;code&quot;-flow-threats">Authorization "code" flow Threats</a></strong></li>
 <li><strong><a href="#(4_4_1_1_auth_code_disclosure)-eavesdropping-or-leaking-authorization-codes"><code>(4_4_1_1_AUTH_CODE_DISCLOSURE)</code> Eavesdropping or Leaking Authorization codes</a></strong></li>
 <li><strong><a href="#(4_4_1_2_auth_code_disclosure_db)-obtaining-authorization-codes-from-authorizationserver-database"><code>(4_4_1_2_AUTH_CODE_DISCLOSURE_DB)</code> Obtaining Authorization codes from AuthorizationServer Database</a></strong></li>
@@ -127,14 +97,6 @@
 <li><strong><a href="#implicit-grant-flow-threat-model">Implicit Grant flow Threat Model</a></strong><ul>
 <li><strong><a href="#implicit-grant-flow---scope-of-analysis">Implicit Grant flow - scope of analysis</a></strong></li>
 <li><strong><a href="#overview">Overview</a></strong></li>
-<li><strong><a href="#security-objectives">Security Objectives</a></strong></li>
-<li><strong><a href="#diagrams">Diagrams</a></strong></li>
-<li><strong><a href="#assets">Assets</a></strong><ul>
-<li><strong><a href="#summary-table">Summary Table</a></strong></li>
-<li><strong><a href="#details">Details</a></strong></li>
-</ul>
-</li>
-<li><strong><a href="#implicit-grant-flow-analysis">Implicit Grant flow Analysis</a></strong></li>
 <li><strong><a href="#implicit-grant-flow-threats">Implicit Grant flow Threats</a></strong></li>
 <li><strong><a href="#(4_4_2_1_token_leak1_network)-access-token-leak-in-transport/endpoints"><code>(4_4_2_1_TOKEN_LEAK1_NETWORK)</code> Access Token Leak in Transport/Endpoints</a></strong></li>
 <li><strong><a href="#(4_4_2_2_token_leak2_browser_history)-access-token-leak-in-browser-history"><code>(4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY)</code> Access Token Leak in Browser History</a></strong></li>
@@ -210,7 +172,6 @@
 
 <p><a name='executive-summary'></a></p>
 <h2>Executive Summary</h2>
-<p>##TODO change search to not fully mitigated threats (configure flag correctly on threats yaml)</p>
 <blockquote>
 <p>This section contains an executive summary of the threats and thier mitigation status</p>
 </blockquote>
@@ -630,6 +591,7 @@ Always valid
 Yes </td>
 </tr>
 </table>
+<div class="pagebreak"></div>
 <p><a name='oauth-2.0---scope-of-analysis'></a></p>
 <h2>OAuth 2.0 - scope of analysis</h2>
 <p><a name='overview'></a></p>
@@ -772,8 +734,6 @@ Yes </td>
 <p>Ability to maintain fundamental confidentiality
 integrity and availability of the system</p>
 </dd>
-<p>**Tree of attacks impacting Confidentiality Integrity and availability of a Corda Network **
-<img src="img/secObjectives/FULL_CIA.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -797,8 +757,7 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> <em>(Confidentiality Integrity and availability of a Corda Network)</em></p>
 </dd>
-<p>**Tree of attacks impacting Data integrity **
-<img src="img/secObjectives/INTEGRITY.svg"/></p>
+<p><img src="img/secObjectives/INTEGRITY.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -822,8 +781,7 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> <em>(Confidentiality Integrity and availability of a Corda Network)</em></p>
 </dd>
-<p>**Tree of attacks impacting Data confidentiality **
-<img src="img/secObjectives/CONFIDENTIALITY.svg"/></p>
+<p><img src="img/secObjectives/CONFIDENTIALITY.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -847,8 +805,7 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> <em>(Confidentiality Integrity and availability of a Corda Network)</em></p>
 </dd>
-<p>**Tree of attacks impacting System availability **
-<img src="img/secObjectives/AVAILABILITY.svg"/></p>
+<p><img src="img/secObjectives/AVAILABILITY.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -872,8 +829,6 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.AVAILABILITY">AVAILABILITY</a></code> <em>(System availability)</em></p>
 </dd>
-<p>**Tree of attacks impacting Compliance **
-<img src="img/secObjectives/COMPLIANCE.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -898,8 +853,7 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.COMPLIANCE">COMPLIANCE</a></code> <em>(Compliance)</em></p>
 </dd>
-<p>**Tree of attacks impacting Auditability and Non repudiation of resource access **
-<img src="img/secObjectives/NON_REPUDIATION.svg"/></p>
+<p><img src="img/secObjectives/NON_REPUDIATION.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -933,8 +887,6 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.COMPLIANCE">COMPLIANCE</a></code> <em>(Compliance)</em></p>
 </dd>
-<p>**Tree of attacks impacting Limits CLIENT access to RESOURCE_OWNER's assets and data **
-<img src="img/secObjectives/CLIENT_ACCESS_LIMITATION.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -958,8 +910,6 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> <em>(Limits CLIENT access to RESOURCE_OWNER's assets and data)</em></p>
 </dd>
-<p>**Tree of attacks impacting Revoke CLIENT access to RESOURCE_OWNER's assets and data **
-<img src="img/secObjectives/CLIENT_REVOKE_ACCESS.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -983,8 +933,6 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> <em>(Limits CLIENT access to RESOURCE_OWNER's assets and data)</em></p>
 </dd>
-<p>**Tree of attacks impacting Limits CLIENT access to some RESOURCE_OWNER's assets and data **
-<img src="img/secObjectives/CLIENT_LIMIT_ACCESS.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -1008,8 +956,6 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> <em>(Limits CLIENT access to RESOURCE_OWNER's assets and data)</em></p>
 </dd>
-<p>**Tree of attacks impacting Not sharing RESOURCE_OWNER credentials **
-<img src="img/secObjectives/NOT_SHARING_OWNER_CREDENTIAL.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -1033,8 +979,6 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> <em>(Limits CLIENT access to RESOURCE_OWNER's assets and data)</em></p>
 </dd>
-<p>**Tree of attacks impacting Compromised USER_AGENT resiliency **
-<img src="img/secObjectives/USER_AGENT_RESILIENCY.svg"/></p>
 </dl>
 <hr/>
 <dl>
@@ -1058,8 +1002,6 @@ integrity and availability of the system</p>
 <dd>
 <p>Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> <em>(Limits CLIENT access to RESOURCE_OWNER's assets and data)</em></p>
 </dd>
-<p>**Tree of attacks impacting Compromised CLIENT resiliency **
-<img src="img/secObjectives/CLIENT_RESILIENCY.svg"/></p>
 </dl>
 <hr/>
 <p><a name='linked-threat-models'></a></p>
@@ -1071,22 +1013,20 @@ integrity and availability of the system</p>
 <li><strong>Authorization "code" flow</strong> (ID: OAuth2.Flows.Flows_AuthCode)</li>
 <li><strong>Implicit Grant flow</strong> (ID: OAuth2.Flows.Flows_ImplicitGrant)</li>
 </ul>
-<p><a name='diagrams'></a></p>
-<h3>Diagrams</h3>
-<p>None</p>
-<blockquote>
-<p><strong>Note</strong> This section contains the list of attackers, personas, roles and potential threat agents considered to be within the scope of analysis.</p>
-</blockquote>
 <div class="pagebreak"></div>
-<p><a name='attackers'></a></p>
-<h3>Attackers</h3>
+<p><a name='actors'></a></p>
+<h3>Actors</h3>
+<blockquote>
+<p>Actors, agents, users and attackers may be used as synonymous. 
+If the analysis considers attacks and threats from a specific actor then it is considered <em>in scope</em>.</p>
+</blockquote>
 <p><a id="OAuth2.ANONYMOUS"></a>
 <strong><code>OAuth2.ANONYMOUS</code></strong> (from OAuth2 scope) <br></p>
 <dl>
 <dt>Description:</dt>
 <p><dd markdown="block">Anonymous internet user
 </dd></p>
-<dt>In Scope:</dt>
+<dt>In Scope as threat actor:</dt>
 <p><dd>Yes</dd></p>
 </dl>
 <hr/>
@@ -1098,7 +1038,7 @@ integrity and availability of the system</p>
 When the resource owner is a person, it is referred to as an
 end-user.
 </dd></p>
-<dt>In Scope:</dt>
+<dt>In Scope as threat actor:</dt>
 <p><dd>Yes</dd></p>
 </dl>
 <hr/>
@@ -1109,7 +1049,7 @@ end-user.
 <p><dd markdown="block">The server hosting the protected resources, capable of accepting
 and responding to protected resource requests using access tokens.
 </dd></p>
-<dt>In Scope:</dt>
+<dt>In Scope as threat actor:</dt>
 <p><dd>Yes</dd></p>
 </dl>
 <hr/>
@@ -1119,7 +1059,7 @@ and responding to protected resource requests using access tokens.
 <dt>Description:</dt>
 <p><dd markdown="block">The operators of the CLIENT.
 </dd></p>
-<dt>In Scope:</dt>
+<dt>In Scope as threat actor:</dt>
 <p><dd>Yes</dd></p>
 </dl>
 <hr/>
@@ -1129,7 +1069,7 @@ and responding to protected resource requests using access tokens.
 <dt>Description:</dt>
 <p><dd markdown="block">The operators in the Authorization Server.
 </dd></p>
-<dt>In Scope:</dt>
+<dt>In Scope as threat actor:</dt>
 <p><dd>Yes</dd></p>
 </dl>
 <hr/>
@@ -1241,12 +1181,12 @@ and profiles is given in [RFC6749], Section 2.1.</p>
 </tr>
 <tr>
 <p><td markdown="block">Access Token<br/><code><strong markdown="block">ACCESS_TOKEN</code>
-</td><td>system</td>
+</td><td>credential</td>
 </td><td>&#x2714;&#xFE0F;</td></p>
 </tr>
 <tr>
 <p><td markdown="block">Client secret for authentication with AUTH_SERVER<br/><code><strong markdown="block">CLIENT_SECRETS</code>
-</td><td>credentials</td>
+</td><td>credential</td>
 </td><td>&#x2714;&#xFE0F;</td></p>
 </tr>
 <tr>
@@ -1342,8 +1282,8 @@ mechanism for defining additional types.</p>
 <hr/>
 
 <p><a id="OAuth2.ACCESS_TOKEN"></a></p>
-<p><a name='access-token-(system-in-scope---id-\<code>access_token\</code>)'></a></p>
-<h5>Access Token (system in scope - ID: <code>ACCESS_TOKEN</code>) <div class='skipTOC'></div></h5>
+<p><a name='access-token-(credential-in-scope---id-\<code>access_token\</code>)'></a></p>
+<h5>Access Token (credential in scope - ID: <code>ACCESS_TOKEN</code>) <div class='skipTOC'></div></h5>
 <dl>
 <p>Access tokens are credentials used to access protected resources.  An
 access token is a string representing an authorization issued to the
@@ -1373,8 +1313,8 @@ as [RFC6750].</p>
 <hr/>
 
 <p><a id="OAuth2.CLIENT_SECRETS"></a></p>
-<p><a name='client-secret-for-authentication-with-auth_server-(credentials-in-scope---id-\<code>client_secrets\</code>)'></a></p>
-<h5>Client secret for authentication with AUTH_SERVER (credentials in scope - ID: <code>CLIENT_SECRETS</code>) <div class='skipTOC'></div></h5>
+<p><a name='client-secret-for-authentication-with-auth_server-(credential-in-scope---id-\<code>client_secrets\</code>)'></a></p>
+<h5>Client secret for authentication with AUTH_SERVER (credential in scope - ID: <code>CLIENT_SECRETS</code>) <div class='skipTOC'></div></h5>
 <dl>
 <p>Secrets held by CLIENT to authentication to the Authorization Server</p>
 </dl>
@@ -1459,65 +1399,9 @@ identifier size.  The authorization server SHOULD document the size
 of any identifier it issues.</p>
 </dl>
 <div class="pagebreak"></div>
-<hr>
-
-<p><a name='oauth-2.0-analysis'></a></p>
-<h2>OAuth 2.0 Analysis</h2>
-<blockquote>
-<p><strong>Note</strong> This section documents the work performed to identify threats and thier mitigations.#
-It may contains notes from the analysis sessions.
-This analysis section may be omitted in future reports.</p>
-</blockquote>
-<p>None  </p>
-<div class="pagebreak"></div>
-<hr>
-
-<p><a name='oauth-2.0-threats'></a></p>
-<h2>OAuth 2.0 Threats</h2>
-<blockquote>
-<p><strong>Note</strong> This section contains the threat and mitigations identified during the analysis phase.</p>
-</blockquote>
-<p>**No threat identified or listed **</p>
-<div class="pagebreak"></div>
 
 <p><a name='client-threat-model'></a></p>
 <h1>Client Threat Model</h1>
-<p><a name='client---scope-of-analysis'></a></p>
-<h2>Client - scope of analysis</h2>
-<p><a name='overview'></a></p>
-<h3>Overview</h3>
-<p>None </p>
-<p><a name='security-objectives'></a></p>
-<h3>Security Objectives</h3>
-<p>No Security Objectives defined in this scope</p>
-<p><a name='diagrams'></a></p>
-<h3>Diagrams</h3>
-<p>None</p>
-<blockquote>
-<p><strong>Note</strong> This section contains the list of attackers, personas, roles and potential threat agents considered to be within the scope of analysis.</p>
-</blockquote>
-<div class="pagebreak"></div>
-
-<p><a name='assets'></a></p>
-<h3>Assets</h3>
-<p><a name='summary-table'></a></p>
-<h4>Summary Table</h4>
-<table>
-<tr><th>Title(ID)</th><th>Type</th><th>In Scope</th></tr>
-</table>
-<p><a name='details'></a></p>
-<h4>Details</h4>
-<div class="pagebreak"></div>
-<hr>
-
-<p><a name='client-analysis'></a></p>
-<h2>Client Analysis</h2>
-<blockquote>
-<p><strong>Note</strong> This section documents the work performed to identify threats and thier mitigations.#
-It may contains notes from the analysis sessions.
-This analysis section may be omitted in future reports.</p>
-</blockquote>
-<p>None  </p>
 <div class="pagebreak"></div>
 <hr>
 
@@ -1570,8 +1454,7 @@ inappropriate security policy</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong><code>5_2_3_2_USER_CONSENT1</code> Require User Consent for Public Clients without Secret</strong><br/></p>
 <dd>
@@ -1585,8 +1468,7 @@ against the following threat:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong><code>5_2_3_3_CLIENT_ID_TO_REDIRECT_URI</code> Issue a "client_id" Only in Combination with "redirect_uri"</strong><br/></p>
 <dd>
@@ -1610,8 +1492,7 @@ against the following threat:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong><code>5_2_3_4_SPECIFIC_CLIENT_SECRETS</code> Issue Installation-Specific Client Secrets</strong><br/></p>
 <dd>
@@ -1653,8 +1534,7 @@ refresh tokens of a specific installation at once.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_2_3_5_VALIDATE_REDIRECT_URI</code> Validate Pre-Registered "redirect_uri"</strong><br/></p>
 <dd>
@@ -1705,8 +1585,7 @@ redirect URI the legitimate client uses on all other devices.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -1752,8 +1631,7 @@ lower scope to public clients (Section 5.1.5.1).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong><code>USER_AUTH_AWARENESS</code> Users educated to avoid phishing attacks</strong><br/></p>
 <dd>
@@ -1765,39 +1643,28 @@ Section 5.1.2).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
 
 <p><a name='authorization-server-threat-model'></a></p>
 <h1>Authorization Server Threat Model</h1>
-<p><a name='authorization-server---scope-of-analysis'></a></p>
-<h2>Authorization Server - scope of analysis</h2>
-<p><a name='overview'></a></p>
-<h3>Overview</h3>
-<p>None </p>
-<p><a name='security-objectives'></a></p>
-<h3>Security Objectives</h3>
-<p>No Security Objectives defined in this scope</p>
-<p><a name='diagrams'></a></p>
-<h3>Diagrams</h3>
-<p>None</p>
-<blockquote>
-<p><strong>Note</strong> This section contains the list of attackers, personas, roles and potential threat agents considered to be within the scope of analysis.</p>
-</blockquote>
 <div class="pagebreak"></div>
 
-<p><a name='attackers'></a></p>
-<h3>Attackers</h3>
+<p><a name='actors'></a></p>
+<h3>Actors</h3>
+<blockquote>
+<p>Actors, agents, users and attackers may be used as synonymous. 
+If the analysis considers attacks and threats from a specific actor then it is considered <em>in scope</em>.</p>
+</blockquote>
 <p><a id="OAuth2.AuthorizationServer.ANONYMOUS"></a>
 <strong><code>OAuth2.AuthorizationServer.ANONYMOUS</code></strong> (from OAuth2.AuthorizationServer scope) <br></p>
 <dl>
 <dt>Description:</dt>
 <p><dd markdown="block">Anonymous internet user
 </dd></p>
-<dt>In Scope:</dt>
+<dt>In Scope as threat actor:</dt>
 <p><dd>Yes</dd></p>
 </dl>
 <hr/>
@@ -1808,7 +1675,7 @@ Section 5.1.2).</p>
 <dt>Description:</dt>
 <p><dd markdown="block">Client app
 </dd></p>
-<dt>In Scope:</dt>
+<dt>In Scope as threat actor:</dt>
 <p><dd>Yes</dd></p>
 </dl>
 <hr/>
@@ -1857,17 +1724,6 @@ Section 5.1.2).</p>
 <dl>
 <p>Authorization server's endpoint for DF_AUTH_REDIRECT</p>
 </dl>
-<div class="pagebreak"></div>
-<hr>
-
-<p><a name='authorization-server-analysis'></a></p>
-<h2>Authorization Server Analysis</h2>
-<blockquote>
-<p><strong>Note</strong> This section documents the work performed to identify threats and thier mitigations.#
-It may contains notes from the analysis sessions.
-This analysis section may be omitted in future reports.</p>
-</blockquote>
-<p>None  </p>
 <div class="pagebreak"></div>
 <hr>
 
@@ -1935,8 +1791,7 @@ This is a countermeasure against the following threats:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong><code>USER_PHISHING_AWARENESS</code> Users educated to avoid phishing attacks</strong><br/></p>
 <dd>
@@ -1948,8 +1803,7 @@ Section 5.1.2).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -1995,8 +1849,7 @@ lower scope to public clients (Section 5.1.5.1).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong><code>USER_AUTH_AWARENESS</code> Users educated to avoid phishing attacks</strong><br/></p>
 <dd>
@@ -2008,8 +1861,7 @@ Section 5.1.2).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -2151,8 +2003,7 @@ obtained through automated approvals (Section 5.1.5.1).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -2211,8 +2062,7 @@ mechanisms such as TLS (see Section 5.1.1).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1.REDUCED_ACCESS_TOKEN_SCOPE</code> Limiting the scope of access tokens obtained through automated approvals</strong><br/></p>
 <dd>
@@ -2223,8 +2073,7 @@ obtained through automated approvals (Section 5.1.5.1).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -2288,8 +2137,7 @@ to sensitive configuration files and databases.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_1_4_1_2_SQL_SEC</code> Enforce Standard SQL Injection Countermeasures</strong><br/></p>
 <dd>
@@ -2378,8 +2226,7 @@ Replay of authorization "codes" obtained on the token’s endpoint
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 <p><strong><code>CONFIDENTIAL_CREDENTIALS_REQUESTS</code> Do not send plaintext credentials</strong><br/></p>
 <dd>
@@ -2460,8 +2307,7 @@ to sensitive configuration files and databases.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_1_4_1_CRED_PROTECTION</code> Enforce Credential Storage Protection Best Practices</strong><br/></p>
 <dd>
@@ -2473,8 +2319,7 @@ sub-sections.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -2495,7 +2340,7 @@ sub-sections.</p>
 <li><code><a href="#OAuth2.CLIENT_SECRETS">CLIENT_SECRETS</a></code> - Client secret for authentication with AUTH_SERVER</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -2563,61 +2408,25 @@ process. (e.g., client_assertion/client_token)</p>
 
 <p><a name='flows-threat-model'></a></p>
 <h1>Flows Threat Model</h1>
+<div class="pagebreak"></div>
+
 <p><a name='flows---scope-of-analysis'></a></p>
 <h2>Flows - scope of analysis</h2>
 <p><a name='overview'></a></p>
 <h3>Overview</h3>
 <p>This section covers threats that are specific to certain flows utilized to obtain access tokens. Each flow is characterized by response types and/or grant types on the end-user authorization and token endpoint, respectively. </p>
-<p><a name='security-objectives'></a></p>
-<h3>Security Objectives</h3>
-<p>No Security Objectives defined in this scope</p>
 <p><a name='linked-threat-models'></a></p>
 <h3>Linked threat Models</h3>
 <ul>
 <li><strong>Authorization "code" flow</strong> (ID: OAuth2.Flows.Flows_AuthCode)</li>
 <li><strong>Implicit Grant flow</strong> (ID: OAuth2.Flows.Flows_ImplicitGrant)</li>
 </ul>
-<p><a name='diagrams'></a></p>
-<h3>Diagrams</h3>
-<p>None</p>
-<blockquote>
-<p><strong>Note</strong> This section contains the list of attackers, personas, roles and potential threat agents considered to be within the scope of analysis.</p>
-</blockquote>
-<div class="pagebreak"></div>
-
-<p><a name='assets'></a></p>
-<h3>Assets</h3>
-<p><a name='summary-table'></a></p>
-<h4>Summary Table</h4>
-<table>
-<tr><th>Title(ID)</th><th>Type</th><th>In Scope</th></tr>
-</table>
-<p><a name='details'></a></p>
-<h4>Details</h4>
-<div class="pagebreak"></div>
-<hr>
-
-<p><a name='flows-analysis'></a></p>
-<h2>Flows Analysis</h2>
-<blockquote>
-<p><strong>Note</strong> This section documents the work performed to identify threats and thier mitigations.#
-It may contains notes from the analysis sessions.
-This analysis section may be omitted in future reports.</p>
-</blockquote>
-<p>None  </p>
-<div class="pagebreak"></div>
-<hr>
-
-<p><a name='flows-threats'></a></p>
-<h2>Flows Threats</h2>
-<blockquote>
-<p><strong>Note</strong> This section contains the threat and mitigations identified during the analysis phase.</p>
-</blockquote>
-<p>**No threat identified or listed **</p>
 <div class="pagebreak"></div>
 
 <p><a name='authorization-"code"-flow-threat-model'></a></p>
 <h1>Authorization "code" flow Threat Model</h1>
+<div class="pagebreak"></div>
+
 <p><a name='authorization-"code"-flow---scope-of-analysis'></a></p>
 <h2>Authorization "code" flow - scope of analysis</h2>
 <p><a name='overview'></a></p>
@@ -2629,15 +2438,6 @@ The authorization code provides a few important security benefits, such as the a
 The implicit grant is a simplified authorization code flow optimized for clients implemented in a browser using a scripting language such as JavaScript.  In the implicit flow, instead of issuing the client an authorization code, the client is issued an access token directly (as the result of the resource owner authorization).  The grant type is implicit, as no intermediate credentials (such as an authorization code) are issued (and later used to obtain an access token).
 When issuing an access token during the implicit grant flow, the authorization server does not authenticate the client.  In some cases, the client identity can be verified via the redirection URI used to deliver the access token to the client.  The access token may be exposed to the resource owner or other applications with access to the resource owner's user-agent.
 Implicit grants improve the responsiveness and efficiency of some clients (such as a client implemented as an in-browser application), since it reduces the number of round trips required to obtain an access token.  However, this convenience should be weighed against the security implications of using implicit grants, such as those described in Sections 10.3 and 10.16, especially when the authorization code grant type is available. </p>
-<p><a name='security-objectives'></a></p>
-<h3>Security Objectives</h3>
-<p>No Security Objectives defined in this scope</p>
-<p><a name='diagrams'></a></p>
-<h3>Diagrams</h3>
-<p>None</p>
-<blockquote>
-<p><strong>Note</strong> This section contains the list of attackers, personas, roles and potential threat agents considered to be within the scope of analysis.</p>
-</blockquote>
 <p><a name='assumptions'></a></p>
 <h3>Assumptions</h3>
 <dl>
@@ -2706,17 +2506,6 @@ earlier.</p>
 <div class="pagebreak"></div>
 <hr>
 
-<p><a name='authorization-"code"-flow-analysis'></a></p>
-<h2>Authorization "code" flow Analysis</h2>
-<blockquote>
-<p><strong>Note</strong> This section documents the work performed to identify threats and thier mitigations.#
-It may contains notes from the analysis sessions.
-This analysis section may be omitted in future reports.</p>
-</blockquote>
-<p>None  </p>
-<div class="pagebreak"></div>
-<hr>
-
 <p><a name='authorization-"code"-flow-threats'></a></p>
 <h2>Authorization "code" flow Threats</h2>
 <blockquote>
@@ -2736,7 +2525,7 @@ This analysis section may be omitted in future reports.</p>
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -2809,8 +2598,7 @@ Replay of authorization "codes" obtained on the token’s endpoint
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 <p><strong><code>5_2_4_4_CLIENT_TO_CODE_BINDING</code> Binding of Authorization "code" to "client_id"</strong><br/></p>
 <dd>
@@ -2833,8 +2621,7 @@ Section 5.2.4.4).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_1_5_3_SHORT_EXPIRY_CODE</code> Use Short Expiration Time</strong><br/></p>
 <dd>
@@ -2853,8 +2640,7 @@ Furthermore, shorter duration may require more token refreshes
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_1_5_4_ONE_TIME_USE_TOKEN</code> Limit Number of Usages or One-Time Usage</strong><br/></p>
 <dd>
@@ -2876,8 +2662,7 @@ involving the user.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_2_1_1_TOKEN_ABUSE_DETECTION</code> Automatic Revocation of Derived Tokens If Abuse Is Detected</strong><br/></p>
 <dd>
@@ -2889,8 +2674,7 @@ the authorization grant</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>USER_AGENT_PAGE_RELOAD</code> Reload the target page</strong><br/></p>
 <dd>
@@ -2900,8 +2684,7 @@ in order to automatically clean up the browser cache.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -2920,7 +2703,7 @@ in order to automatically clean up the browser cache.</p>
 <li><code><a href="#OAuth2.AUTH_SERVER">AUTH_SERVER</a></code> - Authorization server</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -2956,8 +2739,7 @@ to sensitive configuration files and databases.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_2_SQL_SEC</code> Enforce Standard SQL Injection Countermeasures</strong><br/></p>
 <dd>
@@ -3008,7 +2790,7 @@ identifier syntax rules.</p>
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -3058,8 +2840,7 @@ Authentication Code or digital signatures).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS</code> Issue Installation-Specific Client Secrets</strong><br/></p>
 <dd>
@@ -3101,8 +2882,7 @@ refresh tokens of a specific installation at once.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_2_4_5_REDIRECT_CODE_BINDING</code> Binding of Authorization "code" to "redirect_uri"</strong><br/></p>
 <dd>
@@ -3118,8 +2898,7 @@ URI to exchange an authorization "code" into a token.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_1_5_3_SHORT_EXPIRY_CODE</code> Use Short Expiration Time</strong><br/></p>
 <dd>
@@ -3138,8 +2917,7 @@ Furthermore, shorter duration may require more token refreshes
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -3154,7 +2932,7 @@ Furthermore, shorter duration may require more token refreshes
 </div>
 
 <dl>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -3220,8 +2998,7 @@ refresh tokens of a specific installation at once.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_5_VALIDATE_REDIRECT_URI</code> Validate Pre-Registered "redirect_uri"</strong><br/></p>
 <dd>
@@ -3272,8 +3049,7 @@ redirect URI the legitimate client uses on all other devices.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong><code>5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER</code> Validation of Client Properties by End User</strong><br/></p>
 <dd>
@@ -3291,8 +3067,7 @@ authenticate the client. It is a countermeasure against:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by RESOURCE_OWNER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by RESOURCE_OWNER) </p>
 </dd>
 <p><strong><code>5_2_4_1_REPEAT_VALIDATE_CLIENT</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/></p>
 <dd>
@@ -3305,8 +3080,7 @@ of a pre-registered redirect URI (Section 5.2.3.5).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>REQUIRE_USER_MANUAL_STEP</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/></p>
 <dd>
@@ -3320,8 +3094,7 @@ questions, token code generators, etc.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>5_1_5_1_LIMITED_SCOPE_TOKEN</code> Limit Token Scope</strong><br/></p>
 <dd>
@@ -3347,8 +3120,7 @@ credentials flow</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -3363,7 +3135,7 @@ credentials flow</p>
 </div>
 
 <dl>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -3418,8 +3190,7 @@ This is a countermeasure against the following threats:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_4_4_CLIENT_TO_CODE_BINDING</code> Binding of Authorization "code" to "client_id"</strong><br/></p>
 <dd>
@@ -3442,8 +3213,7 @@ Section 5.2.4.4).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -3458,7 +3228,7 @@ Section 5.2.4.4).</p>
 </div>
 
 <dl>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -3524,8 +3294,7 @@ This is a countermeasure against the following threats:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -3540,7 +3309,7 @@ This is a countermeasure against the following threats:
 </div>
 
 <dl>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.CLIENT_OPERATOR">CLIENT_OPERATOR</a></code></li>
@@ -3637,8 +3406,7 @@ URI to exchange an authorization "code" into a token.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS</code> Issue Installation-Specific Client Secrets</strong><br/></p>
 <dd>
@@ -3680,8 +3448,7 @@ refresh tokens of a specific installation at once.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_4_4_CLIENT_TO_CODE_BINDING</code> Binding of Authorization "code" to "client_id"</strong><br/></p>
 <dd>
@@ -3704,8 +3471,7 @@ Section 5.2.4.4).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>IMPLICIT_GRANT_FLOW</code> Implicit grant flow</strong><br/></p>
 <dd>
@@ -3738,7 +3504,7 @@ Section 4.4.3).</p>
 <li><code><a href="#OAuth2.DF_AUTH_REDIRECT">DF_AUTH_REDIRECT</a></code> - Auth User Agent Redirection</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -3788,8 +3554,7 @@ Provider.
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 <p><strong><code>USER_EDUCATION</code> Users can be educated to not follow untrusted URLs</strong><br/></p>
 <dd>
@@ -3799,8 +3564,7 @@ untrusted URLs.    </p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -3821,7 +3585,7 @@ untrusted URLs.    </p>
 <li><code><a href="#OAuth2.DF_AUTH_REDIRECT">DF_AUTH_REDIRECT</a></code> - Auth User Agent Redirection</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -3863,8 +3627,7 @@ button) on the hidden page.
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>FRAMEBUSTING</code> JavaScript frame-busting</strong><br/></p>
 <dd>
@@ -3874,8 +3637,7 @@ techniques can be used but may not be effective in all browsers. </p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -3896,7 +3658,7 @@ techniques can be used but may not be effective in all browsers. </p>
 <li><code><a href="#OAuth2.DF_AUTH_REDIRECT">DF_AUTH_REDIRECT</a></code> - Auth User Agent Redirection</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.CLIENT_OPERATOR">CLIENT_OPERATOR</a></code></li>
@@ -3966,8 +3728,7 @@ via text or instant message).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>NOTIFY_APPROVAL</code> Notify User's approval</strong><br/></p>
 <dd>
@@ -3979,8 +3740,7 @@ email.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -4001,7 +3761,7 @@ email.</p>
 <li><code><a href="#OAuth2.DF_AUTH_REDIRECT">DF_AUTH_REDIRECT</a></code> - Auth User Agent Redirection</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.CLIENT_OPERATOR">CLIENT_OPERATOR</a></code></li>
@@ -4037,8 +3797,7 @@ access tokens granted per user.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>AUTH_CODE_HIGH_ENTROPY</code> High entropy codes</strong><br/></p>
 <dd>
@@ -4069,7 +3828,7 @@ entropy in authorization "codes".</p>
 <li><code><a href="#OAuth2.AUTH_SERVER">AUTH_SERVER</a></code> - Authorization server</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.CLIENT_OPERATOR">CLIENT_OPERATOR</a></code></li>
@@ -4134,8 +3893,7 @@ attacker’s control.
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 <p><strong><code>CLIENT_LIMITS_PER_USER</code> Client limits authenticated users codes</strong><br/></p>
 <dd>
@@ -4148,8 +3906,7 @@ certain threshold.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 <p><strong><code>AUTH_RATE_LIMIT</code> Client limits authenticated users codes</strong><br/></p>
 <dd>
@@ -4161,8 +3918,7 @@ exceeds a threshold.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -4177,7 +3933,7 @@ exceeds a threshold.</p>
 </div>
 
 <dl>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.CLIENT_OPERATOR">CLIENT_OPERATOR</a></code></li>
@@ -4243,8 +3999,7 @@ possible, the client shall be authenticated beforehand.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>SECURE_USER_LOGIN_PROTOCOL</code> Secure User Login Protocol</strong><br/></p>
 <dd>
@@ -4256,14 +4011,15 @@ clients.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
 
 <p><a name='implicit-grant-flow-threat-model'></a></p>
 <h1>Implicit Grant flow Threat Model</h1>
+<div class="pagebreak"></div>
+
 <p><a name='implicit-grant-flow---scope-of-analysis'></a></p>
 <h2>Implicit Grant flow - scope of analysis</h2>
 <p><a name='overview'></a></p>
@@ -4275,37 +4031,6 @@ HTTP user agents do not send the fragment part of URIs to HTTP
 servers. Thus, an attacker cannot eavesdrop the access token on this
 communication path, and the token cannot leak through HTTP referrer
 headers.</p>
-<p><a name='security-objectives'></a></p>
-<h3>Security Objectives</h3>
-<p>No Security Objectives defined in this scope</p>
-<p><a name='diagrams'></a></p>
-<h3>Diagrams</h3>
-<p>None</p>
-<blockquote>
-<p><strong>Note</strong> This section contains the list of attackers, personas, roles and potential threat agents considered to be within the scope of analysis.</p>
-</blockquote>
-<div class="pagebreak"></div>
-
-<p><a name='assets'></a></p>
-<h3>Assets</h3>
-<p><a name='summary-table'></a></p>
-<h4>Summary Table</h4>
-<table>
-<tr><th>Title(ID)</th><th>Type</th><th>In Scope</th></tr>
-</table>
-<p><a name='details'></a></p>
-<h4>Details</h4>
-<div class="pagebreak"></div>
-<hr>
-
-<p><a name='implicit-grant-flow-analysis'></a></p>
-<h2>Implicit Grant flow Analysis</h2>
-<blockquote>
-<p><strong>Note</strong> This section documents the work performed to identify threats and thier mitigations.#
-It may contains notes from the analysis sessions.
-This analysis section may be omitted in future reports.</p>
-</blockquote>
-<p>None  </p>
 <div class="pagebreak"></div>
 <hr>
 
@@ -4328,7 +4053,7 @@ This analysis section may be omitted in future reports.</p>
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -4383,8 +4108,7 @@ Replay of authorization "codes" obtained on the token’s endpoint
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -4403,7 +4127,7 @@ Replay of authorization "codes" obtained on the token’s endpoint
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -4445,8 +4169,7 @@ Furthermore, shorter duration may require more token refreshes
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong><code>NON_CACHEABLE_RESPONSES</code> Make responses non-cacheable.</strong><br/></p>
 <dd>
@@ -4455,8 +4178,7 @@ Furthermore, shorter duration may require more token refreshes
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -4477,7 +4199,7 @@ Furthermore, shorter duration may require more token refreshes
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -4550,8 +4272,7 @@ redirect URI the legitimate client uses on all other devices.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER</code> Validation of Client Properties by End User</strong><br/></p>
 <dd>
@@ -4569,8 +4290,7 @@ authenticate the client. It is a countermeasure against:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by RESOURCE_OWNER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by RESOURCE_OWNER) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_1_REPEAT_VALIDATE_CLIENT</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/></p>
 <dd>
@@ -4583,8 +4303,7 @@ of a pre-registered redirect URI (Section 5.2.3.5).</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.REQUIRE_USER_MANUAL_STEP</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/></p>
 <dd>
@@ -4598,8 +4317,7 @@ questions, token code generators, etc.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_1_5_1_LIMITED_SCOPE_TOKEN</code> Limit Token Scope</strong><br/></p>
 <dd>
@@ -4625,8 +4343,7 @@ credentials flow</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -4647,7 +4364,7 @@ credentials flow</p>
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -4700,8 +4417,7 @@ This is a countermeasure against the following threats:
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS</code> Ensure Confidentiality of Requests (TLS)</strong><br/></p>
 <dd>
@@ -4731,8 +4447,7 @@ Replay of authorization "codes" obtained on the token’s endpoint
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 <p><strong><code>ONE_TIME_PER_USE_SECRET</code> One-time, per-use secrets (e.g., "client_secret")</strong><br/></p>
 <dd>
@@ -4745,8 +4460,7 @@ attacker’s modified code.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -4767,7 +4481,7 @@ attacker’s modified code.</p>
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -4817,8 +4531,7 @@ be guessable, and the client should be capable of keeping the
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 <p><strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT.USER_EDUCATION</code> Users can be educated to not follow untrusted URLs</strong><br/></p>
 <dd>
@@ -4828,8 +4541,7 @@ untrusted URLs.    </p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by AUTHORIZATION_SERVER_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -4850,7 +4562,7 @@ untrusted URLs.    </p>
 <li><code><a href="#OAuth2.AUTHORIZATION_GRANT">AUTHORIZATION_GRANT</a></code> - Authorization Grant</li>
 </ul>
 </dd>
-<dt>Attackers/threat agents:</dt>
+<dt>Threat actors:</dt>
 <dd>
 <ul>
 <li><code><a href="#OAuth2.ANONYMOUS">ANONYMOUS</a></code></li>
@@ -4913,8 +4625,7 @@ clients.</p>
 <dd>
 <p><strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
-<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>
-    (operated by CLIENT_OPERATOR)</p>
+<span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) </p>
 </dd>
 </dl>
 <div class="pagebreak"></div>
@@ -5508,6 +5219,50 @@ client to obtain an access token.  This specification defines four
 grant types -- authorization code, implicit, resource owner password
 credentials, and client credentials -- as well as an extensibility
 mechanism for defining additional types.
+</td>
+    <td></td>
+  </tr>
+<tr>
+    <td><strong><a href="#OAuth2.ACCESS_TOKEN">Access Token</a></strong></td>
+    <td><b>
+
+    credential
+    </b><br>Access tokens are credentials used to access protected resources.  An
+access token is a string representing an authorization issued to the
+client.  The string is usually opaque to the client.  Tokens
+represent specific scopes and durations of access, granted by the
+resource owner, and enforced by the resource server and authorization
+server.
+
+The token may denote an identifier used to retrieve the authorization
+information or may self-contain the authorization information in a
+verifiable manner (i.e., a token string consisting of some data and a
+signature).  Additional authentication credentials, which are beyond
+the scope of this specification, may be required in order for the
+client to use a token.
+
+The access token provides an abstraction layer, replacing different
+authorization constructs (e.g., username and password) with a single
+token understood by the resource server.  This abstraction enables
+issuing access tokens more restrictive than the authorization grant
+used to obtain them, as well as removing the resource server's need
+to understand a wide range of authentication methods.
+
+Access tokens can have different formats, structures, and methods of
+utilization (e.g., cryptographic properties) based on the resource
+server security requirements.  Access token attributes and the
+methods used to access protected resources are beyond the scope of
+this specification and are defined by companion specifications such
+as [RFC6750].
+</td>
+    <td></td>
+  </tr>
+<tr>
+    <td><strong><a href="#OAuth2.CLIENT_SECRETS">Client secret for authentication with AUTH_SERVER</a></strong></td>
+    <td><b>
+
+    credential
+    </b><br>Secrets held by CLIENT to authentication to the Authorization Server
 </td>
     <td></td>
   </tr>

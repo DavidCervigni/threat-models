@@ -256,7 +256,7 @@ scope:
       inScope: true
 
     - ID: ACCESS_TOKEN
-      type: system
+      type: credential
       title: Access Token
       description: |
         Access tokens are credentials used to access protected resources.  An
@@ -296,7 +296,7 @@ scope:
 
 
     - ID: CLIENT_SECRETS
-      type: credentials
+      type: credential
       title: Client secret for authentication with AUTH_SERVER
       description: |
         Secrets held by CLIENT to authentication to the Authorization Server

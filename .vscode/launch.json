@@ -19,7 +19,8 @@
                 "--template",
                 "TM_templateFull",
                 "--formatYAML",
-                "--generatePDF"
+                "--generatePDF",
+                "--pdfHeaderNote" , "Generated with: https://github.com/corda/threat-model-tool"
                 // "--assetDir",
                 // "threatModels/assets"
             ]
