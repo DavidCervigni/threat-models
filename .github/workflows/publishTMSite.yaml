@@ -26,7 +26,6 @@ jobs:
         run: |
           python -m r3threatmodeling.fullBuildDirectory \
             --TMDirectory threatModels \
-            --browserSync \
             --outputDir build/docs \
             --template TM_templateMKDOCS \
             --formatYAML \
