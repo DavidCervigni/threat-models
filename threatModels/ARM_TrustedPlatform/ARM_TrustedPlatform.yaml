@@ -85,8 +85,7 @@ threats:
         public: true
 
     CVSS:
-      base: TODO CVSS
-      vector: ''
+      vector: CVSS:3.1/AV:P/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
     fullyMitigated: false
   - ID: MALICIOUS_KERNEL_ACCESS
     title: Kernel-Level Attacks on TEE
@@ -108,8 +107,7 @@ threats:
         public: true
 
     CVSS:
-      base: TODO CVSS
-      vector: ''
+      vector: CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
     fullyMitigated: false
   - ID: FIRMWARE_EXPLOIT
     title: Exploitation of Insecure Firmware
@@ -129,10 +127,8 @@ threats:
           Enforce cryptographic signature validation during firmware updates and secure boot processes.
         inPlace: true
         public: true
-
     CVSS:
-      base: TODO CVSS
-      vector: ''
+      vector: CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
     fullyMitigated: false
   - ID: ROGUE_DEVICE_ACCESS
     title: Rogue Peripheral Attacks
