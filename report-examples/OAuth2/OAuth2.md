@@ -9,189 +9,69 @@
 
  
 
+<div markdown="block" class='current'>
 
 
 
 
-<a name='oauth-2.0-threat-model'></a>
-# OAuth 2.0 Threat Model
+
+
+
+
+<a name='OAuth2'></a>
+
+<H1 id="OAuth2" data-toc-label="OAuth 2.0">OAuth 2.0</H1>
 
 
 Version: rfc6819
 
-Last update: 2023-11-18 17:11:03 
 
 Authors: Example by David Cervigni, based on: https://datatracker.ietf.org/doc/html/rfc6819
 
 
-<div class="pagebreak"></div>
-
-<a name='table-of-contents'></a>
-## Table of contents <div class='skipTOC'></div>
-
-   * **[OAuth 2.0 Threat Model](#oauth-2.0-threat-model)**
-     * **[Executive Summary](#executive-summary)**
-     * **[Threats Summary](#threats-summary)**
-     * **[OAuth 2.0 - scope of analysis](#oauth-2.0---scope-of-analysis)**
-       * **[Overview](#overview)**
-       * **[Security Objectives](#security-objectives)**
-       * **[Linked threat Models](#linked-threat-models)**
-       * **[Actors](#actors)**
-       * **[Assumptions](#assumptions)**
-       * **[Assets](#assets)**
-         * **[Summary Table](#summary-table)**
-         * **[Details](#details)**
-   * **[Client Threat Model](#client-threat-model)**
-     * **[Client Threats](#client-threats)**
-       * **[`(Client_Secrets_disclosure)` Client Secrets Disclosure and impersonation](#(client_secrets_disclosure)-client-secrets-disclosure-and-impersonation)**
-       * **[`(TOO_MUCH_GRANT)` User Unintentionally Grants Too Much Access Scope](#(too_much_grant)-user-unintentionally-grants-too-much-access-scope)**
-   * **[Authorization Server Threat Model](#authorization-server-threat-model)**
-       * **[Actors](#actors)**
-       * **[Assumptions](#assumptions)**
-       * **[Assets](#assets)**
-         * **[Summary Table](#summary-table)**
-         * **[Details](#details)**
-     * **[Authorization Server Threats](#authorization-server-threats)**
-       * **[`(AuthServerPhishing1)` Password Phishing by Counterfeit Authorization Server](#(authserverphishing1)-password-phishing-by-counterfeit-authorization-server)**
-       * **[`(TOO_MUCH_GRANT)` User Unintentionally Grants Too Much Access Scope](#(too_much_grant)-user-unintentionally-grants-too-much-access-scope)**
-       * **[`(OPEN_REDIRECTOR)` Authorization server open redirect](#(open_redirector)-authorization-server-open-redirect)**
-       * **[`(PUBLIC_CLIENT_SPOOFING1)` Malicious Client Obtains Existing Authorization by Fraud](#(public_client_spoofing1)-malicious-client-obtains-existing-authorization-by-fraud)**
-       * **[`(4_3_1_EAVESDROPPING_ACCESS_TOKENS1)` Eavesdropping Access Tokens](#(4_3_1_eavesdropping_access_tokens1)-eavesdropping-access-tokens)**
-       * **[`(4_3_2_AS_DB_TOKEN_DISCLOSURE)` Obtaining Access Tokens from Authorization Server Database](#(4_3_2_as_db_token_disclosure)-obtaining-access-tokens-from-authorization-server-database)**
-       * **[`(4_3_3_CLIENT_CREDENTIALS_DISCLOSURE)` Disclosure of Client Credentials during Transmission](#(4_3_3_client_credentials_disclosure)-disclosure-of-client-credentials-during-transmission)**
-       * **[`(4_3_4_CLIENT_CREDENTIALS_DISCLOSURE)` Obtaining Client Secret from Authorization Server Database](#(4_3_4_client_credentials_disclosure)-obtaining-client-secret-from-authorization-server-database)**
-       * **[`(4_3_5_CLIENT_SECRET_BRUTE_FORCE)` Obtaining Client Secret by Online Guessing](#(4_3_5_client_secret_brute_force)-obtaining-client-secret-by-online-guessing)**
-   * **[Flows Threat Model](#flows-threat-model)**
-     * **[Flows - scope of analysis](#flows---scope-of-analysis)**
-       * **[Overview](#overview)**
-       * **[Linked threat Models](#linked-threat-models)**
-   * **[Authorization "code" flow Threat Model](#authorization-"code"-flow-threat-model)**
-     * **[Authorization "code" flow - scope of analysis](#authorization-"code"-flow---scope-of-analysis)**
-       * **[Overview](#overview)**
-       * **[Assumptions](#assumptions)**
-       * **[Assets](#assets)**
-         * **[Summary Table](#summary-table)**
-         * **[Details](#details)**
-     * **[Authorization "code" flow Threats](#authorization-"code"-flow-threats)**
-       * **[`(4_4_1_1_AUTH_CODE_DISCLOSURE)` Eavesdropping or Leaking Authorization codes](#(4_4_1_1_auth_code_disclosure)-eavesdropping-or-leaking-authorization-codes)**
-       * **[`(4_4_1_2_AUTH_CODE_DISCLOSURE_DB)` Obtaining Authorization codes from AuthorizationServer Database](#(4_4_1_2_auth_code_disclosure_db)-obtaining-authorization-codes-from-authorizationserver-database)**
-       * **[`(4_4_1_3_AUTH_CODE_BRUTE_FORCE)` Online Guessing of Authorization codes](#(4_4_1_3_auth_code_brute_force)-online-guessing-of-authorization-codes)**
-       * **[`(4_4_1_4_CLIENT_SPOOFING1)` Malicious Client Obtains Authorization](#(4_4_1_4_client_spoofing1)-malicious-client-obtains-authorization)**
-       * **[`(4_4_1_5_CLIENT_SPOOFING2)` Authorization code Phishing](#(4_4_1_5_client_spoofing2)-authorization-code-phishing)**
-       * **[`(4_4_1_6_CLIENT_SPOOFING3)` Authorization code Phishing](#(4_4_1_6_client_spoofing3)-authorization-code-phishing)**
-       * **[`(4_4_1_7_CLIENT_SPOOFING4)` Authorization code Leakage through Counterfeit Client](#(4_4_1_7_client_spoofing4)-authorization-code-leakage-through-counterfeit-client)**
-       * **[`(4_4_1_8_CSRF_ON_REDIRECT)` CSRF Attack against redirect-uri](#(4_4_1_8_csrf_on_redirect)-csrf-attack-against-redirect-uri)**
-       * **[`(4_4_1_9_CLICKJACKING)` Clickjacking Attack against Authorization](#(4_4_1_9_clickjacking)-clickjacking-attack-against-authorization)**
-       * **[`(4_4_1_10_RESOURCE_OWNER_SPOOFING1)` Resource Owner Impersonation](#(4_4_1_10_resource_owner_spoofing1)-resource-owner-impersonation)**
-       * **[`(4_4_1_11_DOS_TOKEN_ENTROPY)` Resource Owner Impersonation](#(4_4_1_11_dos_token_entropy)-resource-owner-impersonation)**
-       * **[`(4_4_1_12_DOS2)` DoS Using Manufactured Authorization "codes"](#(4_4_1_12_dos2)-dos-using-manufactured-authorization-"codes")**
-       * **[`(4_4_1_13_CODE_SUBSTITUTION)` DoS Using Manufactured Authorization "codes"](#(4_4_1_13_code_substitution)-dos-using-manufactured-authorization-"codes")**
-   * **[Implicit Grant flow Threat Model](#implicit-grant-flow-threat-model)**
-     * **[Implicit Grant flow - scope of analysis](#implicit-grant-flow---scope-of-analysis)**
-       * **[Overview](#overview)**
-     * **[Implicit Grant flow Threats](#implicit-grant-flow-threats)**
-       * **[`(4_4_2_1_TOKEN_LEAK1_NETWORK)` Access Token Leak in Transport/Endpoints](#(4_4_2_1_token_leak1_network)-access-token-leak-in-transport/endpoints)**
-       * **[`(4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY)` Access Token Leak in Browser History](#(4_4_2_2_token_leak2_browser_history)-access-token-leak-in-browser-history)**
-       * **[`(4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY)` Malicious Client Obtains Authorization](#(4_4_2_2_token_leak2_browser_history)-malicious-client-obtains-authorization)**
-       * **[`(4_4_2_4_MANIPULATION_SCRIPTS)` Manipulation of Scripts](#(4_4_2_4_manipulation_scripts)-manipulation-of-scripts)**
-       * **[`(4_4_2_5_CSRF_IMPLICIT)` CSRF Attack against redirect-uri](#(4_4_2_5_csrf_implicit)-csrf-attack-against-redirect-uri)**
-       * **[`(4_4_2_6_TOKEN_SUBSTITUTION)` Token Substitution (OAuth Login)](#(4_4_2_6_token_substitution)-token-substitution-(oauth-login))**
-     * **[Requests For Information](#requests-for-information)**
-   * **[Annex 1](#annex-1)**
-   * **[Corda NextGen operational security hardening guides](#corda-nextgen-operational-security-hardening-guides)**
-   * **[Operational guide for AUTHORIZATION_SERVER](#operational-guide-for-authorization_server)**
-     * **[Limiting the scope of access tokens obtained through automated approvals](#limiting-the-scope-of-access-tokens-obtained-through-automated-approvals)**
-     * **[Secure transport layer to client to auth_server by tls](#secure-transport-layer-to-client-to-auth_server-by-tls)**
-     * **[Checks on client's security policy](#checks-on-clients-security-policy)**
-     * **[Require user consent for public clients without secret](#require-user-consent-for-public-clients-without-secret)**
-     * **[Issue a "client_id" only in combination with "redirect_uri"](#issue-a-"client_id"-only-in-combination-with-"redirect_uri")**
-     * **[Validate pre-registered "redirect_uri"](#validate-pre-registered-"redirect_uri")**
-     * **[Tls for the authorization server](#tls-for-the-authorization-server)**
-     * **[Users educated to avoid phishing attacks](#users-educated-to-avoid-phishing-attacks)**
-     * **[Authorization_server policy discretional decision](#authorization_server-policy-discretional-decision)**
-     * **[Users educated to avoid phishing attacks](#users-educated-to-avoid-phishing-attacks)**
-     * **[Authorization_server policy discretional decision](#authorization_server-policy-discretional-decision)**
-     * **[Users educated to avoid phishing attacks](#users-educated-to-avoid-phishing-attacks)**
-   * **[Operational guide for The operators in the Authorization Server.](#operational-guide-for-the-operators-in-the-authorization-server.)**
-     * **[Enforce standard system security means](#enforce-standard-system-security-means)**
-     * **[Binding of authorization "code" to "client_id"](#binding-of-authorization-"code"-to-"client_id")**
-     * **[Use short expiration time](#use-short-expiration-time)**
-     * **[Limit number of usages or one-time usage](#limit-number-of-usages-or-one-time-usage)**
-     * **[Automatic revocation of derived tokens if abuse is detected](#automatic-revocation-of-derived-tokens-if-abuse-is-detected)**
-     * **[Users can be educated to not follow untrusted urls](#users-can-be-educated-to-not-follow-untrusted-urls)**
-     * **[Link the state parameter to user agent session (anti csrf)](#link-the-state-parameter-to-user-agent-session-(anti-csrf))**
-     * **[Javascript frame-busting](#javascript-frame-busting)**
-     * **[Interactive (non automatic) user approval](#interactive-(non-automatic)-user-approval)**
-     * **[Notify user's approval](#notify-users-approval)**
-     * **[Enforce credential storage protection best practices](#enforce-credential-storage-protection-best-practices)**
-     * **[Sign self-contained tokens](#sign-self-contained-tokens)**
-     * **[Binding of authorization "code" to "redirect_uri"](#binding-of-authorization-"code"-to-"redirect_uri")**
-     * **[Automatic processing of repeated authorizations requires client validation](#automatic-processing-of-repeated-authorizations-requires-client-validation)**
-     * **[Automatic processing of repeated authorizations requires client validation](#automatic-processing-of-repeated-authorizations-requires-client-validation)**
-     * **[Limit token scope](#limit-token-scope)**
-     * **[Issue installation-specific client secrets](#issue-installation-specific-client-secrets)**
-     * **[Limit access tokens granted per user](#limit-access-tokens-granted-per-user)**
-     * **[Make responses non-cacheable.](#make-responses-non-cacheable.)**
-     * **[Clients indicate their ids in requests](#clients-indicate-their-ids-in-requests)**
-     * **[Client limits authenticated users codes](#client-limits-authenticated-users-codes)**
-   * **[Operational guide for The operators of the CLIENT.](#operational-guide-for-the-operators-of-the-client.)**
-     * **[Reload the target page](#reload-the-target-page)**
-     * **[Link the state parameter to user agent session (anti csrf)](#link-the-state-parameter-to-user-agent-session-(anti-csrf))**
-     * **[Ensure confidentiality of requests (tls)](#ensure-confidentiality-of-requests-(tls))**
-     * **[Secure user login protocol](#secure-user-login-protocol)**
-     * **[One-time, per-use secrets (e.g., "client_secret")](#one-time-per-use-secrets-(e.g.-"client_secret"))**
-     * **[Link the authorization request with the redirect uri (state param)](#link-the-authorization-request-with-the-redirect-uri-(state-param))**
-     * **[Client limits authenticated users codes](#client-limits-authenticated-users-codes)**
-   * **[Operational guide for An entity capable of granting access to a protecte[...]](#operational-guide-for-an-entity-capable-of-granting-access-to-a-protecte[...])**
-     * **[Validation of client properties by end user](#validation-of-client-properties-by-end-user)**
-   * **[Annex 2](#annex-2)**
-   * **[Keys classification](#keys-classification)**
-     * **[Credentials](#credentials)**
-
-<div class="pagebreak"></div>
 
 
 
 
 
 <a name='executive-summary'></a>
-## Executive Summary
+
+## Executive Summary {: data-toc-label="Executive Summary"}
 
 
 
-> This section contains an executive summary of the threats and thier mitigation status
+> This section contains an executive summary of the threats and their mitigation status
 
 There are **1** unmitigated threats without proposed operational controls.<br/>
 
 <div markdown="1">
 
 <table markdown="block" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;">
-<tr><th>Threat ID</th><th>CVSS</th><th>Always valid</th></tr>
-<tr markdown="block">
-</td><td>
-<a href="#(open_redirector)-authorization-server-open-redirect">OAuth2.AuthorizationServer.OPEN_REDIRECTOR</a> 
-</td>
+<tr><th>Threat ID</th><th>CVSS</th><th>Always valid?</th></tr>
+<tr markdown="block"><td>
+<a href="#OAuth2.AuthorizationServer.OPEN_REDIRECTOR">AuthorizationServer.<br/>OPEN_REDIRECTOR</a> 
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.2 (High)</strong></span> </td>
-</td><td  style="text-align: center ">
+<td  style="text-align: center ">
 Yes
 </td>
 </tr>
 </table>
 
-
+</div>
 
 <div class="pagebreak"></div>
 
 
 <a name='threats-summary'></a>
-## Threats Summary
+
+## Threats Summary {: data-toc-label="Threats Summary"}
 
 
 
 
 
 
-> This section contains an executive summary of the threats and thier mitigation status
+> This section contains an executive summary of the threats and their mitigation status
 
 There are a total of **30** identified threats of which **12** are not fully mitigated 
 by default, and  **1** are unmitigated without proposed operational controls.<br/>
@@ -199,13 +79,13 @@ by default, and  **1** are unmitigated without proposed operational controls.<br
 <div markdown="1">
 
 <table markdown="block" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;">
-<tr><th>Threat ID</th><th>CVSS</th><th>Valid when (condition)</th><th>Fully mitigated</th><th>Has Operational <br/> coutnermeasures</th></tr>
+<tr><th>Threat ID</th><th>CVSS</th><th>Valid when (condition)</th><th>Fully mitigated</th><th>Has Operational <br/> countermeasures</th></tr>
 <tr markdown="block">
-</td><td>
-<a href="#(open_redirector)-authorization-server-open-redirect">OAuth2.AuthorizationServer.OPEN_REDIRECTOR</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.OPEN_REDIRECTOR">AuthorizationServer.<br/>OPEN_REDIRECTOR</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.2 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -217,11 +97,11 @@ No </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(public_client_spoofing1)-malicious-client-obtains-existing-authorization-by-fraud">OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1">AuthorizationServer.<br/>PUBLIC_CLIENT_SPOOFING1</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.1 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -233,11 +113,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_2_2_token_leak2_browser_history)-malicious-client-obtains-authorization">OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY">Flows_ImplicitGrant.<br/>4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.4 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -249,11 +129,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(client_secrets_disclosure)-client-secrets-disclosure-and-impersonation">OAuth2.Client.Client_Secrets_disclosure</a> 
-</td>
+<td>
+<a href="#OAuth2.Client.Client_Secrets_disclosure">Client.<br/>Client_Secrets_disclosure</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>6.8 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -265,11 +145,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(authserverphishing1)-password-phishing-by-counterfeit-authorization-server">OAuth2.AuthorizationServer.AuthServerPhishing1</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.AuthServerPhishing1">AuthorizationServer.<br/>AuthServerPhishing1</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>6.8 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -281,11 +161,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_2_2_token_leak2_browser_history)-access-token-leak-in-browser-history">OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY">Flows_ImplicitGrant.<br/>4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>6.1 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -297,11 +177,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_2_1_token_leak1_network)-access-token-leak-in-transport/endpoints">OAuth2.Flows.Flows_ImplicitGrant.4_4_2_1_TOKEN_LEAK1_NETWORK</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_1_TOKEN_LEAK1_NETWORK">Flows_ImplicitGrant.<br/>4_4_2_1_TOKEN_LEAK1_NETWORK</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.9 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -313,11 +193,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_2_4_manipulation_scripts)-manipulation-of-scripts">OAuth2.Flows.Flows_ImplicitGrant.4_4_2_4_MANIPULATION_SCRIPTS</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_4_MANIPULATION_SCRIPTS">Flows_ImplicitGrant.<br/>4_4_2_4_MANIPULATION_SCRIPTS</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.4 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -329,11 +209,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_2_5_csrf_implicit)-csrf-attack-against-redirect-uri">OAuth2.Flows.Flows_ImplicitGrant.4_4_2_5_CSRF_IMPLICIT</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_5_CSRF_IMPLICIT">Flows_ImplicitGrant.<br/>4_4_2_5_CSRF_IMPLICIT</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.4 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -345,11 +225,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_2_6_token_substitution)-token-substitution-(oauth-login)">OAuth2.Flows.Flows_ImplicitGrant.4_4_2_6_TOKEN_SUBSTITUTION</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_6_TOKEN_SUBSTITUTION">Flows_ImplicitGrant.<br/>4_4_2_6_TOKEN_SUBSTITUTION</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.4 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -361,11 +241,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(too_much_grant)-user-unintentionally-grants-too-much-access-scope">OAuth2.Client.TOO_MUCH_GRANT</a> 
-</td>
+<td>
+<a href="#OAuth2.Client.TOO_MUCH_GRANT">Client.<br/>TOO_MUCH_GRANT</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.3 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -377,11 +257,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(too_much_grant)-user-unintentionally-grants-too-much-access-scope">OAuth2.AuthorizationServer.TOO_MUCH_GRANT</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.TOO_MUCH_GRANT">AuthorizationServer.<br/>TOO_MUCH_GRANT</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.3 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -393,11 +273,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_3_2_as_db_token_disclosure)-obtaining-access-tokens-from-authorization-server-database">OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE">AuthorizationServer.<br/>4_3_2_AS_DB_TOKEN_DISCLOSURE</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.1 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -409,11 +289,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_1_auth_code_disclosure)-eavesdropping-or-leaking-authorization-codes">OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE">Flows_AuthCode.<br/>4_4_1_1_AUTH_CODE_DISCLOSURE</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.1 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -425,11 +305,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_8_csrf_on_redirect)-csrf-attack-against-redirect-uri">OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT">Flows_AuthCode.<br/>4_4_1_8_CSRF_ON_REDIRECT</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.1 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -441,11 +321,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_9_clickjacking)-clickjacking-attack-against-authorization">OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING">Flows_AuthCode.<br/>4_4_1_9_CLICKJACKING</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.1 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -457,11 +337,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_10_resource_owner_spoofing1)-resource-owner-impersonation">OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1">Flows_AuthCode.<br/>4_4_1_10_RESOURCE_OWNER_SPOOFING1</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>8.1 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -473,11 +353,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_3_5_client_secret_brute_force)-obtaining-client-secret-by-online-guessing">OAuth2.AuthorizationServer.4_3_5_CLIENT_SECRET_BRUTE_FORCE</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.4_3_5_CLIENT_SECRET_BRUTE_FORCE">AuthorizationServer.<br/>4_3_5_CLIENT_SECRET_BRUTE_FORCE</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.7 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -489,11 +369,11 @@ No </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_3_1_eavesdropping_access_tokens1)-eavesdropping-access-tokens">OAuth2.AuthorizationServer.4_3_1_EAVESDROPPING_ACCESS_TOKENS1</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.4_3_1_EAVESDROPPING_ACCESS_TOKENS1">AuthorizationServer.<br/>4_3_1_EAVESDROPPING_ACCESS_TOKENS1</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.4 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -505,11 +385,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_3_3_client_credentials_disclosure)-disclosure-of-client-credentials-during-transmission">OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE">AuthorizationServer.<br/>4_3_3_CLIENT_CREDENTIALS_DISCLOSURE</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.4 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -521,11 +401,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_3_4_client_credentials_disclosure)-obtaining-client-secret-from-authorization-server-database">OAuth2.AuthorizationServer.4_3_4_CLIENT_CREDENTIALS_DISCLOSURE</a> 
-</td>
+<td>
+<a href="#OAuth2.AuthorizationServer.4_3_4_CLIENT_CREDENTIALS_DISCLOSURE">AuthorizationServer.<br/>4_3_4_CLIENT_CREDENTIALS_DISCLOSURE</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.4 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -537,11 +417,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_2_auth_code_disclosure_db)-obtaining-authorization-codes-from-authorizationserver-database">OAuth2.Flows.Flows_AuthCode.4_4_1_2_AUTH_CODE_DISCLOSURE_DB</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_2_AUTH_CODE_DISCLOSURE_DB">Flows_AuthCode.<br/>4_4_1_2_AUTH_CODE_DISCLOSURE_DB</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.4 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -553,11 +433,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_3_auth_code_brute_force)-online-guessing-of-authorization-codes">OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE">Flows_AuthCode.<br/>4_4_1_3_AUTH_CODE_BRUTE_FORCE</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.4 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -569,11 +449,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_4_client_spoofing1)-malicious-client-obtains-authorization">OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1">Flows_AuthCode.<br/>4_4_1_4_CLIENT_SPOOFING1</a> 
+
 </td><td style="background-color: #df3d03; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>7.4 (High)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -585,11 +465,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_5_client_spoofing2)-authorization-code-phishing">OAuth2.Flows.Flows_AuthCode.4_4_1_5_CLIENT_SPOOFING2</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_5_CLIENT_SPOOFING2">Flows_AuthCode.<br/>4_4_1_5_CLIENT_SPOOFING2</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>6.9 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -601,11 +481,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_6_client_spoofing3)-authorization-code-phishing">OAuth2.Flows.Flows_AuthCode.4_4_1_6_CLIENT_SPOOFING3</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_6_CLIENT_SPOOFING3">Flows_AuthCode.<br/>4_4_1_6_CLIENT_SPOOFING3</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>6.9 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -617,11 +497,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_7_client_spoofing4)-authorization-code-leakage-through-counterfeit-client">OAuth2.Flows.Flows_AuthCode.4_4_1_7_CLIENT_SPOOFING4</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_7_CLIENT_SPOOFING4">Flows_AuthCode.<br/>4_4_1_7_CLIENT_SPOOFING4</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>6.5 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -633,11 +513,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_11_dos_token_entropy)-resource-owner-impersonation">OAuth2.Flows.Flows_AuthCode.4_4_1_11_DOS_TOKEN_ENTROPY</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_11_DOS_TOKEN_ENTROPY">Flows_AuthCode.<br/>4_4_1_11_DOS_TOKEN_ENTROPY</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>6.5 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -649,11 +529,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_13_code_substitution)-dos-using-manufactured-authorization-"codes"">OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION">Flows_AuthCode.<br/>4_4_1_13_CODE_SUBSTITUTION</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.4 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -665,11 +545,11 @@ Yes </td>
 
 </tr>
 <tr markdown="block">
-</td><td>
-<a href="#(4_4_1_12_dos2)-dos-using-manufactured-authorization-"codes"">OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2</a> 
-</td>
+<td>
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2">Flows_AuthCode.<br/>4_4_1_12_DOS2</a> 
+
 </td><td style="background-color: #f9a009; " > <span markdown="block" style="font-weight:bold; color:white;"><strong>5.3 (Medium)</strong></span> </td>
-</td><td>
+<td>
 Always valid
 </td>
 
@@ -681,18 +561,20 @@ Yes </td>
 
 </tr>
 </table>
-
+</div>
 
 
 <div class="pagebreak"></div>
 
 <a name='oauth-2.0---scope-of-analysis'></a>
-## OAuth 2.0 - scope of analysis
+
+## OAuth 2.0 - scope of analysis {: data-toc-label="OAuth 2.0 - scope of analysis"}
 
 
 
 <a name='overview'></a>
-### Overview
+
+### Overview {: data-toc-label="Overview"}
 
 Functional objectives:
 
@@ -775,55 +657,67 @@ Functional objectives:
 
 
 <a name='security-objectives'></a>
-### Security Objectives
 
-
-  **Summary list:**
-
-
-
-**General security Objectives**
-
-  - **FULL_CIA**: Confidentiality Integrity and availability of a Corda Network
-
-
-  - **INTEGRITY**: Data integrity
-
-
-  - **CONFIDENTIALITY**: Data confidentiality
-
-
-  - **AVAILABILITY**: System availability
+### Security Objectives {: data-toc-label="Security Objectives"}
 
 
 
-**Business specific**
-
-  - **COMPLIANCE**: Compliance
 
 
-  - **NON_REPUDIATION**: Auditability and Non repudiation of resource access
+**General security Objectives:**
 
-
-  - **CLIENT_ACCESS_LIMITATION**: Limits CLIENT access to RESOURCE_OWNER's assets and data
-
-
-  - **CLIENT_REVOKE_ACCESS**: Revoke CLIENT access to RESOURCE_OWNER's assets and data
-
-
-  - **CLIENT_LIMIT_ACCESS**: Limits CLIENT access to some RESOURCE_OWNER's assets and data
+  - <a href="#OAuth2.FULL_CIA">Confidentiality Integrity and availability of a Corda Network</a>
 
 
 
-**Advanced security features**
-
-  - **NOT_SHARING_OWNER_CREDENTIAL**: Not sharing RESOURCE_OWNER credentials
+  - <a href="#OAuth2.INTEGRITY">Data integrity</a>
 
 
-  - **USER_AGENT_RESILIENCY**: Compromised USER_AGENT resiliency
+
+  - <a href="#OAuth2.CONFIDENTIALITY">Data confidentiality</a>
 
 
-  - **CLIENT_RESILIENCY**: Compromised CLIENT resiliency
+
+  - <a href="#OAuth2.AVAILABILITY">System availability</a>
+
+
+
+
+**Business specific:**
+
+  - <a href="#OAuth2.COMPLIANCE">Compliance</a>
+
+
+
+  - <a href="#OAuth2.NON_REPUDIATION">Auditability and Non repudiation of resource access</a>
+
+
+
+  - <a href="#OAuth2.CLIENT_ACCESS_LIMITATION">Limits CLIENT access to RESOURCE_OWNER's assets and data</a>
+
+
+
+  - <a href="#OAuth2.CLIENT_REVOKE_ACCESS">Revoke CLIENT access to RESOURCE_OWNER's assets and data</a>
+
+
+
+  - <a href="#OAuth2.CLIENT_LIMIT_ACCESS">Limits CLIENT access to some RESOURCE_OWNER's assets and data</a>
+
+
+
+
+**Advanced security features:**
+
+  - <a href="#OAuth2.NOT_SHARING_OWNER_CREDENTIAL">Not sharing RESOURCE_OWNER credentials</a>
+
+
+
+  - <a href="#OAuth2.USER_AGENT_RESILIENCY">Compromised USER_AGENT resiliency</a>
+
+
+
+  - <a href="#OAuth2.CLIENT_RESILIENCY">Compromised CLIENT resiliency</a>
+
 
 
 
@@ -832,215 +726,392 @@ Functional objectives:
   **Details:**
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.FULL_CIA">FULL_CIA</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Confidentiality Integrity and availability of a Corda Network</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Ability to maintain fundamental confidentiality
-integrity and availability of the system
-</dd>
-
-
-</dl>
-<hr/>
 
 
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Data integrity</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Ability to maintain fundamental integrity of the system
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*</dd>
-<img src="img/secObjectives/INTEGRITY.svg"/>
+<a name='OAuth2.NON_REPUDIATION'></a>
 
-
-</dl>
-<hr/>
+<H4 id="OAuth2.NON_REPUDIATION" data-toc-label="Auditability and Non repudiation of resource access">Auditability and Non repudiation of resource access (<code>NON_REPUDIATION</code>)</H4>
+ 
 
 
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Data confidentiality</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Ability to maintain fundamental confidentiality of the system data
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*</dd>
-<img src="img/secObjectives/CONFIDENTIALITY.svg"/>
 
 
-</dl>
-<hr/>
-
-
-
-
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.AVAILABILITY">AVAILABILITY</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">System availability</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Ability to maintain fundamental availability of the system
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*</dd>
-<img src="img/secObjectives/AVAILABILITY.svg"/>
-
-
-</dl>
-<hr/>
-
-
-
-
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.COMPLIANCE">COMPLIANCE</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Compliance</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Ability to obtain and maintain maintain compliance with required regulations
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.AVAILABILITY">AVAILABILITY</a></code> *(System availability)*</dd>
-
-
-</dl>
-<hr/>
-
-
-
-
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.NON_REPUDIATION">NON_REPUDIATION</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Auditability and Non repudiation of resource access</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Ability to have available evidence of the users and actor mains actions, including:
+Ability to have available evidence of the users and actor mains actions, including:
   - Trackign of CLIENT access to RESOURCE_OWNER's assets and data 
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.COMPLIANCE">COMPLIANCE</a></code> *(Compliance)*</dd>
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.COMPLIANCE">COMPLIANCE</a></code> *(Compliance)*
+
+**Attack tree:**
+
 <img src="img/secObjectives/NON_REPUDIATION.svg"/>
 
 
-</dl>
 <hr/>
 
 
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Limits CLIENT access to RESOURCE_OWNER's assets and data</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Limits CLIENT access to RESOURCE_OWNER's assets and data . This includes:
+
+
+
+
+
+
+<a name='OAuth2.COMPLIANCE'></a>
+
+<H4 id="OAuth2.COMPLIANCE" data-toc-label="Compliance">Compliance (<code>COMPLIANCE</code>)</H4>
+ 
+
+
+
+
+
+
+Ability to obtain and maintain maintain compliance with required regulations
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.AVAILABILITY">AVAILABILITY</a></code> *(System availability)*
+
+
+<hr/>
+
+
+
+
+
+
+
+
+
+
+<a name='OAuth2.CLIENT_RESILIENCY'></a>
+
+<H4 id="OAuth2.CLIENT_RESILIENCY" data-toc-label="Compromised CLIENT resiliency">Compromised CLIENT resiliency (<code>CLIENT_RESILIENCY</code>)</H4>
+ 
+
+
+
+
+
+
+Resiliency for RESOURCE_OWNER's RESOURCES against compromised CLIENT
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*
+
+
+<hr/>
+
+
+
+
+
+
+
+
+
+
+<a name='OAuth2.USER_AGENT_RESILIENCY'></a>
+
+<H4 id="OAuth2.USER_AGENT_RESILIENCY" data-toc-label="Compromised USER_AGENT resiliency">Compromised USER_AGENT resiliency (<code>USER_AGENT_RESILIENCY</code>)</H4>
+ 
+
+
+
+
+
+
+Resiliency for RESOURCE_OWNER's USER_AGENT against attacks like XSS
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*
+
+
+<hr/>
+
+
+
+
+
+
+
+
+
+
+<a name='OAuth2.FULL_CIA'></a>
+
+<H4 id="OAuth2.FULL_CIA" data-toc-label="Confidentiality Integrity and availability of a Corda Network">Confidentiality Integrity and availability of a Corda Network (<code>FULL_CIA</code>)</H4>
+ 
+
+
+
+
+
+
+Ability to maintain fundamental confidentiality
+integrity and availability of the system
+
+**Priority:** High
+
+
+
+<hr/>
+
+
+
+
+
+
+
+
+
+
+<a name='OAuth2.CONFIDENTIALITY'></a>
+
+<H4 id="OAuth2.CONFIDENTIALITY" data-toc-label="Data confidentiality">Data confidentiality (<code>CONFIDENTIALITY</code>)</H4>
+ 
+
+
+
+
+
+
+Ability to maintain fundamental confidentiality of the system data
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*
+
+**Attack tree:**
+
+<img src="img/secObjectives/CONFIDENTIALITY.svg"/>
+
+
+<hr/>
+
+
+
+
+
+
+
+
+
+
+<a name='OAuth2.INTEGRITY'></a>
+
+<H4 id="OAuth2.INTEGRITY" data-toc-label="Data integrity">Data integrity (<code>INTEGRITY</code>)</H4>
+ 
+
+
+
+
+
+
+Ability to maintain fundamental integrity of the system
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*
+
+**Attack tree:**
+
+<img src="img/secObjectives/INTEGRITY.svg"/>
+
+
+<hr/>
+
+
+
+
+
+
+
+
+
+
+<a name='OAuth2.CLIENT_ACCESS_LIMITATION'></a>
+
+<H4 id="OAuth2.CLIENT_ACCESS_LIMITATION" data-toc-label="Limits CLIENT access to RESOURCE_OWNER's assets and data">Limits CLIENT access to RESOURCE_OWNER's assets and data (<code>CLIENT_ACCESS_LIMITATION</code>)</H4>
+ 
+
+
+
+
+
+
+Limits CLIENT access to RESOURCE_OWNER's assets and data . This includes:
 
   - Revoke access to CLIENT over time
   - Limit the set of resources accessed by CLIENT (authorization)
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.COMPLIANCE">COMPLIANCE</a></code> *(Compliance)*</dd>
+
+**Priority:** High
+
+**Contributes to:**
 
 
-</dl>
+  - <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*
+  - <code><a href="#OAuth2.COMPLIANCE">COMPLIANCE</a></code> *(Compliance)*
+
+
 <hr/>
 
 
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.CLIENT_REVOKE_ACCESS">CLIENT_REVOKE_ACCESS</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Revoke CLIENT access to RESOURCE_OWNER's assets and data</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Revoke access to CLIENT over time
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*</dd>
 
 
-</dl>
+
+
+
+
+<a name='OAuth2.CLIENT_LIMIT_ACCESS'></a>
+
+<H4 id="OAuth2.CLIENT_LIMIT_ACCESS" data-toc-label="Limits CLIENT access to some RESOURCE_OWNER's assets and data">Limits CLIENT access to some RESOURCE_OWNER's assets and data (<code>CLIENT_LIMIT_ACCESS</code>)</H4>
+ 
+
+
+
+
+
+
+Limit the set of resources accessed by CLIENT (authorization)
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*
+
+
 <hr/>
 
 
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.CLIENT_LIMIT_ACCESS">CLIENT_LIMIT_ACCESS</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Limits CLIENT access to some RESOURCE_OWNER's assets and data</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Limit the set of resources accessed by CLIENT (authorization)
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*</dd>
 
 
-</dl>
+
+
+
+
+<a name='OAuth2.NOT_SHARING_OWNER_CREDENTIAL'></a>
+
+<H4 id="OAuth2.NOT_SHARING_OWNER_CREDENTIAL" data-toc-label="Not sharing RESOURCE_OWNER credentials">Not sharing RESOURCE_OWNER credentials (<code>NOT_SHARING_OWNER_CREDENTIAL</code>)</H4>
+ 
+
+
+
+
+
+
+Not sharing RESOURCE_OWNER credential with third parties
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*
+
+
 <hr/>
 
 
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.NOT_SHARING_OWNER_CREDENTIAL">NOT_SHARING_OWNER_CREDENTIAL</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Not sharing RESOURCE_OWNER credentials</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Not sharing RESOURCE_OWNER credential with third parties
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*</dd>
 
 
-</dl>
+
+
+
+
+<a name='OAuth2.CLIENT_REVOKE_ACCESS'></a>
+
+<H4 id="OAuth2.CLIENT_REVOKE_ACCESS" data-toc-label="Revoke CLIENT access to RESOURCE_OWNER's assets and data">Revoke CLIENT access to RESOURCE_OWNER's assets and data (<code>CLIENT_REVOKE_ACCESS</code>)</H4>
+ 
+
+
+
+
+
+
+Revoke access to CLIENT over time
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*
+
+
 <hr/>
 
 
 
 
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.USER_AGENT_RESILIENCY">USER_AGENT_RESILIENCY</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Compromised USER_AGENT resiliency</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Resiliency for RESOURCE_OWNER's USER_AGENT against attacks like XSS
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*</dd>
 
 
-</dl>
+
+
+
+
+<a name='OAuth2.AVAILABILITY'></a>
+
+<H4 id="OAuth2.AVAILABILITY" data-toc-label="System availability">System availability (<code>AVAILABILITY</code>)</H4>
+ 
+
+
+
+
+
+
+Ability to maintain fundamental availability of the system
+
+**Priority:** High
+
+**Contributes to:**
+
+
+  - <code><a href="#OAuth2.FULL_CIA">FULL_CIA</a></code> *(Confidentiality Integrity and availability of a Corda Network)*
+
+**Attack tree:**
+
+<img src="img/secObjectives/AVAILABILITY.svg"/>
+
+
 <hr/>
 
 
-
-
-<dl markdown="block">
-<dt>ID</dt><dd><code><a id="OAuth2.CLIENT_RESILIENCY">CLIENT_RESILIENCY</a></code></dd>
-<dt markdown="block">Title</dt>
-<dd markdown="block">Compromised CLIENT resiliency</dd>
-<dt markdown="block">Description</dt>
-<dd markdown="block">Resiliency for RESOURCE_OWNER's RESOURCES against compromised CLIENT
-</dd>
-  <dt markdown="block"> Contributes to:</dt>
-  <dd markdown="block">Contributes to <code><a href="#OAuth2.CLIENT_ACCESS_LIMITATION">CLIENT_ACCESS_LIMITATION</a></code> *(Limits CLIENT access to RESOURCE_OWNER's assets and data)*</dd>
-
-
-</dl>
-<hr/>
 
 
 
@@ -1049,7 +1120,8 @@ integrity and availability of the system
 
   
 <a name='linked-threat-models'></a>
-### Linked threat Models
+
+### Linked threat Models {: data-toc-label="Linked threat Models"}
 
 
   - **Client** (ID: OAuth2.Client)
@@ -1065,7 +1137,8 @@ integrity and availability of the system
 <div class="pagebreak"></div>
 
 <a name='actors'></a>
-### Actors
+
+### Actors {: data-toc-label="Actors"}
 
 
 > Actors, agents, users and attackers may be used as synonymous. 
@@ -1073,8 +1146,16 @@ integrity and availability of the system
 
 
 
-<a id="OAuth2.ANONYMOUS"></a>
-**`OAuth2.ANONYMOUS`** (from OAuth2 scope) <br>
+
+
+
+<a name='OAuth2.ANONYMOUS'></a>
+
+<H5 id="OAuth2.ANONYMOUS" data-toc-label="Anonymous internet user
+[...]">Anonymous internet user
+[...] (<code>ANONYMOUS</code>)</H5> <div class='skipTOC'></div>
+ 
+
 <dl markdown="block">
 <dt>Description:</dt><dd markdown="block">Anonymous internet user
 </dd>
@@ -1087,8 +1168,14 @@ integrity and availability of the system
 
 
 
-<a id="OAuth2.RESOURCE_OWNER"></a>
-**`OAuth2.RESOURCE_OWNER`** (from OAuth2 scope) <br>
+
+
+
+<a name='OAuth2.RESOURCE_OWNER'></a>
+
+<H5 id="OAuth2.RESOURCE_OWNER" data-toc-label="An entity capable of granting access to a protecte[...]">An entity capable of granting access to a protecte[...] (<code>RESOURCE_OWNER</code>)</H5> <div class='skipTOC'></div>
+ 
+
 <dl markdown="block">
 <dt>Description:</dt><dd markdown="block">An entity capable of granting access to a protected resource.
 When the resource owner is a person, it is referred to as an
@@ -1103,8 +1190,14 @@ end-user.
 
 
 
-<a id="OAuth2.RESOURCE_SERVER"></a>
-**`OAuth2.RESOURCE_SERVER`** (from OAuth2 scope) <br>
+
+
+
+<a name='OAuth2.RESOURCE_SERVER'></a>
+
+<H5 id="OAuth2.RESOURCE_SERVER" data-toc-label="The server hosting the protected resources, capabl[...]">The server hosting the protected resources, capabl[...] (<code>RESOURCE_SERVER</code>)</H5> <div class='skipTOC'></div>
+ 
+
 <dl markdown="block">
 <dt>Description:</dt><dd markdown="block">The server hosting the protected resources, capable of accepting
 and responding to protected resource requests using access tokens.
@@ -1118,8 +1211,16 @@ and responding to protected resource requests using access tokens.
 
 
 
-<a id="OAuth2.CLIENT_OPERATOR"></a>
-**`OAuth2.CLIENT_OPERATOR`** (from OAuth2 scope) <br>
+
+
+
+<a name='OAuth2.CLIENT_OPERATOR'></a>
+
+<H5 id="OAuth2.CLIENT_OPERATOR" data-toc-label="The operators of the CLIENT.
+[...]">The operators of the CLIENT.
+[...] (<code>CLIENT_OPERATOR</code>)</H5> <div class='skipTOC'></div>
+ 
+
 <dl markdown="block">
 <dt>Description:</dt><dd markdown="block">The operators of the CLIENT.
 </dd>
@@ -1132,8 +1233,16 @@ and responding to protected resource requests using access tokens.
 
 
 
-<a id="OAuth2.AUTHORIZATION_SERVER_OPERATOR"></a>
-**`OAuth2.AUTHORIZATION_SERVER_OPERATOR`** (from OAuth2 scope) <br>
+
+
+
+<a name='OAuth2.AUTHORIZATION_SERVER_OPERATOR'></a>
+
+<H5 id="OAuth2.AUTHORIZATION_SERVER_OPERATOR" data-toc-label="The operators in the Authorization Server.
+[...]">The operators in the Authorization Server.
+[...] (<code>AUTHORIZATION_SERVER_OPERATOR</code>)</H5> <div class='skipTOC'></div>
+ 
+
 <dl markdown="block">
 <dt>Description:</dt><dd markdown="block">The operators in the Authorization Server.
 </dd>
@@ -1148,7 +1257,8 @@ and responding to protected resource requests using access tokens.
 
 
 <a name='assumptions'></a>
-### Assumptions
+
+### Assumptions {: data-toc-label="Assumptions"}
 
 
 <dl markdown="block">
@@ -1256,68 +1366,70 @@ o  per-authorization process: "redirect_uri", authorization "code"
 <div class="pagebreak"></div>
 
 <a name='assets'></a>
-### Assets
+
+### Assets {: data-toc-label="Assets"}
 
 
 
 <a name='summary-table'></a>
-#### Summary Table
+
+#### Summary Table {: data-toc-label="Summary Table"}
 
 
 
 <table markdown="block">
 <tr><th>Title(ID)</th><th>Type</th><th>In Scope</th></tr>
-<tr markdown="block"><td markdown="block">Client<br/><code><strong markdown="block">CLIENT</code>
+<tr markdown="block"><td markdown="block">Client<br/><code><strong markdown="block">CLIENT</strong></code>
 </td><td>system</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Confidential Client<br/><code><strong markdown="block">CONFIDENTIAL_CLIENT</code>
+<tr markdown="block"><td markdown="block">Confidential Client<br/><code><strong markdown="block">CONFIDENTIAL_CLIENT</strong></code>
 </td><td>system</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Confidential Client<br/><code><strong markdown="block">PUBLIC_CLIENT</code>
+<tr markdown="block"><td markdown="block">Confidential Client<br/><code><strong markdown="block">PUBLIC_CLIENT</strong></code>
 </td><td>system</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Authorization Grant<br/><code><strong markdown="block">AUTHORIZATION_GRANT</code>
+<tr markdown="block"><td markdown="block">Authorization Grant<br/><code><strong markdown="block">AUTHORIZATION_GRANT</strong></code>
 </td><td>credential</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Access Token<br/><code><strong markdown="block">ACCESS_TOKEN</code>
+<tr markdown="block"><td markdown="block">Access Token<br/><code><strong markdown="block">ACCESS_TOKEN</strong></code>
 </td><td>credential</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Client secret for authentication with AUTH_SERVER<br/><code><strong markdown="block">CLIENT_SECRETS</code>
+<tr markdown="block"><td markdown="block">Client secret for authentication with AUTH_SERVER<br/><code><strong markdown="block">CLIENT_SECRETS</strong></code>
 </td><td>credential</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Authorization server<br/><code><strong markdown="block">AUTH_SERVER</code>
+<tr markdown="block"><td markdown="block">Authorization server<br/><code><strong markdown="block">AUTH_SERVER</strong></code>
 </td><td>system</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Auth User Agent Redirection<br/><code><strong markdown="block">DF_AUTH_REDIRECT</code>
+<tr markdown="block"><td markdown="block">Auth User Agent Redirection<br/><code><strong markdown="block">DF_AUTH_REDIRECT</strong></code>
 </td><td>dataflow</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Auth server sending the access token to the client<br/><code><strong markdown="block">DF_ACCESS_TOKEN_CL</code>
+<tr markdown="block"><td markdown="block">Auth server sending the access token to the client<br/><code><strong markdown="block">DF_ACCESS_TOKEN_CL</strong></code>
 </td><td>dataflow</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Client requesting Authorization Server for the Access Token<br/><code><strong markdown="block">DF_AUTH_GRANT_AS</code>
+<tr markdown="block"><td markdown="block">Client requesting Authorization Server for the Access Token<br/><code><strong markdown="block">DF_AUTH_GRANT_AS</strong></code>
 </td><td>dataflow</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Public Client<br/><code><strong markdown="block">CONFIDENTIAL_CLIENT</code>
+<tr markdown="block"><td markdown="block">Public Client<br/><code><strong markdown="block">CONFIDENTIAL_CLIENT</strong></code>
 </td><td>system</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Public Client<br/><code><strong markdown="block">PUBLIC_CLIENT</code>
+<tr markdown="block"><td markdown="block">Public Client<br/><code><strong markdown="block">PUBLIC_CLIENT</strong></code>
 </td><td>system</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Client Identifier<br/><code><strong markdown="block">CLIENT_ID</code>
+<tr markdown="block"><td markdown="block">Client Identifier<br/><code><strong markdown="block">CLIENT_ID</strong></code>
 </td><td>data</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
 </table>
 
@@ -1328,29 +1440,47 @@ o  per-authorization process: "redirect_uri", authorization "code"
 
 
 <a name='details'></a>
-#### Details
+
+#### Details {: data-toc-label="Details"}
 
 
 
 <hr/>
 
-<a id="OAuth2.CLIENT"></a>
+<div class='current'>
 
-<a name='client-(system-in-scope---id-<code>client</code>)'></a>
-##### Client (system in scope - ID: <code>CLIENT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.CLIENT'></a>
+
+<H5 id="OAuth2.CLIENT" data-toc-label="Client">Client (system in scope - ID: <code>CLIENT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 An application requesting access from the RESOURCE_OWNER (TODO: refine this description)
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.CONFIDENTIAL_CLIENT"></a>
+<div class='current'>
 
-<a name='confidential-client-(system-in-scope---id-<code>confidential_client</code>)'></a>
-##### Confidential Client (system in scope - ID: <code>CONFIDENTIAL_CLIENT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.CONFIDENTIAL_CLIENT'></a>
+
+<H5 id="OAuth2.CONFIDENTIAL_CLIENT" data-toc-label="Confidential Client">Confidential Client (system in scope - ID: <code>CONFIDENTIAL_CLIENT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Clients capable of maintaining the confidentiality of their
@@ -1362,14 +1492,24 @@ client authentication using other means.
 
 <dd markdown="block"> Client  (<a href="#OAuth2.CLIENT">CLIENT</a>) </dd>
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.PUBLIC_CLIENT"></a>
+<div class='current'>
 
-<a name='confidential-client-(system-in-scope---id-<code>public_client</code>)'></a>
-##### Confidential Client (system in scope - ID: <code>PUBLIC_CLIENT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.PUBLIC_CLIENT'></a>
+
+<H5 id="OAuth2.PUBLIC_CLIENT" data-toc-label="Confidential Client">Confidential Client (system in scope - ID: <code>PUBLIC_CLIENT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Clients incapable of maintaining the confidentiality of their
@@ -1382,14 +1522,24 @@ authentication via any other means.
 
 <dd markdown="block"> Client  (<a href="#OAuth2.CLIENT">CLIENT</a>) </dd>
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.AUTHORIZATION_GRANT"></a>
+<div class='current'>
 
-<a name='authorization-grant-(credential-in-scope---id-<code>authorization_grant</code>)'></a>
-##### Authorization Grant (credential in scope - ID: <code>AUTHORIZATION_GRANT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.AUTHORIZATION_GRANT'></a>
+
+<H5 id="OAuth2.AUTHORIZATION_GRANT" data-toc-label="Authorization Grant">Authorization Grant (credential in scope - ID: <code>AUTHORIZATION_GRANT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 An authorization grant is a credential representing the resource
@@ -1400,14 +1550,24 @@ credentials, and client credentials -- as well as an extensibility
 mechanism for defining additional types.
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.ACCESS_TOKEN"></a>
+<div class='current'>
 
-<a name='access-token-(credential-in-scope---id-<code>access_token</code>)'></a>
-##### Access Token (credential in scope - ID: <code>ACCESS_TOKEN</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.ACCESS_TOKEN'></a>
+
+<H5 id="OAuth2.ACCESS_TOKEN" data-toc-label="Access Token">Access Token (credential in scope - ID: <code>ACCESS_TOKEN</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Access tokens are credentials used to access protected resources.  An
@@ -1439,77 +1599,137 @@ this specification and are defined by companion specifications such
 as [RFC6750].
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.CLIENT_SECRETS"></a>
+<div class='current'>
 
-<a name='client-secret-for-authentication-with-auth_server-(credential-in-scope---id-<code>client_secrets</code>)'></a>
-##### Client secret for authentication with AUTH_SERVER (credential in scope - ID: <code>CLIENT_SECRETS</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.CLIENT_SECRETS'></a>
+
+<H5 id="OAuth2.CLIENT_SECRETS" data-toc-label="Client secret for authentication with AUTH_SERVER">Client secret for authentication with AUTH_SERVER (credential in scope - ID: <code>CLIENT_SECRETS</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Secrets held by CLIENT to authentication to the Authorization Server
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.AUTH_SERVER"></a>
+<div class='current'>
 
-<a name='authorization-server-(system-in-scope---id-<code>auth_server</code>)'></a>
-##### Authorization server (system in scope - ID: <code>AUTH_SERVER</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.AUTH_SERVER'></a>
+
+<H5 id="OAuth2.AUTH_SERVER" data-toc-label="Authorization server">Authorization server (system in scope - ID: <code>AUTH_SERVER</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 The server issuing access tokens to the client after successfully
 authenticating the resource owner and obtaining authorization.
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.DF_AUTH_REDIRECT"></a>
+<div class='current'>
 
-<a name='auth-user-agent-redirection-(dataflow-in-scope---id-<code>df_auth_redirect</code>)'></a>
-##### Auth User Agent Redirection (dataflow in scope - ID: <code>DF_AUTH_REDIRECT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.DF_AUTH_REDIRECT'></a>
+
+<H5 id="OAuth2.DF_AUTH_REDIRECT" data-toc-label="Auth User Agent Redirection">Auth User Agent Redirection (dataflow in scope - ID: <code>DF_AUTH_REDIRECT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 User Agent Redirection for Client authorization request. this is part of DF_AUTH_REQUEST
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.DF_ACCESS_TOKEN_CL"></a>
+<div class='current'>
 
-<a name='auth-server-sending-the-access-token-to-the-client-(dataflow-in-scope---id-<code>df_access_token_cl</code>)'></a>
-##### Auth server sending the access token to the client (dataflow in scope - ID: <code>DF_ACCESS_TOKEN_CL</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.DF_ACCESS_TOKEN_CL'></a>
+
+<H5 id="OAuth2.DF_ACCESS_TOKEN_CL" data-toc-label="Auth server sending the access token to the client">Auth server sending the access token to the client (dataflow in scope - ID: <code>DF_ACCESS_TOKEN_CL</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Auth server sending the access token to the client after resource owner approval
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.DF_AUTH_GRANT_AS"></a>
+<div class='current'>
 
-<a name='client-requesting-authorization-server-for-the-access-token-(dataflow-in-scope---id-<code>df_auth_grant_as</code>)'></a>
-##### Client requesting Authorization Server for the Access Token (dataflow in scope - ID: <code>DF_AUTH_GRANT_AS</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.DF_AUTH_GRANT_AS'></a>
+
+<H5 id="OAuth2.DF_AUTH_GRANT_AS" data-toc-label="Client requesting Authorization Server for the Access Token">Client requesting Authorization Server for the Access Token (dataflow in scope - ID: <code>DF_AUTH_GRANT_AS</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Client requesting Authorization Server for the Access Token after resource owner approval
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.CONFIDENTIAL_CLIENT"></a>
+<div class='current'>
 
-<a name='public-client-(system-in-scope---id-<code>confidential_client</code>)'></a>
-##### Public Client (system in scope - ID: <code>CONFIDENTIAL_CLIENT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.CONFIDENTIAL_CLIENT'></a>
+
+<H5 id="OAuth2.CONFIDENTIAL_CLIENT" data-toc-label="Public Client">Public Client (system in scope - ID: <code>CONFIDENTIAL_CLIENT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Clients capable of maintaining the confidentiality of their
@@ -1524,14 +1744,24 @@ token issued to the client are stored on the web server and are
 not exposed to or accessible by the resource owner.
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.PUBLIC_CLIENT"></a>
+<div class='current'>
 
-<a name='public-client-(system-in-scope---id-<code>public_client</code>)'></a>
-##### Public Client (system in scope - ID: <code>PUBLIC_CLIENT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.PUBLIC_CLIENT'></a>
+
+<H5 id="OAuth2.PUBLIC_CLIENT" data-toc-label="Public Client">Public Client (system in scope - ID: <code>PUBLIC_CLIENT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Clients incapable of maintaining the confidentiality of their
@@ -1542,14 +1772,24 @@ authentication via any other means.
 For example a user-agent-based application or a native applications.
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.CLIENT_ID"></a>
+<div class='current'>
 
-<a name='client-identifier-(data-in-scope---id-<code>client_id</code>)'></a>
-##### Client Identifier (data in scope - ID: <code>CLIENT_ID</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.CLIENT_ID'></a>
+
+<H5 id="OAuth2.CLIENT_ID" data-toc-label="Client Identifier">Client Identifier (data in scope - ID: <code>CLIENT_ID</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 The authorization server issues the registered client a client
@@ -1565,6 +1805,9 @@ identifier size.  The authorization server SHOULD document the size
 of any identifier it issues.
 
 </dl>
+
+</div>
+
  
 
 
@@ -1572,18 +1815,27 @@ of any identifier it issues.
 
 <div class="pagebreak"></div>
 
+
+</div>
 
 
 
   
  
 
+<div markdown="block" class='current'>
 
 
 
 
-<a name='client-threat-model'></a>
-# Client Threat Model
+
+
+
+
+<a name='OAuth2.Client'></a>
+
+<H2 id="OAuth2.Client" data-toc-label="Client">Client</H2>
+
 
 
 
@@ -1610,10 +1862,11 @@ of any identifier it issues.
 
 
 <div class="pagebreak"></div>
-<hr>
+<hr/>
 
 <a name='client-threats'></a>
-## Client Threats
+
+### Client Threats {: data-toc-label="Client Threats"}
 
 
 > **Note** This section contains the threat and mitigations identified during the analysis phase.
@@ -1621,19 +1874,31 @@ of any identifier it issues.
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(client_secrets_disclosure)-client-secrets-disclosure-and-impersonation'></a>
-### `(Client_Secrets_disclosure)` Client Secrets Disclosure and impersonation
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.Client.Client_Secrets_disclosure'></a>
+
+#### Client Secrets Disclosure and impersonation
+ 
+ xxx
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/Client_Secrets_disclosure.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 
 
@@ -1649,11 +1914,13 @@ obfuscate secrets in their application distribution, one should
 consider that the secret can still be reverse-engineered by anyone
 with access to a complete functioning application bundle or binary.
 </dd>
-<dt>Impact</dt><dd markdown="block">- Client authentication of access to the authorization server can be
+<dt>Impact</dt><dd markdown="block"> Client authentication of access to the authorization server can be
 bypassed.
-- Stolen refresh tokens or authorization "codes" can be replayed.
-- Client spoofing/impersonation
+ Stolen refresh tokens or authorization "codes" can be replayed.
+ Client spoofing/impersonation
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
+
+
 
 
 <dt>CVSS</dt>
@@ -1666,15 +1933,17 @@ bypassed.
 </dl>
 
 <a name='counter-measures-for-client_secrets_disclosure'></a>
-#### Counter-measures for `Client_Secrets_disclosure` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-client_secrets_disclosure" data-toc-label="Counter-measures for">Counter-measures for <code>Client_Secrets_disclosure</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`5_2_3_1_CLIENT_CHECK1` Checks on client's security policy**<br/>
+<strong> <code>5_2_3_1_CLIENT_CHECK1</code> Checks on client's security policy</strong><br/>
 <dd markdown="block">
 Don't issue secrets to public clients or clients with
 inappropriate security policy
 </dd>
+
 
 
 <dd markdown="block">
@@ -1683,7 +1952,7 @@ inappropriate security policy
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**`5_2_3_2_USER_CONSENT1` Require User Consent for Public Clients without Secret**<br/>
+<strong> <code>5_2_3_2_USER_CONSENT1</code> Require User Consent for Public Clients without Secret</strong><br/>
 <dd markdown="block">
 Authorization servers should not allow automatic authorization for
 public clients.  The authorization server may issue an individual
@@ -1694,13 +1963,14 @@ against the following threat:
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**`5_2_3_3_CLIENT_ID_TO_REDIRECT_URI` Issue a "client_id" Only in Combination with "redirect_uri"**<br/>
+<strong> <code>5_2_3_3_CLIENT_ID_TO_REDIRECT_URI</code> Issue a "client_id" Only in Combination with "redirect_uri"</strong><br/>
 <dd markdown="block">
 The authorization server may issue a "client_id" and bind the
   "client_id" to a certain pre-configured "redirect_uri".  Any
@@ -1717,13 +1987,14 @@ The authorization server may issue a "client_id" and bind the
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**`5_2_3_4_SPECIFIC_CLIENT_SECRETS` Issue Installation-Specific Client Secrets**<br/>
+<strong> <code>5_2_3_4_SPECIFIC_CLIENT_SECRETS</code> Issue Installation-Specific Client Secrets</strong><br/>
 <dd markdown="block">
 An authorization server may issue separate client identifiers and
 corresponding secrets to the different installations of a particular
@@ -1762,13 +2033,14 @@ refresh tokens of a specific installation at once.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_2_3_5_VALIDATE_REDIRECT_URI` Validate Pre-Registered "redirect_uri"**<br/>
+<strong> <code>5_2_3_5_VALIDATE_REDIRECT_URI</code> Validate Pre-Registered "redirect_uri"</strong><br/>
 <dd markdown="block">
 An authorization server should require all clients to register their
 "redirect_uri", and the "redirect_uri" should be the full URI as
@@ -1822,29 +2094,44 @@ redirect URI the legitimate client uses on all other devices.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(too_much_grant)-user-unintentionally-grants-too-much-access-scope'></a>
-### `(TOO_MUCH_GRANT)` User Unintentionally Grants Too Much Access Scope
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.Client.TOO_MUCH_GRANT'></a>
+
+<H4 id="OAuth2.Client.TOO_MUCH_GRANT" data-toc-label="User Unintentionally Grants Too Much Access Scope">User Unintentionally Grants Too Much Access Scope (<code>TOO_MUCH_GRANT</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/TOO_MUCH_GRANT.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 
 
@@ -1858,6 +2145,8 @@ not be permitted.
 <dt>Impact</dt><dd markdown="block">Disclosure of  RESOURCE_OWNER's RESOURCES<br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -1868,11 +2157,12 @@ not be permitted.
 </dl>
 
 <a name='counter-measures-for-too_much_grant'></a>
-#### Counter-measures for `TOO_MUCH_GRANT` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-too_much_grant" data-toc-label="Counter-measures for">Counter-measures for <code>TOO_MUCH_GRANT</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`AUTH_SERVER_RE_CHECK_GRANTS` AUTHORIZATION_SERVER policy discretional decision**<br/>
+<strong> <code>AUTH_SERVER_RE_CHECK_GRANTS</code> AUTHORIZATION_SERVER policy discretional decision</strong><br/>
 <dd markdown="block">
 Narrow the scope, based on the client.  When obtaining end-user
 authorization and where the client requests scope, the
@@ -1885,13 +2175,14 @@ lower scope to public clients (Section 5.1.5.1).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**`USER_AUTH_AWARENESS` Users educated to avoid phishing attacks**<br/>
+<strong> <code>USER_AUTH_AWARENESS</code> Users educated to avoid phishing attacks</strong><br/>
 <dd markdown="block">
 Authorization servers should attempt to educate users about the
 risks posed by phishing attacks and should provide mechanisms that
@@ -1900,28 +2191,41 @@ Section 5.1.2).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
 </dl> 
+</div>
+
+
 
 
 
 <div class="pagebreak"></div>
 
 
+</div>
+
 
   
  
 
+<div markdown="block" class='current'>
 
 
 
 
-<a name='authorization-server-threat-model'></a>
-# Authorization Server Threat Model
+
+
+
+
+<a name='OAuth2.AuthorizationServer'></a>
+
+<H2 id="OAuth2.AuthorizationServer" data-toc-label="Authorization Server">Authorization Server</H2>
+
 
 
 
@@ -1942,7 +2246,8 @@ Section 5.1.2).
 <div class="pagebreak"></div>
 
 <a name='actors'></a>
-### Actors
+
+#### Actors {: data-toc-label="Actors"}
 
 
 > Actors, agents, users and attackers may be used as synonymous. 
@@ -1950,8 +2255,16 @@ Section 5.1.2).
 
 
 
-<a id="OAuth2.AuthorizationServer.ANONYMOUS"></a>
-**`OAuth2.AuthorizationServer.ANONYMOUS`** (from OAuth2.AuthorizationServer scope) <br>
+
+
+
+<a name='OAuth2.AuthorizationServer.ANONYMOUS'></a>
+
+<H5 id="OAuth2.AuthorizationServer.ANONYMOUS" data-toc-label="Anonymous internet user
+[...]">Anonymous internet user
+[...] (<code>ANONYMOUS</code>)</H5> <div class='skipTOC'></div>
+ 
+
 <dl markdown="block">
 <dt>Description:</dt><dd markdown="block">Anonymous internet user
 </dd>
@@ -1964,8 +2277,16 @@ Section 5.1.2).
 
 
 
-<a id="OAuth2.AuthorizationServer.CLIENT"></a>
-**`OAuth2.AuthorizationServer.CLIENT`** (from OAuth2.AuthorizationServer scope) <br>
+
+
+
+<a name='OAuth2.AuthorizationServer.CLIENT'></a>
+
+<H5 id="OAuth2.AuthorizationServer.CLIENT" data-toc-label="Client app
+[...]">Client app
+[...] (<code>CLIENT</code>)</H5> <div class='skipTOC'></div>
+ 
+
 <dl markdown="block">
 <dt>Description:</dt><dd markdown="block">Client app
 </dd>
@@ -1980,7 +2301,8 @@ Section 5.1.2).
 
 
 <a name='assumptions'></a>
-### Assumptions
+
+#### Assumptions {: data-toc-label="Assumptions"}
 
 
 <dl markdown="block">
@@ -1994,24 +2316,26 @@ Section 5.1.2).
 <div class="pagebreak"></div>
 
 <a name='assets'></a>
-### Assets
+
+#### Assets {: data-toc-label="Assets"}
 
 
 
 <a name='summary-table'></a>
-#### Summary Table
+
+##### Summary Table {: data-toc-label="Summary Table"}
 
 
 
 <table markdown="block">
 <tr><th>Title(ID)</th><th>Type</th><th>In Scope</th></tr>
-<tr markdown="block"><td markdown="block">Authorization server token endpoint<br/><code><strong markdown="block">AUTH_SERVER_TOKEN_ENDPOINT</code>
+<tr markdown="block"><td markdown="block">Authorization server token endpoint<br/><code><strong markdown="block">AUTH_SERVER_TOKEN_ENDPOINT</strong></code>
 </td><td>endpoint</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Authorization endpoint for resource owner<br/><code><strong markdown="block">AUTH_SERVER_AUTH_ENDPOINT</code>
+<tr markdown="block"><td markdown="block">Authorization endpoint for resource owner<br/><code><strong markdown="block">AUTH_SERVER_AUTH_ENDPOINT</strong></code>
 </td><td>endpoint</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
 </table>
 
@@ -2022,44 +2346,66 @@ Section 5.1.2).
 
 
 <a name='details'></a>
-#### Details
+
+##### Details {: data-toc-label="Details"}
 
 
 
 <hr/>
 
-<a id="OAuth2.AuthorizationServer.AUTH_SERVER_TOKEN_ENDPOINT"></a>
+<div class='current'>
 
-<a name='authorization-server-token-endpoint-(endpoint-in-scope---id-<code>auth_server_token_endpoint</code>)'></a>
-##### Authorization server token endpoint (endpoint in scope - ID: <code>AUTH_SERVER_TOKEN_ENDPOINT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.AuthorizationServer.AUTH_SERVER_TOKEN_ENDPOINT'></a>
+
+<H5 id="OAuth2.AuthorizationServer.AUTH_SERVER_TOKEN_ENDPOINT" data-toc-label="Authorization server token endpoint">Authorization server token endpoint (endpoint in scope - ID: <code>AUTH_SERVER_TOKEN_ENDPOINT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Authorization server's endpoint for DF_AUTH_GRANT_AS and DF_ACCESS_TOKEN_CL
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.AuthorizationServer.AUTH_SERVER_AUTH_ENDPOINT"></a>
+<div class='current'>
 
-<a name='authorization-endpoint-for-resource-owner-(endpoint-in-scope---id-<code>auth_server_auth_endpoint</code>)'></a>
-##### Authorization endpoint for resource owner (endpoint in scope - ID: <code>AUTH_SERVER_AUTH_ENDPOINT</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.AuthorizationServer.AUTH_SERVER_AUTH_ENDPOINT'></a>
+
+<H5 id="OAuth2.AuthorizationServer.AUTH_SERVER_AUTH_ENDPOINT" data-toc-label="Authorization endpoint for resource owner">Authorization endpoint for resource owner (endpoint in scope - ID: <code>AUTH_SERVER_AUTH_ENDPOINT</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 Authorization server's endpoint for DF_AUTH_REDIRECT
 
 </dl>
+
+</div>
+
  
 
 
 
 
 <div class="pagebreak"></div>
-<hr>
+<hr/>
 
 <a name='authorization-server-threats'></a>
-## Authorization Server Threats
+
+### Authorization Server Threats {: data-toc-label="Authorization Server Threats"}
 
 
 > **Note** This section contains the threat and mitigations identified during the analysis phase.
@@ -2067,19 +2413,30 @@ Authorization server's endpoint for DF_AUTH_REDIRECT
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(authserverphishing1)-password-phishing-by-counterfeit-authorization-server'></a>
-### `(AuthServerPhishing1)` Password Phishing by Counterfeit Authorization Server
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.AuthorizationServer.AuthServerPhishing1'></a>
+
+<H4 id="OAuth2.AuthorizationServer.AuthServerPhishing1" data-toc-label="Password Phishing by Counterfeit Authorization Server">Password Phishing by Counterfeit Authorization Server (<code>AuthServerPhishing1</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/AuthServerPhishing1.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 
 
@@ -2099,6 +2456,8 @@ users' passwords.
 <dt>Impact</dt><dd markdown="block">Steal users' passwords<br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2109,11 +2468,12 @@ users' passwords.
 </dl>
 
 <a name='counter-measures-for-authserverphishing1'></a>
-#### Counter-measures for `AuthServerPhishing1` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-authserverphishing1" data-toc-label="Counter-measures for">Counter-measures for <code>AuthServerPhishing1</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`5_1_2_AUTH_SERVER_AUTHENTICATION` TLS for the authorization server**<br/>
+<strong> <code>5_1_2_AUTH_SERVER_AUTHENTICATION</code> TLS for the authorization server</strong><br/>
 <dd markdown="block">
 Authorization servers should consider such attacks when developing
 services based on OAuth and should require the use of transport-
@@ -2139,13 +2499,14 @@ This is a countermeasure against the following threats:
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**`USER_PHISHING_AWARENESS` Users educated to avoid phishing attacks**<br/>
+<strong> <code>USER_PHISHING_AWARENESS</code> Users educated to avoid phishing attacks</strong><br/>
 <dd markdown="block">
 Authorization servers should attempt to educate users about the
 risks posed by phishing attacks and should provide mechanisms that
@@ -2154,29 +2515,44 @@ Section 5.1.2).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(too_much_grant)-user-unintentionally-grants-too-much-access-scope'></a>
-### `(TOO_MUCH_GRANT)` User Unintentionally Grants Too Much Access Scope
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.AuthorizationServer.TOO_MUCH_GRANT'></a>
+
+<H4 id="OAuth2.AuthorizationServer.TOO_MUCH_GRANT" data-toc-label="User Unintentionally Grants Too Much Access Scope">User Unintentionally Grants Too Much Access Scope (<code>TOO_MUCH_GRANT</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/TOO_MUCH_GRANT.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 
 
@@ -2190,6 +2566,8 @@ not be permitted.
 <dt>Impact</dt><dd markdown="block">Disclosure of  RESOURCE_OWNER's RESOURCES<br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2200,11 +2578,12 @@ not be permitted.
 </dl>
 
 <a name='counter-measures-for-too_much_grant'></a>
-#### Counter-measures for `TOO_MUCH_GRANT` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-too_much_grant" data-toc-label="Counter-measures for">Counter-measures for <code>TOO_MUCH_GRANT</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`AUTH_SERVER_RE_CHECK_GRANTS` AUTHORIZATION_SERVER policy discretional decision**<br/>
+<strong> <code>AUTH_SERVER_RE_CHECK_GRANTS</code> AUTHORIZATION_SERVER policy discretional decision</strong><br/>
 <dd markdown="block">
 Narrow the scope, based on the client.  When obtaining end-user
 authorization and where the client requests scope, the
@@ -2217,13 +2596,14 @@ lower scope to public clients (Section 5.1.5.1).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**`USER_AUTH_AWARENESS` Users educated to avoid phishing attacks**<br/>
+<strong> <code>USER_AUTH_AWARENESS</code> Users educated to avoid phishing attacks</strong><br/>
 <dd markdown="block">
 Authorization servers should attempt to educate users about the
 risks posed by phishing attacks and should provide mechanisms that
@@ -2232,29 +2612,44 @@ Section 5.1.2).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(open_redirector)-authorization-server-open-redirect'></a>
-### `(OPEN_REDIRECTOR)` Authorization server open redirect
 
-<a href=""></a>
+
+
+<a name='OAuth2.AuthorizationServer.OPEN_REDIRECTOR'></a>
+
+<H4 id="OAuth2.AuthorizationServer.OPEN_REDIRECTOR" data-toc-label="Authorization server open redirect">Authorization server open redirect (<code>OPEN_REDIRECTOR</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/OPEN_REDIRECTOR.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -2276,6 +2671,8 @@ parameter value without any validation.
 <dt>Impact</dt><dd markdown="block">Phishing attacks can be executed exploiting AUTH_SERVER open redirect<br/> </dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2286,11 +2683,12 @@ parameter value without any validation.
 </dl>
 
 <a name='counter-measures-for-open_redirector'></a>
-#### Counter-measures for `OPEN_REDIRECTOR` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-open_redirector" data-toc-label="Counter-measures for">Counter-measures for <code>OPEN_REDIRECTOR</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`PRE_REGISTERED_REDIRECT_URI` Pre-registered redirect URI**<br/>
+<strong> <code>PRE_REGISTERED_REDIRECT_URI</code> Pre-registered redirect URI</strong><br/>
 <dd markdown="block">
 Require clients to register any full redirect URIs (Section 5.2.3.5).
 Don’t redirect to a redirect URI if the client identifier or
@@ -2301,28 +2699,43 @@ using a pre-registered redirect URI (Section 5.2.3.5).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(public_client_spoofing1)-malicious-client-obtains-existing-authorization-by-fraud'></a>
-### `(PUBLIC_CLIENT_SPOOFING1)` Malicious Client Obtains Existing Authorization by Fraud
 
-<a href=""></a>
+
+
+<a name='OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1'></a>
+
+<H4 id="OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1" data-toc-label="Malicious Client Obtains Existing Authorization by Fraud">Malicious Client Obtains Existing Authorization by Fraud (<code>PUBLIC_CLIENT_SPOOFING1</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/PUBLIC_CLIENT_SPOOFING1.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -2350,6 +2763,8 @@ authorization "code" instead of the legitimate client.
 <dt>Impact</dt><dd markdown="block">Disclosure of RESOURCE_OWNER's RESOURCES<br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2360,11 +2775,12 @@ authorization "code" instead of the legitimate client.
 </dl>
 
 <a name='counter-measures-for-public_client_spoofing1'></a>
-#### Counter-measures for `PUBLIC_CLIENT_SPOOFING1` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-public_client_spoofing1" data-toc-label="Counter-measures for">Counter-measures for <code>PUBLIC_CLIENT_SPOOFING1</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.OPEN_REDIRECTOR.PRE_REGISTERED_REDIRECT_URI` Pre-registered redirect URI**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.OPEN_REDIRECTOR.PRE_REGISTERED_REDIRECT_URI</code> Pre-registered redirect URI</strong><br/>
 <dd markdown="block">
 Require clients to register any full redirect URIs (Section 5.2.3.5).
 Don’t redirect to a redirect URI if the client identifier or
@@ -2375,17 +2791,19 @@ using a pre-registered redirect URI (Section 5.2.3.5).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
     
-**`REDUCED_ACCESS_TOKEN_SCOPE` Limiting the scope of access tokens obtained through automated approvals**<br/>
+<strong> <code>REDUCED_ACCESS_TOKEN_SCOPE</code> Limiting the scope of access tokens obtained through automated approvals</strong><br/>
 <dd markdown="block">
 Authorization servers can mitigate the risks associated with
 automatic processing by limiting the scope of access tokens
 obtained through automated approvals (Section 5.1.5.1).
 </dd>
+
 
 
 <dd markdown="block">
@@ -2394,23 +2812,37 @@ obtained through automated approvals (Section 5.1.5.1).
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_3_1_eavesdropping_access_tokens1)-eavesdropping-access-tokens'></a>
-### `(4_3_1_EAVESDROPPING_ACCESS_TOKENS1)` Eavesdropping Access Tokens
 
-<a href=""></a>
+
+
+<a name='OAuth2.AuthorizationServer.4_3_1_EAVESDROPPING_ACCESS_TOKENS1'></a>
+
+<H4 id="OAuth2.AuthorizationServer.4_3_1_EAVESDROPPING_ACCESS_TOKENS1" data-toc-label="Eavesdropping Access Tokens">Eavesdropping Access Tokens (<code>4_3_1_EAVESDROPPING_ACCESS_TOKENS1</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_3_1_EAVESDROPPING_ACCESS_TOKENS1.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -2431,6 +2863,8 @@ permissions covered by the scope of the particular access token.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2441,16 +2875,18 @@ permissions covered by the scope of the particular access token.
 </dl>
 
 <a name='counter-measures-for-4_3_1_eavesdropping_access_tokens1'></a>
-#### Counter-measures for `4_3_1_EAVESDROPPING_ACCESS_TOKENS1` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_3_1_eavesdropping_access_tokens1" data-toc-label="Counter-measures for">Counter-measures for <code>4_3_1_EAVESDROPPING_ACCESS_TOKENS1</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`CLIENT_AUTH_SERVER_TLS` Secure transport layer to CLient to AUTH_SERVER by TLS**<br/>
+<strong> <code>CLIENT_AUTH_SERVER_TLS</code> Secure transport layer to CLient to AUTH_SERVER by TLS</strong><br/>
 <dd markdown="block">
 As per the core OAuth spec, the authorization servers must ensure
 that these transmissions are protected using transport-layer
 mechanisms such as TLS (see Section 5.1.1).
 </dd>
+
 
 
 <dd markdown="block">
@@ -2459,12 +2895,13 @@ mechanisms such as TLS (see Section 5.1.1).
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**Reference to `OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1.REDUCED_ACCESS_TOKEN_SCOPE` Limiting the scope of access tokens obtained through automated approvals**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1.REDUCED_ACCESS_TOKEN_SCOPE</code> Limiting the scope of access tokens obtained through automated approvals</strong><br/>
 <dd markdown="block">
 Authorization servers can mitigate the risks associated with
 automatic processing by limiting the scope of access tokens
 obtained through automated approvals (Section 5.1.5.1).
 </dd>
+
 
 
 <dd markdown="block">
@@ -2473,23 +2910,37 @@ obtained through automated approvals (Section 5.1.5.1).
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_3_2_as_db_token_disclosure)-obtaining-access-tokens-from-authorization-server-database'></a>
-### `(4_3_2_AS_DB_TOKEN_DISCLOSURE)` Obtaining Access Tokens from Authorization Server Database
 
-<a href=""></a>
+
+
+<a name='OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE'></a>
+
+<H4 id="OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE" data-toc-label="Obtaining Access Tokens from Authorization Server Database">Obtaining Access Tokens from Authorization Server Database (<code>4_3_2_AS_DB_TOKEN_DISCLOSURE</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_3_2_AS_DB_TOKEN_DISCLOSURE.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -2512,6 +2963,8 @@ tokens as handles in a database.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2522,14 +2975,16 @@ tokens as handles in a database.
 </dl>
 
 <a name='counter-measures-for-4_3_2_as_db_token_disclosure'></a>
-#### Counter-measures for `4_3_2_AS_DB_TOKEN_DISCLOSURE` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_3_2_as_db_token_disclosure" data-toc-label="Counter-measures for">Counter-measures for <code>4_3_2_AS_DB_TOKEN_DISCLOSURE</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`5_1_4_1_3_HASHED_TOKEN_DB` Store access token hashes only (Section 5.1.4.1.3).**<br/>
+<strong> <code>5_1_4_1_3_HASHED_TOKEN_DB</code> Store access token hashes only (Section 5.1.4.1.3).</strong><br/>
 <dd markdown="block">
 Store access token hashes only (Section 5.1.4.1.3).
 </dd>
+
 
 
 <dd markdown="block">
@@ -2537,11 +2992,12 @@ Store access token hashes only (Section 5.1.4.1.3).
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
     
-**`5_1_4_1_1_SYS_SEC` Enforce Standard System Security Means**<br/>
+<strong> <code>5_1_4_1_1_SYS_SEC</code> Enforce Standard System Security Means</strong><br/>
 <dd markdown="block">
 A server system may be locked down so that no attacker may get access
 to sensitive configuration files and databases.
 </dd>
+
 
 
 <dd markdown="block">
@@ -2550,7 +3006,7 @@ to sensitive configuration files and databases.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_1_4_1_2_SQL_SEC` Enforce Standard SQL Injection Countermeasures**<br/>
+<strong> <code>5_1_4_1_2_SQL_SEC</code> Enforce Standard SQL Injection Countermeasures</strong><br/>
 <dd markdown="block">
 If a client identifier or other authentication component is queried
 or compared against a SQL database, it may become possible for an
@@ -2568,28 +3024,43 @@ identifier syntax rules.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_3_3_client_credentials_disclosure)-disclosure-of-client-credentials-during-transmission'></a>
-### `(4_3_3_CLIENT_CREDENTIALS_DISCLOSURE)` Disclosure of Client Credentials during Transmission
 
-<a href=""></a>
+
+
+<a name='OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE'></a>
+
+<H4 id="OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE" data-toc-label="Disclosure of Client Credentials during Transmission">Disclosure of Client Credentials during Transmission (<code>4_3_3_CLIENT_CREDENTIALS_DISCLOSURE</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -2608,6 +3079,8 @@ authentication process or during OAuth token requests.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2618,11 +3091,12 @@ authentication process or during OAuth token requests.
 </dl>
 
 <a name='counter-measures-for-4_3_3_client_credentials_disclosure'></a>
-#### Counter-measures for `4_3_3_CLIENT_CREDENTIALS_DISCLOSURE` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_3_3_client_credentials_disclosure" data-toc-label="Counter-measures for">Counter-measures for <code>4_3_3_CLIENT_CREDENTIALS_DISCLOSURE</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`5_1_1_CONFIDENTIAL_REQUESTS` Ensure Confidentiality of Requests (TLS)**<br/>
+<strong> <code>5_1_1_CONFIDENTIAL_REQUESTS</code> Ensure Confidentiality of Requests (TLS)</strong><br/>
 <dd markdown="block">
 This is applicable to all requests sent from the client to the
 authorization server or resource server. While OAuth provides a
@@ -2649,13 +3123,14 @@ Replay of authorization "codes" obtained on the token’s endpoint
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
     
-**`CONFIDENTIAL_CREDENTIALS_REQUESTS` Do not send plaintext credentials**<br/>
+<strong> <code>CONFIDENTIAL_CREDENTIALS_REQUESTS</code> Do not send plaintext credentials</strong><br/>
 <dd markdown="block">
 Use alternative authentication means that do not require the
 sending of plaintext credentials over the wire (e.g., Hash-based
@@ -2663,28 +3138,43 @@ Message Authentication Code).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_3_4_client_credentials_disclosure)-obtaining-client-secret-from-authorization-server-database'></a>
-### `(4_3_4_CLIENT_CREDENTIALS_DISCLOSURE)` Obtaining Client Secret from Authorization Server Database
 
-<a href=""></a>
+
+
+<a name='OAuth2.AuthorizationServer.4_3_4_CLIENT_CREDENTIALS_DISCLOSURE'></a>
+
+<H4 id="OAuth2.AuthorizationServer.4_3_4_CLIENT_CREDENTIALS_DISCLOSURE" data-toc-label="Obtaining Client Secret from Authorization Server Database">Obtaining Client Secret from Authorization Server Database (<code>4_3_4_CLIENT_CREDENTIALS_DISCLOSURE</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_3_4_CLIENT_CREDENTIALS_DISCLOSURE.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -2704,6 +3194,8 @@ allows the attacker to act on behalf of legitimate clients.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2714,11 +3206,12 @@ allows the attacker to act on behalf of legitimate clients.
 </dl>
 
 <a name='counter-measures-for-4_3_4_client_credentials_disclosure'></a>
-#### Counter-measures for `4_3_4_CLIENT_CREDENTIALS_DISCLOSURE` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_3_4_client_credentials_disclosure" data-toc-label="Counter-measures for">Counter-measures for <code>4_3_4_CLIENT_CREDENTIALS_DISCLOSURE</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_2_SQL_SEC` Enforce Standard SQL Injection Countermeasures**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_2_SQL_SEC</code> Enforce Standard SQL Injection Countermeasures</strong><br/>
 <dd markdown="block">
 If a client identifier or other authentication component is queried
 or compared against a SQL database, it may become possible for an
@@ -2736,16 +3229,18 @@ identifier syntax rules.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
     
-**Reference to `OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_1_SYS_SEC` Enforce Standard System Security Means**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_1_SYS_SEC</code> Enforce Standard System Security Means</strong><br/>
 <dd markdown="block">
 A server system may be locked down so that no attacker may get access
 to sensitive configuration files and databases.
 </dd>
+
 
 
 <dd markdown="block">
@@ -2754,7 +3249,7 @@ to sensitive configuration files and databases.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_1_4_1_CRED_PROTECTION` Enforce Credential Storage Protection Best Practices**<br/>
+<strong> <code>5_1_4_1_CRED_PROTECTION</code> Enforce Credential Storage Protection Best Practices</strong><br/>
 <dd markdown="block">
 Administrators should undertake industry best practices to protect
 the storage of credentials (for example, see [OWASP]). Such
@@ -2763,29 +3258,44 @@ sub-sections.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_3_5_client_secret_brute_force)-obtaining-client-secret-by-online-guessing'></a>
-### `(4_3_5_CLIENT_SECRET_BRUTE_FORCE)` Obtaining Client Secret by Online Guessing
 
-<a href=""></a>
+
+
+<a name='OAuth2.AuthorizationServer.4_3_5_CLIENT_SECRET_BRUTE_FORCE'></a>
+
+<H4 id="OAuth2.AuthorizationServer.4_3_5_CLIENT_SECRET_BRUTE_FORCE" data-toc-label="Obtaining Client Secret by Online Guessing">Obtaining Client Secret by Online Guessing (<code>4_3_5_CLIENT_SECRET_BRUTE_FORCE</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_3_5_CLIENT_SECRET_BRUTE_FORCE.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -2806,6 +3316,8 @@ sub-sections.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -2816,11 +3328,12 @@ sub-sections.
 </dl>
 
 <a name='counter-measures-for-4_3_5_client_secret_brute_force'></a>
-#### Counter-measures for `4_3_5_CLIENT_SECRET_BRUTE_FORCE` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_3_5_client_secret_brute_force" data-toc-label="Counter-measures for">Counter-measures for <code>4_3_5_CLIENT_SECRET_BRUTE_FORCE</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`5_1_4_2_2_HIGH_ENTROPY_SECRETS` Use High Entropy for Secrets**<br/>
+<strong> <code>5_1_4_2_2_HIGH_ENTROPY_SECRETS</code> Use High Entropy for Secrets</strong><br/>
 <dd markdown="block">
 When creating secrets not intended for usage by human users (e.g.,
 client secrets or token handles), the authorization server should
@@ -2832,12 +3345,13 @@ by the authorization server.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
     
-**`5_1_4_2_3_LOCK_ACCOUNTS` Lock Accounts**<br/>
+<strong> <code>5_1_4_2_3_LOCK_ACCOUNTS</code> Lock Accounts</strong><br/>
 <dd markdown="block">
 Online attacks on passwords can be mitigated by locking the
 respective accounts after a certain number of failed attempts.
@@ -2845,12 +3359,13 @@ Note: This measure can be abused to lock down legitimate service users.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
     
-**`5_2_3_7_STRONG_CLIENT_AUTHENTICATION` Use strong client authentication**<br/>
+<strong> <code>5_2_3_7_STRONG_CLIENT_AUTHENTICATION</code> Use strong client authentication</strong><br/>
 <dd markdown="block">
 By using an alternative form of authentication such as client
 assertion [OAuth-ASSERTIONS], the need to distribute a
@@ -2861,27 +3376,40 @@ process. (e.g., client_assertion/client_token)
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
 </dl> 
+</div>
+
+
 
 
 
 <div class="pagebreak"></div>
 
 
+</div>
+
 
   
  
 
+<div markdown="block" class='current'>
 
 
 
 
-<a name='flows-threat-model'></a>
-# Flows Threat Model
+
+
+
+
+<a name='OAuth2.Flows'></a>
+
+<H2 id="OAuth2.Flows" data-toc-label="Flows">Flows</H2>
+
 
 
 
@@ -2891,12 +3419,14 @@ process. (e.g., client_assertion/client_token)
 <div class="pagebreak"></div>
 
 <a name='flows---scope-of-analysis'></a>
-## Flows - scope of analysis
+
+### Flows - scope of analysis {: data-toc-label="Flows - scope of analysis"}
 
 
 
 <a name='overview'></a>
-### Overview
+
+#### Overview {: data-toc-label="Overview"}
 
 This section covers threats that are specific to certain flows utilized to obtain access tokens. Each flow is characterized by response types and/or grant types on the end-user authorization and token endpoint, respectively. 
 
@@ -2908,7 +3438,8 @@ This section covers threats that are specific to certain flows utilized to obtai
 
   
 <a name='linked-threat-models'></a>
-### Linked threat Models
+
+#### Linked threat Models {: data-toc-label="Linked threat Models"}
 
 
   - **Authorization "code" flow** (ID: OAuth2.Flows.Flows_AuthCode)
@@ -2929,16 +3460,25 @@ This section covers threats that are specific to certain flows utilized to obtai
 <div class="pagebreak"></div>
 
 
+</div>
+
 
   
  
 
+<div markdown="block" class='current'>
 
 
 
 
-<a name='authorization-"code"-flow-threat-model'></a>
-# Authorization "code" flow Threat Model
+
+
+
+
+<a name='OAuth2.Flows.Flows_AuthCode'></a>
+
+<H2 id="OAuth2.Flows.Flows_AuthCode" data-toc-label="Authorization "code" flow">Authorization "code" flow</H2>
+
 
 
 
@@ -2948,12 +3488,14 @@ This section covers threats that are specific to certain flows utilized to obtai
 <div class="pagebreak"></div>
 
 <a name='authorization-"code"-flow---scope-of-analysis'></a>
-## Authorization "code" flow - scope of analysis
+
+### Authorization "code" flow - scope of analysis {: data-toc-label="Authorization "code" flow - scope of analysis"}
 
 
 
 <a name='overview'></a>
-### Overview
+
+#### Overview {: data-toc-label="Overview"}
 
 Authorization "code" flow The authorization code is obtained by using an authorization server as an intermediary between the client and resource owner.  Instead of requesting authorization directly from the resource owner, the client directs the resource owner to an authorization server (via its user-agent as defined in [RFC2616]), which in turn directs the resource owner back to the client with the authorization code.
 Before directing the resource owner back to the client with the authorization code, the authorization server authenticates the resource owner and obtains authorization.  Because the resource owner only authenticates with the authorization server, the resource owner's credentials are never shared with the client.
@@ -2977,7 +3519,8 @@ Implicit grants improve the responsiveness and efficiency of some clients (such 
 
 
 <a name='assumptions'></a>
-### Assumptions
+
+#### Assumptions {: data-toc-label="Assumptions"}
 
 
 <dl markdown="block">
@@ -3000,24 +3543,26 @@ Implicit grants improve the responsiveness and efficiency of some clients (such 
 <div class="pagebreak"></div>
 
 <a name='assets'></a>
-### Assets
+
+#### Assets {: data-toc-label="Assets"}
 
 
 
 <a name='summary-table'></a>
-#### Summary Table
+
+##### Summary Table {: data-toc-label="Summary Table"}
 
 
 
 <table markdown="block">
 <tr><th>Title(ID)</th><th>Type</th><th>In Scope</th></tr>
-<tr markdown="block"><td markdown="block">Auth code is returned to the User Agent from the AUTH_SERVER<br/><code><strong markdown="block">DF_AUTH_CODE_AS</code>
+<tr markdown="block"><td markdown="block">Auth code is returned to the User Agent from the AUTH_SERVER<br/><code><strong markdown="block">DF_AUTH_CODE_AS</strong></code>
 </td><td>dataflow</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
-<tr markdown="block"><td markdown="block">Auth code redirected to the CLIENT<br/><code><strong markdown="block">DF_AUTH_CODE_CLI</code>
+<tr markdown="block"><td markdown="block">Auth code redirected to the CLIENT<br/><code><strong markdown="block">DF_AUTH_CODE_CLI</strong></code>
 </td><td>dataflow</td>
-</td><td>&#x2714;&#xFE0F;</td>
+<td>&#x2714;&#xFE0F;</td>
 </tr>
 </table>
 
@@ -3028,16 +3573,24 @@ Implicit grants improve the responsiveness and efficiency of some clients (such 
 
 
 <a name='details'></a>
-#### Details
+
+##### Details {: data-toc-label="Details"}
 
 
 
 <hr/>
 
-<a id="OAuth2.Flows.Flows_AuthCode.DF_AUTH_CODE_AS"></a>
+<div class='current'>
 
-<a name='auth-code-is-returned-to-the-user-agent-from-the-auth_server-(dataflow-in-scope---id-<code>df_auth_code_as</code>)'></a>
-##### Auth code is returned to the User Agent from the AUTH_SERVER (dataflow in scope - ID: <code>DF_AUTH_CODE_AS</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.DF_AUTH_CODE_AS'></a>
+
+<H5 id="OAuth2.Flows.Flows_AuthCode.DF_AUTH_CODE_AS" data-toc-label="Auth code is returned to the User Agent from the AUTH_SERVER">Auth code is returned to the User Agent from the AUTH_SERVER (dataflow in scope - ID: <code>DF_AUTH_CODE_AS</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 AUTH_SERVER response 30x (redirect)
@@ -3049,14 +3602,24 @@ authorization code and any local state provided by the client
 earlier.
 
 </dl>
+
+</div>
+
  
 
 <hr/>
 
-<a id="OAuth2.Flows.Flows_AuthCode.DF_AUTH_CODE_CLI"></a>
+<div class='current'>
 
-<a name='auth-code-redirected-to-the-client-(dataflow-in-scope---id-<code>df_auth_code_cli</code>)'></a>
-##### Auth code redirected to the CLIENT (dataflow in scope - ID: <code>DF_AUTH_CODE_CLI</code>) <div class='skipTOC'></div>
+
+
+
+
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.DF_AUTH_CODE_CLI'></a>
+
+<H5 id="OAuth2.Flows.Flows_AuthCode.DF_AUTH_CODE_CLI" data-toc-label="Auth code redirected to the CLIENT">Auth code redirected to the CLIENT (dataflow in scope - ID: <code>DF_AUTH_CODE_CLI</code>)</H5> <div class='skipTOC'></div>
  
 <dl markdown="block">
 USER_AGENT request (redirected from DF_AUTH_CODE_AS 30x response)
@@ -3068,16 +3631,20 @@ authorization code and any local state provided by the client
 earlier.
 
 </dl>
+
+</div>
+
  
 
 
 
 
 <div class="pagebreak"></div>
-<hr>
+<hr/>
 
 <a name='authorization-"code"-flow-threats'></a>
-## Authorization "code" flow Threats
+
+### Authorization "code" flow Threats {: data-toc-label="Authorization "code" flow Threats"}
 
 
 > **Note** This section contains the threat and mitigations identified during the analysis phase.
@@ -3085,19 +3652,30 @@ earlier.
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(4_4_1_1_auth_code_disclosure)-eavesdropping-or-leaking-authorization-codes'></a>
-### `(4_4_1_1_AUTH_CODE_DISCLOSURE)` Eavesdropping or Leaking Authorization codes
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE" data-toc-label="Eavesdropping or Leaking Authorization codes">Eavesdropping or Leaking Authorization codes (<code>4_4_1_1_AUTH_CODE_DISCLOSURE</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_1_AUTH_CODE_DISCLOSURE.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -3140,6 +3718,8 @@ found at [OASIS.sstc-saml-bindings-1.1], Section 4.1.1.9.1;
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -3150,11 +3730,12 @@ found at [OASIS.sstc-saml-bindings-1.1], Section 4.1.1.9.1;
 </dl>
 
 <a name='counter-measures-for-4_4_1_1_auth_code_disclosure'></a>
-#### Counter-measures for `4_4_1_1_AUTH_CODE_DISCLOSURE` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_1_auth_code_disclosure" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_1_AUTH_CODE_DISCLOSURE</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS` Ensure Confidentiality of Requests (TLS)**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS</code> Ensure Confidentiality of Requests (TLS)</strong><br/>
 <dd markdown="block">
 This is applicable to all requests sent from the client to the
 authorization server or resource server. While OAuth provides a
@@ -3181,13 +3762,14 @@ Replay of authorization "codes" obtained on the token’s endpoint
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
     
-**`5_2_4_4_CLIENT_TO_CODE_BINDING` Binding of Authorization "code" to "client_id"**<br/>
+<strong> <code>5_2_4_4_CLIENT_TO_CODE_BINDING</code> Binding of Authorization "code" to "client_id"</strong><br/>
 <dd markdown="block">
 The authorization server should bind every authorization "code" to
 the id of the respective client that initiated the end-user
@@ -3207,13 +3789,14 @@ Section 5.2.4.4).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_1_5_3_SHORT_EXPIRY_CODE` Use Short Expiration Time**<br/>
+<strong> <code>5_1_5_3_SHORT_EXPIRY_CODE</code> Use Short Expiration Time</strong><br/>
 <dd markdown="block">
 A short expiration time for tokens is a means of protection against
 the following threats:
@@ -3229,13 +3812,14 @@ Furthermore, shorter duration may require more token refreshes
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_1_5_4_ONE_TIME_USE_TOKEN` Limit Number of Usages or One-Time Usage**<br/>
+<strong> <code>5_1_5_4_ONE_TIME_USE_TOKEN</code> Limit Number of Usages or One-Time Usage</strong><br/>
 <dd markdown="block">
 The authorization server may restrict the number of requests or
 operations that can be performed with a certain token. This
@@ -3254,13 +3838,14 @@ involving the user.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_2_1_1_TOKEN_ABUSE_DETECTION` Automatic Revocation of Derived Tokens If Abuse Is Detected**<br/>
+<strong> <code>5_2_1_1_TOKEN_ABUSE_DETECTION</code> Automatic Revocation of Derived Tokens If Abuse Is Detected</strong><br/>
 <dd markdown="block">
 If an authorization server observes multiple attempts to redeem an
 authorization grant (e.g., such as an authorization "code"), the
@@ -3269,17 +3854,19 @@ the authorization grant
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`USER_AGENT_PAGE_RELOAD` Reload the target page**<br/>
+<strong> <code>USER_AGENT_PAGE_RELOAD</code> Reload the target page</strong><br/>
 <dd markdown="block">
 The client server may reload the target page of the redirect URI
 in order to automatically clean up the browser cache.
 </dd>
+
 
 
 <dd markdown="block">
@@ -3288,23 +3875,37 @@ in order to automatically clean up the browser cache.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(4_4_1_2_auth_code_disclosure_db)-obtaining-authorization-codes-from-authorizationserver-database'></a>
-### `(4_4_1_2_AUTH_CODE_DISCLOSURE_DB)` Obtaining Authorization codes from AuthorizationServer Database
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_2_AUTH_CODE_DISCLOSURE_DB'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_2_AUTH_CODE_DISCLOSURE_DB" data-toc-label="Obtaining Authorization codes from AuthorizationServer Database">Obtaining Authorization codes from AuthorizationServer Database (<code>4_4_1_2_AUTH_CODE_DISCLOSURE_DB</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_2_AUTH_CODE_DISCLOSURE_DB.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -3330,6 +3931,8 @@ in order to automatically clean up the browser cache.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -3340,15 +3943,17 @@ in order to automatically clean up the browser cache.
 </dl>
 
 <a name='counter-measures-for-4_4_1_2_auth_code_disclosure_db'></a>
-#### Counter-measures for `4_4_1_2_AUTH_CODE_DISCLOSURE_DB` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_2_auth_code_disclosure_db" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_2_AUTH_CODE_DISCLOSURE_DB</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_1_SYS_SEC` Enforce Standard System Security Means**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_1_SYS_SEC</code> Enforce Standard System Security Means</strong><br/>
 <dd markdown="block">
 A server system may be locked down so that no attacker may get access
 to sensitive configuration files and databases.
 </dd>
+
 
 
 <dd markdown="block">
@@ -3357,7 +3962,7 @@ to sensitive configuration files and databases.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_2_SQL_SEC` Enforce Standard SQL Injection Countermeasures**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_2_SQL_SEC</code> Enforce Standard SQL Injection Countermeasures</strong><br/>
 <dd markdown="block">
 If a client identifier or other authentication component is queried
 or compared against a SQL database, it may become possible for an
@@ -3375,15 +3980,17 @@ identifier syntax rules.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
     
-**Reference to `OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_3_HASHED_TOKEN_DB` Store access token hashes only (Section 5.1.4.1.3).**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_3_HASHED_TOKEN_DB</code> Store access token hashes only (Section 5.1.4.1.3).</strong><br/>
 <dd markdown="block">
 Store access token hashes only (Section 5.1.4.1.3).
 </dd>
+
 
 
 <dd markdown="block">
@@ -3391,23 +3998,37 @@ Store access token hashes only (Section 5.1.4.1.3).
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_3_auth_code_brute_force)-online-guessing-of-authorization-codes'></a>
-### `(4_4_1_3_AUTH_CODE_BRUTE_FORCE)` Online Guessing of Authorization codes
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE" data-toc-label="Online Guessing of Authorization codes">Online Guessing of Authorization codes (<code>4_4_1_3_AUTH_CODE_BRUTE_FORCE</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_3_AUTH_CODE_BRUTE_FORCE.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -3431,6 +4052,8 @@ Store access token hashes only (Section 5.1.4.1.3).
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -3441,11 +4064,12 @@ Store access token hashes only (Section 5.1.4.1.3).
 </dl>
 
 <a name='counter-measures-for-4_4_1_3_auth_code_brute_force'></a>
-#### Counter-measures for `4_4_1_3_AUTH_CODE_BRUTE_FORCE` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_3_auth_code_brute_force" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_3_AUTH_CODE_BRUTE_FORCE</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.4_3_5_CLIENT_SECRET_BRUTE_FORCE.5_1_4_2_2_HIGH_ENTROPY_SECRETS` Use High Entropy for Secrets**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_5_CLIENT_SECRET_BRUTE_FORCE.5_1_4_2_2_HIGH_ENTROPY_SECRETS</code> Use High Entropy for Secrets</strong><br/>
 <dd markdown="block">
 When creating secrets not intended for usage by human users (e.g.,
 client secrets or token handles), the authorization server should
@@ -3457,17 +4081,19 @@ by the authorization server.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
     
-**`5_1_5_9_SIGNED_TOKEN` Sign Self-Contained Tokens**<br/>
+<strong> <code>5_1_5_9_SIGNED_TOKEN</code> Sign Self-Contained Tokens</strong><br/>
 <dd markdown="block">
 Self-contained tokens should be signed in order to detect any attempt
 to modify or produce faked tokens (e.g., Hash-based Message
 Authentication Code or digital signatures).
 </dd>
+
 
 
 <dd markdown="block">
@@ -3476,7 +4102,7 @@ Authentication Code or digital signatures).
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS` Issue Installation-Specific Client Secrets**<br/>
+<strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS</code> Issue Installation-Specific Client Secrets</strong><br/>
 <dd markdown="block">
 An authorization server may issue separate client identifiers and
 corresponding secrets to the different installations of a particular
@@ -3515,13 +4141,14 @@ refresh tokens of a specific installation at once.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_2_4_5_REDIRECT_CODE_BINDING` Binding of Authorization "code" to "redirect_uri"**<br/>
+<strong> <code>5_2_4_5_REDIRECT_CODE_BINDING</code> Binding of Authorization "code" to "redirect_uri"</strong><br/>
 <dd markdown="block">
 The authorization server should be able to bind every authorization
 "code" to the actual redirect URI used as the redirect target of the
@@ -3534,13 +4161,14 @@ URI to exchange an authorization "code" into a token.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_1_5_3_SHORT_EXPIRY_CODE` Use Short Expiration Time**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_1_5_3_SHORT_EXPIRY_CODE</code> Use Short Expiration Time</strong><br/>
 <dd markdown="block">
 A short expiration time for tokens is a means of protection against
 the following threats:
@@ -3556,29 +4184,44 @@ Furthermore, shorter duration may require more token refreshes
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_4_client_spoofing1)-malicious-client-obtains-authorization'></a>
-### `(4_4_1_4_CLIENT_SPOOFING1)` Malicious Client Obtains Authorization
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1" data-toc-label="Malicious Client Obtains Authorization">Malicious Client Obtains Authorization (<code>4_4_1_4_CLIENT_SPOOFING1</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_4_CLIENT_SPOOFING1.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
   <dt>Threat actors:</dt>
 
@@ -3597,6 +4240,8 @@ consent in the authorization flow.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -3607,11 +4252,12 @@ consent in the authorization flow.
 </dl>
 
 <a name='counter-measures-for-4_4_1_4_client_spoofing1'></a>
-#### Counter-measures for `4_4_1_4_CLIENT_SPOOFING1` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_4_client_spoofing1" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_4_CLIENT_SPOOFING1</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS` Issue Installation-Specific Client Secrets**<br/>
+<strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS</code> Issue Installation-Specific Client Secrets</strong><br/>
 <dd markdown="block">
 An authorization server may issue separate client identifiers and
 corresponding secrets to the different installations of a particular
@@ -3650,13 +4296,14 @@ refresh tokens of a specific installation at once.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Client.Client_Secrets_disclosure.5_2_3_5_VALIDATE_REDIRECT_URI` Validate Pre-Registered "redirect_uri"**<br/>
+<strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_5_VALIDATE_REDIRECT_URI</code> Validate Pre-Registered "redirect_uri"</strong><br/>
 <dd markdown="block">
 An authorization server should require all clients to register their
 "redirect_uri", and the "redirect_uri" should be the full URI as
@@ -3710,13 +4357,14 @@ redirect URI the legitimate client uses on all other devices.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**`5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER` Validation of Client Properties by End User**<br/>
+<strong> <code>5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER</code> Validation of Client Properties by End User</strong><br/>
 <dd markdown="block">
 In the authorization process, the user is typically asked to approve
 a client’s request for authorization. This is an important security
@@ -3731,13 +4379,14 @@ authenticate the client. It is a countermeasure against:
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by RESOURCE_OWNER) 
 </dd> 
     
-**`5_2_4_1_REPEAT_VALIDATE_CLIENT` Automatic Processing of Repeated Authorizations Requires Client Validation**<br/>
+<strong> <code>5_2_4_1_REPEAT_VALIDATE_CLIENT</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/>
 <dd markdown="block">
 Authorization servers should NOT automatically process repeat
 authorizations where the client is not authenticated through a client
@@ -3747,13 +4396,14 @@ of a pre-registered redirect URI (Section 5.2.3.5).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`REQUIRE_USER_MANUAL_STEP` Automatic Processing of Repeated Authorizations Requires Client Validation**<br/>
+<strong> <code>REQUIRE_USER_MANUAL_STEP</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/>
 <dd markdown="block">
 If the authorization server automatically authenticates the end
 user, it may nevertheless require some user input in order to
@@ -3764,13 +4414,14 @@ questions, token code generators, etc.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`5_1_5_1_LIMITED_SCOPE_TOKEN` Limit Token Scope**<br/>
+<strong> <code>5_1_5_1_LIMITED_SCOPE_TOKEN</code> Limit Token Scope</strong><br/>
 <dd markdown="block">
 The authorization server may decide to reduce or limit the scope
 associated with a token. The basis of this decision is out of scope;
@@ -3795,29 +4446,44 @@ credentials flow
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_5_client_spoofing2)-authorization-code-phishing'></a>
-### `(4_4_1_5_CLIENT_SPOOFING2)` Authorization code Phishing
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_5_CLIENT_SPOOFING2'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_5_CLIENT_SPOOFING2" data-toc-label="Authorization code Phishing">Authorization code Phishing (<code>4_4_1_5_CLIENT_SPOOFING2</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_5_CLIENT_SPOOFING2.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
   <dt>Threat actors:</dt>
 
@@ -3839,6 +4505,8 @@ refresh tokens.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -3849,11 +4517,12 @@ refresh tokens.
 </dl>
 
 <a name='counter-measures-for-4_4_1_5_client_spoofing2'></a>
-#### Counter-measures for `4_4_1_5_CLIENT_SPOOFING2` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_5_client_spoofing2" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_5_CLIENT_SPOOFING2</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.AuthServerPhishing1.5_1_2_AUTH_SERVER_AUTHENTICATION` TLS for the authorization server**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.AuthServerPhishing1.5_1_2_AUTH_SERVER_AUTHENTICATION</code> TLS for the authorization server</strong><br/>
 <dd markdown="block">
 Authorization servers should consider such attacks when developing
 services based on OAuth and should require the use of transport-
@@ -3879,13 +4548,14 @@ This is a countermeasure against the following threats:
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_4_4_CLIENT_TO_CODE_BINDING` Binding of Authorization "code" to "client_id"**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_4_4_CLIENT_TO_CODE_BINDING</code> Binding of Authorization "code" to "client_id"</strong><br/>
 <dd markdown="block">
 The authorization server should bind every authorization "code" to
 the id of the respective client that initiated the end-user
@@ -3905,29 +4575,44 @@ Section 5.2.4.4).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_6_client_spoofing3)-authorization-code-phishing'></a>
-### `(4_4_1_6_CLIENT_SPOOFING3)` Authorization code Phishing
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_6_CLIENT_SPOOFING3'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_6_CLIENT_SPOOFING3" data-toc-label="Authorization code Phishing">Authorization code Phishing (<code>4_4_1_6_CLIENT_SPOOFING3</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_6_CLIENT_SPOOFING3.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
   <dt>Threat actors:</dt>
 
@@ -3960,6 +4645,8 @@ client that obtains the tokens.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -3970,11 +4657,12 @@ client that obtains the tokens.
 </dl>
 
 <a name='counter-measures-for-4_4_1_6_client_spoofing3'></a>
-#### Counter-measures for `4_4_1_6_CLIENT_SPOOFING3` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_6_client_spoofing3" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_6_CLIENT_SPOOFING3</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.AuthServerPhishing1.5_1_2_AUTH_SERVER_AUTHENTICATION` TLS for the authorization server**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.AuthServerPhishing1.5_1_2_AUTH_SERVER_AUTHENTICATION</code> TLS for the authorization server</strong><br/>
 <dd markdown="block">
 Authorization servers should consider such attacks when developing
 services based on OAuth and should require the use of transport-
@@ -4000,29 +4688,44 @@ This is a countermeasure against the following threats:
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_7_client_spoofing4)-authorization-code-leakage-through-counterfeit-client'></a>
-### `(4_4_1_7_CLIENT_SPOOFING4)` Authorization code Leakage through Counterfeit Client
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_7_CLIENT_SPOOFING4'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_7_CLIENT_SPOOFING4" data-toc-label="Authorization code Leakage through Counterfeit Client">Authorization code Leakage through Counterfeit Client (<code>4_4_1_7_CLIENT_SPOOFING4</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_7_CLIENT_SPOOFING4.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
   <dt>Threat actors:</dt>
 
@@ -4088,6 +4791,8 @@ client site.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code><code><a href="#OAuth2.NON_REPUDIATION">NON_REPUDIATION</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4098,11 +4803,12 @@ client site.
 </dl>
 
 <a name='counter-measures-for-4_4_1_7_client_spoofing4'></a>
-#### Counter-measures for `4_4_1_7_CLIENT_SPOOFING4` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_7_client_spoofing4" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_7_CLIENT_SPOOFING4</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE.5_2_4_5_REDIRECT_CODE_BINDING` Binding of Authorization "code" to "redirect_uri"**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE.5_2_4_5_REDIRECT_CODE_BINDING</code> Binding of Authorization "code" to "redirect_uri"</strong><br/>
 <dd markdown="block">
 The authorization server should be able to bind every authorization
 "code" to the actual redirect URI used as the redirect target of the
@@ -4115,13 +4821,14 @@ URI to exchange an authorization "code" into a token.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS` Issue Installation-Specific Client Secrets**<br/>
+<strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS</code> Issue Installation-Specific Client Secrets</strong><br/>
 <dd markdown="block">
 An authorization server may issue separate client identifiers and
 corresponding secrets to the different installations of a particular
@@ -4160,13 +4867,14 @@ refresh tokens of a specific installation at once.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_4_4_CLIENT_TO_CODE_BINDING` Binding of Authorization "code" to "client_id"**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_4_4_CLIENT_TO_CODE_BINDING</code> Binding of Authorization "code" to "client_id"</strong><br/>
 <dd markdown="block">
 The authorization server should bind every authorization "code" to
 the id of the respective client that initiated the end-user
@@ -4186,13 +4894,14 @@ Section 5.2.4.4).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`IMPLICIT_GRANT_FLOW` Implicit grant flow**<br/>
+<strong> <code>IMPLICIT_GRANT_FLOW</code> Implicit grant flow</strong><br/>
 <dd markdown="block">
 The client may consider using other flows that are not vulnerable
 to this kind of attack, such as the implicit grant type (see
@@ -4201,28 +4910,43 @@ Section 4.4.3).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_8_csrf_on_redirect)-csrf-attack-against-redirect-uri'></a>
-### `(4_4_1_8_CSRF_ON_REDIRECT)` CSRF Attack against redirect-uri
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT" data-toc-label="CSRF Attack against redirect-uri">CSRF Attack against redirect-uri (<code>4_4_1_8_CSRF_ON_REDIRECT</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_8_CSRF_ON_REDIRECT.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -4263,6 +4987,8 @@ Provider.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.NON_REPUDIATION">NON_REPUDIATION</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4273,13 +4999,15 @@ Provider.
 </dl>
 
 <a name='counter-measures-for-4_4_1_8_csrf_on_redirect'></a>
-#### Counter-measures for `4_4_1_8_CSRF_ON_REDIRECT` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_8_csrf_on_redirect" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_8_CSRF_ON_REDIRECT</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`5_3_5_ANTI_CSRF_STATE_PARAM` Link the state Parameter to User Agent Session (anti CSRF)**<br/>
+<strong> <code>5_3_5_ANTI_CSRF_STATE_PARAM</code> Link the state Parameter to User Agent Session (anti CSRF)</strong><br/>
 <dd markdown="block">
 The "state" parameter is used to link client requests and prevent CSRF attacks, for example, attacks against the redirect URI. An attacker could inject their own authorization "code" or access token, which can result in the client using an access token associated with the attacker’s protected resources rather than the victim’s (e.g., save the victim’s bank account information to a protected resource controlled by the attacker). The client should utilize the "state" request parameter to send the authorization server a value that binds the request to the user agent’s authenticated state (e.g., a hash of the session cookie used to authenticate the user agent) when making an authorization request. Once authorization has been obtained from the end user, the authorization server redirects the end-user’s user agent back to the client with the required binding value contained in the "state" parameter. The binding value enables the client to verify the validity of the request by matching the binding value to the user agent’s authenticated state.</dd>
+
 
 
 <dd markdown="block">
@@ -4288,11 +5016,12 @@ The "state" parameter is used to link client requests and prevent CSRF attacks, 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
     
-**`USER_EDUCATION` Users can be educated to not follow untrusted URLs**<br/>
+<strong> <code>USER_EDUCATION</code> Users can be educated to not follow untrusted URLs</strong><br/>
 <dd markdown="block">
 Client developers and end users can be educated to not follow
 untrusted URLs.    
 </dd>
+
 
 
 <dd markdown="block">
@@ -4301,23 +5030,37 @@ untrusted URLs.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_9_clickjacking)-clickjacking-attack-against-authorization'></a>
-### `(4_4_1_9_CLICKJACKING)` Clickjacking Attack against Authorization
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING" data-toc-label="Clickjacking Attack against Authorization">Clickjacking Attack against Authorization (<code>4_4_1_9_CLICKJACKING</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_9_CLICKJACKING.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -4343,6 +5086,8 @@ button) on the hidden page.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.NON_REPUDIATION">NON_REPUDIATION</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4353,11 +5098,12 @@ button) on the hidden page.
 </dl>
 
 <a name='counter-measures-for-4_4_1_9_clickjacking'></a>
-#### Counter-measures for `4_4_1_9_CLICKJACKING` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_9_clickjacking" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_9_CLICKJACKING</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`5_2_2_6_X_FRAME_OPTION` Link the state Parameter to User Agent Session (anti CSRF)**<br/>
+<strong> <code>5_2_2_6_X_FRAME_OPTION</code> Link the state Parameter to User Agent Session (anti CSRF)</strong><br/>
 <dd markdown="block">
 For newer browsers, avoidance of iFrames can be enforced on the
   server side by using the X-FRAME-OPTIONS header (see
@@ -4371,17 +5117,19 @@ For newer browsers, avoidance of iFrames can be enforced on the
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`FRAMEBUSTING` JavaScript frame-busting**<br/>
+<strong> <code>FRAMEBUSTING</code> JavaScript frame-busting</strong><br/>
 <dd markdown="block">
 For older browsers, JavaScript frame-busting (see [Framebusting])
 techniques can be used but may not be effective in all browsers. 
 </dd>
+
 
 
 <dd markdown="block">
@@ -4390,23 +5138,37 @@ techniques can be used but may not be effective in all browsers.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_10_resource_owner_spoofing1)-resource-owner-impersonation'></a>
-### `(4_4_1_10_RESOURCE_OWNER_SPOOFING1)` Resource Owner Impersonation
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1" data-toc-label="Resource Owner Impersonation">Resource Owner Impersonation (<code>4_4_1_10_RESOURCE_OWNER_SPOOFING1</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_10_RESOURCE_OWNER_SPOOFING1.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -4461,6 +5223,8 @@ prepared by the authorization server including any nonce, etc.
 <dt>Impact</dt><dd markdown="block"><code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.NON_REPUDIATION">NON_REPUDIATION</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4471,11 +5235,12 @@ prepared by the authorization server including any nonce, etc.
 </dl>
 
 <a name='counter-measures-for-4_4_1_10_resource_owner_spoofing1'></a>
-#### Counter-measures for `4_4_1_10_RESOURCE_OWNER_SPOOFING1` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_10_resource_owner_spoofing1" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_10_RESOURCE_OWNER_SPOOFING1</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`INTERACTIVE_APPROVAL` Interactive (non automatic) user approval**<br/>
+<strong> <code>INTERACTIVE_APPROVAL</code> Interactive (non automatic) user approval</strong><br/>
 <dd markdown="block">
 Authorization servers should decide, based on an analysis of the risk
 associated with this threat, whether to detect and prevent this
@@ -4493,13 +5258,14 @@ via text or instant message).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`NOTIFY_APPROVAL` Notify User's approval**<br/>
+<strong> <code>NOTIFY_APPROVAL</code> Notify User's approval</strong><br/>
 <dd markdown="block">
 In order to allow the resource owner to detect abuse,
 the authorization server could notify the resource owner of any
@@ -4508,29 +5274,44 @@ email.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_11_dos_token_entropy)-resource-owner-impersonation'></a>
-### `(4_4_1_11_DOS_TOKEN_ENTROPY)` Resource Owner Impersonation
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_11_DOS_TOKEN_ENTROPY'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_11_DOS_TOKEN_ENTROPY" data-toc-label="Resource Owner Impersonation">Resource Owner Impersonation (<code>4_4_1_11_DOS_TOKEN_ENTROPY</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_11_DOS_TOKEN_ENTROPY.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -4556,6 +5337,8 @@ email.
 <dt>Impact</dt><dd markdown="block"><code><a href="#OAuth2.AVAILABILITY">AVAILABILITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4566,15 +5349,17 @@ email.
 </dl>
 
 <a name='counter-measures-for-4_4_1_11_dos_token_entropy'></a>
-#### Counter-measures for `4_4_1_11_DOS_TOKEN_ENTROPY` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_11_dos_token_entropy" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_11_DOS_TOKEN_ENTROPY</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`AUTH_SERVER_PER_USER_LIMIT` Limit access tokens granted per user**<br/>
+<strong> <code>AUTH_SERVER_PER_USER_LIMIT</code> Limit access tokens granted per user</strong><br/>
 <dd markdown="block">
 The authorization server should consider limiting the number of
 access tokens granted per user.
 </dd>
+
 
 
 <dd markdown="block">
@@ -4583,11 +5368,12 @@ access tokens granted per user.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`AUTH_CODE_HIGH_ENTROPY` High entropy codes**<br/>
+<strong> <code>AUTH_CODE_HIGH_ENTROPY</code> High entropy codes</strong><br/>
 <dd markdown="block">
 The authorization server should include a nontrivial amount of
 entropy in authorization "codes".
 </dd>
+
 
 
 <dd markdown="block">
@@ -4595,23 +5381,37 @@ entropy in authorization "codes".
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>  </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_12_dos2)-dos-using-manufactured-authorization-"codes"'></a>
-### `(4_4_1_12_DOS2)` DoS Using Manufactured Authorization "codes"
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2" data-toc-label="DoS Using Manufactured Authorization "codes"">DoS Using Manufactured Authorization "codes" (<code>4_4_1_12_DOS2</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_12_DOS2.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -4667,6 +5467,8 @@ attacker’s control.
 <br/> <code><a href="#OAuth2.AVAILABILITY">AVAILABILITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4677,13 +5479,15 @@ attacker’s control.
 </dl>
 
 <a name='counter-measures-for-4_4_1_12_dos2'></a>
-#### Counter-measures for `4_4_1_12_DOS2` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_12_dos2" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_12_DOS2</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT.5_3_5_ANTI_CSRF_STATE_PARAM` Link the state Parameter to User Agent Session (anti CSRF)**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT.5_3_5_ANTI_CSRF_STATE_PARAM</code> Link the state Parameter to User Agent Session (anti CSRF)</strong><br/>
 <dd markdown="block">
 The "state" parameter is used to link client requests and prevent CSRF attacks, for example, attacks against the redirect URI. An attacker could inject their own authorization "code" or access token, which can result in the client using an access token associated with the attacker’s protected resources rather than the victim’s (e.g., save the victim’s bank account information to a protected resource controlled by the attacker). The client should utilize the "state" request parameter to send the authorization server a value that binds the request to the user agent’s authenticated state (e.g., a hash of the session cookie used to authenticate the user agent) when making an authorization request. Once authorization has been obtained from the end user, the authorization server redirects the end-user’s user agent back to the client with the required binding value contained in the "state" parameter. The binding value enables the client to verify the validity of the request by matching the binding value to the user agent’s authenticated state.</dd>
+
 
 
 <dd markdown="block">
@@ -4692,7 +5496,7 @@ The "state" parameter is used to link client requests and prevent CSRF attacks, 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
     
-**`CLIENT_LIMITS_PER_USER` Client limits authenticated users codes**<br/>
+<strong> <code>CLIENT_LIMITS_PER_USER</code> Client limits authenticated users codes</strong><br/>
 <dd markdown="block">
 If the client authenticates the user, either through a single-
 sign-on protocol or through local authentication, the client
@@ -4702,13 +5506,14 @@ certain threshold.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
     
-**`AUTH_RATE_LIMIT` Client limits authenticated users codes**<br/>
+<strong> <code>AUTH_RATE_LIMIT</code> Client limits authenticated users codes</strong><br/>
 <dd markdown="block">
 The authorization server should send an error response to the
 client reporting an invalid authorization "code" and rate-limit or
@@ -4717,29 +5522,44 @@ exceeds a threshold.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_1_13_code_substitution)-dos-using-manufactured-authorization-"codes"'></a>
-### `(4_4_1_13_CODE_SUBSTITUTION)` DoS Using Manufactured Authorization "codes"
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION'></a>
+
+<H4 id="OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION" data-toc-label="DoS Using Manufactured Authorization "codes"">DoS Using Manufactured Authorization "codes" (<code>4_4_1_13_CODE_SUBSTITUTION</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_1_13_CODE_SUBSTITUTION.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
   <dt>Threat actors:</dt>
 
@@ -4787,6 +5607,8 @@ data within the application.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code><code><a href="#OAuth2.NON_REPUDIATION">NON_REPUDIATION</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4797,11 +5619,12 @@ data within the application.
 </dl>
 
 <a name='counter-measures-for-4_4_1_13_code_substitution'></a>
-#### Counter-measures for `4_4_1_13_CODE_SUBSTITUTION` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_1_13_code_substitution" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_1_13_CODE_SUBSTITUTION</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`IN_REQUEST_CLIENTID` Clients indicate their ids in requests**<br/>
+<strong> <code>IN_REQUEST_CLIENTID</code> Clients indicate their ids in requests</strong><br/>
 <dd markdown="block">
 All clients must indicate their client ids with every request to
 exchange an authorization "code" for an access token. The
@@ -4811,13 +5634,14 @@ possible, the client shall be authenticated beforehand.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`SECURE_USER_LOGIN_PROTOCOL` Secure User Login Protocol**<br/>
+<strong> <code>SECURE_USER_LOGIN_PROTOCOL</code> Secure User Login Protocol</strong><br/>
 <dd markdown="block">
 Clients should use an appropriate protocol, such as OpenID (cf.
 [OPENID]) or SAML (cf. [OASIS.sstc-saml-bindings-1.1]) to
@@ -4826,28 +5650,41 @@ clients.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 
 
 
 <div class="pagebreak"></div>
 
 
+</div>
+
 
   
  
 
+<div markdown="block" class='current'>
 
 
 
 
-<a name='implicit-grant-flow-threat-model'></a>
-# Implicit Grant flow Threat Model
+
+
+
+
+<a name='OAuth2.Flows.Flows_ImplicitGrant'></a>
+
+<H2 id="OAuth2.Flows.Flows_ImplicitGrant" data-toc-label="Implicit Grant flow">Implicit Grant flow</H2>
+
 
 
 
@@ -4857,12 +5694,14 @@ clients.
 <div class="pagebreak"></div>
 
 <a name='implicit-grant-flow---scope-of-analysis'></a>
-## Implicit Grant flow - scope of analysis
+
+### Implicit Grant flow - scope of analysis {: data-toc-label="Implicit Grant flow - scope of analysis"}
 
 
 
 <a name='overview'></a>
-### Overview
+
+#### Overview {: data-toc-label="Overview"}
 
 In the implicit grant type flow, the access token is directly
 returned to the client as a fragment part of the redirect URI. It is
@@ -4892,10 +5731,11 @@ headers.
 
 
 <div class="pagebreak"></div>
-<hr>
+<hr/>
 
 <a name='implicit-grant-flow-threats'></a>
-## Implicit Grant flow Threats
+
+### Implicit Grant flow Threats {: data-toc-label="Implicit Grant flow Threats"}
 
 
 > **Note** This section contains the threat and mitigations identified during the analysis phase.
@@ -4903,19 +5743,30 @@ headers.
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(4_4_2_1_token_leak1_network)-access-token-leak-in-transport/endpoints'></a>
-### `(4_4_2_1_TOKEN_LEAK1_NETWORK)` Access Token Leak in Transport/Endpoints
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.Flows.Flows_ImplicitGrant.4_4_2_1_TOKEN_LEAK1_NETWORK'></a>
+
+<H4 id="OAuth2.Flows.Flows_ImplicitGrant.4_4_2_1_TOKEN_LEAK1_NETWORK" data-toc-label="Access Token Leak in Transport/Endpoints">Access Token Leak in Transport/Endpoints (<code>4_4_2_1_TOKEN_LEAK1_NETWORK</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_2_1_TOKEN_LEAK1_NETWORK.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -4940,6 +5791,8 @@ by the token.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -4950,11 +5803,12 @@ by the token.
 </dl>
 
 <a name='counter-measures-for-4_4_2_1_token_leak1_network'></a>
-#### Counter-measures for `4_4_2_1_TOKEN_LEAK1_NETWORK` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_2_1_token_leak1_network" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_2_1_TOKEN_LEAK1_NETWORK</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS` Ensure Confidentiality of Requests (TLS)**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS</code> Ensure Confidentiality of Requests (TLS)</strong><br/>
 <dd markdown="block">
 This is applicable to all requests sent from the client to the
 authorization server or resource server. While OAuth provides a
@@ -4981,29 +5835,44 @@ Replay of authorization "codes" obtained on the token’s endpoint
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
 
 
+<div markdown="1" class='current'>
 
 
-<a name='(4_4_2_2_token_leak2_browser_history)-access-token-leak-in-browser-history'></a>
-### `(4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY)` Access Token Leak in Browser History
 
-<a href=""></a>
+
+
+
+<a name='OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY'></a>
+
+<H4 id="OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY" data-toc-label="Access Token Leak in Browser History">Access Token Leak in Browser History (<code>4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -5026,6 +5895,8 @@ by the token.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -5036,11 +5907,12 @@ by the token.
 </dl>
 
 <a name='counter-measures-for-4_4_2_2_token_leak2_browser_history'></a>
-#### Counter-measures for `4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_2_2_token_leak2_browser_history" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_1_5_3_SHORT_EXPIRY_CODE` Use Short Expiration Time**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_1_5_3_SHORT_EXPIRY_CODE</code> Use Short Expiration Time</strong><br/>
 <dd markdown="block">
 A short expiration time for tokens is a means of protection against
 the following threats:
@@ -5056,16 +5928,18 @@ Furthermore, shorter duration may require more token refreshes
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**`NON_CACHEABLE_RESPONSES` Make responses non-cacheable.**<br/>
+<strong> <code>NON_CACHEABLE_RESPONSES</code> Make responses non-cacheable.</strong><br/>
 <dd markdown="block">
 Make responses non-cacheable.
 </dd>
+
 
 
 <dd markdown="block">
@@ -5074,23 +5948,37 @@ Make responses non-cacheable.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_2_2_token_leak2_browser_history)-malicious-client-obtains-authorization'></a>
-### `(4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY)` Malicious Client Obtains Authorization
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY'></a>
+
+<H4 id="OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY" data-toc-label="Malicious Client Obtains Authorization">Malicious Client Obtains Authorization (<code>4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -5112,6 +6000,8 @@ by the token.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -5122,11 +6012,12 @@ by the token.
 </dl>
 
 <a name='counter-measures-for-4_4_2_2_token_leak2_browser_history'></a>
-#### Counter-measures for `4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_2_2_token_leak2_browser_history" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.Client.Client_Secrets_disclosure.5_2_3_5_VALIDATE_REDIRECT_URI` Validate Pre-Registered "redirect_uri"**<br/>
+<strong>Reference to <code>OAuth2.Client.Client_Secrets_disclosure.5_2_3_5_VALIDATE_REDIRECT_URI</code> Validate Pre-Registered "redirect_uri"</strong><br/>
 <dd markdown="block">
 An authorization server should require all clients to register their
 "redirect_uri", and the "redirect_uri" should be the full URI as
@@ -5180,13 +6071,14 @@ redirect URI the legitimate client uses on all other devices.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER` Validation of Client Properties by End User**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER</code> Validation of Client Properties by End User</strong><br/>
 <dd markdown="block">
 In the authorization process, the user is typically asked to approve
 a client’s request for authorization. This is an important security
@@ -5201,13 +6093,14 @@ authenticate the client. It is a countermeasure against:
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by RESOURCE_OWNER) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_1_REPEAT_VALIDATE_CLIENT` Automatic Processing of Repeated Authorizations Requires Client Validation**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_1_REPEAT_VALIDATE_CLIENT</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/>
 <dd markdown="block">
 Authorization servers should NOT automatically process repeat
 authorizations where the client is not authenticated through a client
@@ -5217,13 +6110,14 @@ of a pre-registered redirect URI (Section 5.2.3.5).
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.REQUIRE_USER_MANUAL_STEP` Automatic Processing of Repeated Authorizations Requires Client Validation**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.REQUIRE_USER_MANUAL_STEP</code> Automatic Processing of Repeated Authorizations Requires Client Validation</strong><br/>
 <dd markdown="block">
 If the authorization server automatically authenticates the end
 user, it may nevertheless require some user input in order to
@@ -5234,13 +6128,14 @@ questions, token code generators, etc.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_1_5_1_LIMITED_SCOPE_TOKEN` Limit Token Scope**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_1_5_1_LIMITED_SCOPE_TOKEN</code> Limit Token Scope</strong><br/>
 <dd markdown="block">
 The authorization server may decide to reduce or limit the scope
 associated with a token. The basis of this decision is out of scope;
@@ -5265,29 +6160,44 @@ credentials flow
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_2_4_manipulation_scripts)-manipulation-of-scripts'></a>
-### `(4_4_2_4_MANIPULATION_SCRIPTS)` Manipulation of Scripts
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_ImplicitGrant.4_4_2_4_MANIPULATION_SCRIPTS'></a>
+
+<H4 id="OAuth2.Flows.Flows_ImplicitGrant.4_4_2_4_MANIPULATION_SCRIPTS" data-toc-label="Manipulation of Scripts">Manipulation of Scripts (<code>4_4_2_4_MANIPULATION_SCRIPTS</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_2_4_MANIPULATION_SCRIPTS.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -5312,6 +6222,8 @@ assume the full identity of the user.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -5322,11 +6234,12 @@ assume the full identity of the user.
 </dl>
 
 <a name='counter-measures-for-4_4_2_4_manipulation_scripts'></a>
-#### Counter-measures for `4_4_2_4_MANIPULATION_SCRIPTS` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_2_4_manipulation_scripts" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_2_4_MANIPULATION_SCRIPTS</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.AuthorizationServer.AuthServerPhishing1.5_1_2_AUTH_SERVER_AUTHENTICATION` TLS for the authorization server**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.AuthServerPhishing1.5_1_2_AUTH_SERVER_AUTHENTICATION</code> TLS for the authorization server</strong><br/>
 <dd markdown="block">
 Authorization servers should consider such attacks when developing
 services based on OAuth and should require the use of transport-
@@ -5352,13 +6265,14 @@ This is a countermeasure against the following threats:
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER) 
 </dd> 
     
-**Reference to `OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS` Ensure Confidentiality of Requests (TLS)**<br/>
+<strong>Reference to <code>OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS</code> Ensure Confidentiality of Requests (TLS)</strong><br/>
 <dd markdown="block">
 This is applicable to all requests sent from the client to the
 authorization server or resource server. While OAuth provides a
@@ -5385,13 +6299,14 @@ Replay of authorization "codes" obtained on the token’s endpoint
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
     
-**`ONE_TIME_PER_USE_SECRET` One-time, per-use secrets (e.g., "client_secret")**<br/>
+<strong> <code>ONE_TIME_PER_USE_SECRET</code> One-time, per-use secrets (e.g., "client_secret")</strong><br/>
 <dd markdown="block">
 Introduce one-time, per-use secrets (e.g., "client_secret") values
 that can only be used by scripts in a small time window once
@@ -5401,29 +6316,44 @@ attacker’s modified code.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_2_5_csrf_implicit)-csrf-attack-against-redirect-uri'></a>
-### `(4_4_2_5_CSRF_IMPLICIT)` CSRF Attack against redirect-uri
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_ImplicitGrant.4_4_2_5_CSRF_IMPLICIT'></a>
+
+<H4 id="OAuth2.Flows.Flows_ImplicitGrant.4_4_2_5_CSRF_IMPLICIT" data-toc-label="CSRF Attack against redirect-uri">CSRF Attack against redirect-uri (<code>4_4_2_5_CSRF_IMPLICIT</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_2_5_CSRF_IMPLICIT.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -5458,6 +6388,8 @@ Provider.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -5468,11 +6400,12 @@ Provider.
 </dl>
 
 <a name='counter-measures-for-4_4_2_5_csrf_implicit'></a>
-#### Counter-measures for `4_4_2_5_CSRF_IMPLICIT` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_2_5_csrf_implicit" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_2_5_CSRF_IMPLICIT</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**`STATE_PARAM_VALIDATION` Link the authorization request with the redirect URI (state param)**<br/>
+<strong> <code>STATE_PARAM_VALIDATION</code> Link the authorization request with the redirect URI (state param)</strong><br/>
 <dd markdown="block">
 The "state" parameter should be used to link the authorization
 request with the redirect URI used to deliver the access token.
@@ -5484,17 +6417,19 @@ be guessable, and the client should be capable of keeping the
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT.USER_EDUCATION` Users can be educated to not follow untrusted URLs**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT.USER_EDUCATION</code> Users can be educated to not follow untrusted URLs</strong><br/>
 <dd markdown="block">
 Client developers and end users can be educated to not follow
 untrusted URLs.    
 </dd>
+
 
 
 <dd markdown="block">
@@ -5503,23 +6438,37 @@ untrusted URLs.
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by AUTHORIZATION_SERVER_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 <div class="pagebreak"></div>
 
-<hr> 
+<hr/> 
+
+<div markdown="1" class='current'>
 
 
 
-<a name='(4_4_2_6_token_substitution)-token-substitution-(oauth-login)'></a>
-### `(4_4_2_6_TOKEN_SUBSTITUTION)` Token Substitution (OAuth Login)
 
-<a href=""></a>
+
+
+<a name='OAuth2.Flows.Flows_ImplicitGrant.4_4_2_6_TOKEN_SUBSTITUTION'></a>
+
+<H4 id="OAuth2.Flows.Flows_ImplicitGrant.4_4_2_6_TOKEN_SUBSTITUTION" data-toc-label="Token Substitution">Token Substitution (OAuth Login) (<code>4_4_2_6_TOKEN_SUBSTITUTION</code>)</H4>
+ 
+
+
+
 <div style="text-align: center;">
+
 <img src="img/threatTree/4_4_2_6_TOKEN_SUBSTITUTION.svg"/>
+
 </div>
 
 
 
 <dl markdown="block">
+
 
 <dt>Assets (IDs) involved in this threat:</dt>
 
@@ -5570,6 +6519,8 @@ under the victim’s identity.
 <br/> <code><a href="#OAuth2.CONFIDENTIALITY">CONFIDENTIALITY</a></code><code><a href="#OAuth2.INTEGRITY">INTEGRITY</a></code></dd>
 
 
+
+
 <dt>CVSS</dt>
 <dd>
 
@@ -5580,11 +6531,12 @@ under the victim’s identity.
 </dl>
 
 <a name='counter-measures-for-4_4_2_6_token_substitution'></a>
-#### Counter-measures for `4_4_2_6_TOKEN_SUBSTITUTION` <div class='skipTOC'></div>
+
+<H5 id="counter-measures-for-4_4_2_6_token_substitution" data-toc-label="Counter-measures for">Counter-measures for <code>4_4_2_6_TOKEN_SUBSTITUTION</code></H5> <div class='skipTOC'></div>
 
 <dl markdown="block">
     
-**Reference to `OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION.SECURE_USER_LOGIN_PROTOCOL` Secure User Login Protocol**<br/>
+<strong>Reference to <code>OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION.SECURE_USER_LOGIN_PROTOCOL</code> Secure User Login Protocol</strong><br/>
 <dd markdown="block">
 Clients should use an appropriate protocol, such as OpenID (cf.
 [OPENID]) or SAML (cf. [OASIS.sstc-saml-bindings-1.1]) to
@@ -5593,32 +6545,36 @@ clients.
 </dd>
 
 
+
 <dd markdown="block">
 <strong>Countermeasure implemented?</strong> 
 &#10060;   <strong>Public and disclosable?</strong> 
 <span style="color:green;">&#10004;</span>   <strong>Is operational?</strong><span style="color:green;">&#10004;</span>     (operated by CLIENT_OPERATOR) 
 </dd> 
 </dl> 
+</div>
+
+
 
 
 
 <div class="pagebreak"></div>
 
 
+</div>
+
 
 
 
 <a name='requests-for-information'></a>
-## Requests For Information
+
+## Requests For Information {: data-toc-label="Requests For Information"}
 
 
 <ol></ol>
 
 <div class="pagebreak"></div>
 
-<a name='annex-1'></a>
-# Annex 1
-
 
 
 
@@ -5627,10 +6583,11 @@ clients.
  
 
  
- 
 
-<a name='corda-nextgen-operational-security-hardening-guides'></a>
-# Corda NextGen operational security hardening guides
+
+<a name='operational-security-hardening-guides'></a>
+
+## Operational security hardening guides {: data-toc-label="Operational security hardening guides"}
 
 
 
@@ -5640,75 +6597,76 @@ clients.
 
 
 <a name='operational-guide-for-authorization_server'></a>
-# Operational guide for AUTHORIZATION_SERVER
+
+### Operational guide for AUTHORIZATION_SERVER {: data-toc-label="Operational guide for AUTHORIZATION_SERVER"}
 
 
 
-
-<a name='limiting-the-scope-of-access-tokens-obtained-through-automated-approvals'></a>
-## Limiting the scope of access tokens obtained through automated approvals
-
-
-**ID:** `OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1.REDUCED_ACCESS_TOKEN_SCOPE`
-
-**Mitigates:** Malicious Client Obtains Existing Authorization by Fraud
-
-**Operated by: **AUTHORIZATION_SERVER
+<table markdown="block" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;">
+  <tr>
+    <th>Seq</th><th>Countermeasure</th>
+  </tr>
+<tr markdown="block">
+<td>1</td>
+<td markdown="block">
 
 
+**Title (ID):** Limiting the scope of access tokens obtained through automated approvals (`REDUCED_ACCESS_TOKEN_SCOPE`)
+
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1">Malicious Client Obtains Existing Authorization by Fraud</a>
+
+**Description:**
+<br/>
 Authorization servers can mitigate the risks associated with
 automatic processing by limiting the scope of access tokens
 obtained through automated approvals (Section 5.1.5.1).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>2</td>
+<td markdown="block">
 
 
+**Title (ID):** Secure transport layer to CLient to AUTH_SERVER by TLS (`CLIENT_AUTH_SERVER_TLS`)
 
-<a name='secure-transport-layer-to-client-to-auth_server-by-tls'></a>
-## Secure transport layer to client to auth_server by tls
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.4_3_1_EAVESDROPPING_ACCESS_TOKENS1">Eavesdropping Access Tokens</a>
 
-
-**ID:** `OAuth2.AuthorizationServer.4_3_1_EAVESDROPPING_ACCESS_TOKENS1.CLIENT_AUTH_SERVER_TLS`
-
-**Mitigates:** Eavesdropping Access Tokens
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 As per the core OAuth spec, the authorization servers must ensure
 that these transmissions are protected using transport-layer
 mechanisms such as TLS (see Section 5.1.1).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>3</td>
+<td markdown="block">
 
 
+**Title (ID):** Checks on client's security policy (`5_2_3_1_CLIENT_CHECK1`)
 
-<a name='checks-on-clients-security-policy'></a>
-## Checks on client's security policy
+**Mitigates:** <a href="#OAuth2.Client.Client_Secrets_disclosure">Client Secrets Disclosure and impersonation</a>
 
-
-**ID:** `OAuth2.Client.Client_Secrets_disclosure.5_2_3_1_CLIENT_CHECK1`
-
-**Mitigates:** Client Secrets Disclosure and impersonation
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Don't issue secrets to public clients or clients with
 inappropriate security policy
 
+</td>
+</tr>
+<tr markdown="block">
+<td>4</td>
+<td markdown="block">
 
 
+**Title (ID):** Require User Consent for Public Clients without Secret (`5_2_3_2_USER_CONSENT1`)
 
-<a name='require-user-consent-for-public-clients-without-secret'></a>
-## Require user consent for public clients without secret
+**Mitigates:** <a href="#OAuth2.Client.Client_Secrets_disclosure">Client Secrets Disclosure and impersonation</a>
 
-
-**ID:** `OAuth2.Client.Client_Secrets_disclosure.5_2_3_2_USER_CONSENT1`
-
-**Mitigates:** Client Secrets Disclosure and impersonation
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Authorization servers should not allow automatic authorization for
 public clients.  The authorization server may issue an individual
 client id but should require that all authorizations are approved by
@@ -5716,20 +6674,19 @@ the end user.  For clients without secrets, this is a countermeasure
 against the following threat:
   -  Impersonation of public client applications.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>5</td>
+<td markdown="block">
 
 
+**Title (ID):** Issue a "client_id" Only in Combination with "redirect_uri" (`5_2_3_3_CLIENT_ID_TO_REDIRECT_URI`)
 
-<a name='issue-a-"client_id"-only-in-combination-with-"redirect_uri"'></a>
-## Issue a "client_id" only in combination with "redirect_uri"
+**Mitigates:** <a href="#OAuth2.Client.Client_Secrets_disclosure">Client Secrets Disclosure and impersonation</a>
 
-
-**ID:** `OAuth2.Client.Client_Secrets_disclosure.5_2_3_3_CLIENT_ID_TO_REDIRECT_URI`
-
-**Mitigates:** Client Secrets Disclosure and impersonation
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 The authorization server may issue a "client_id" and bind the
   "client_id" to a certain pre-configured "redirect_uri".  Any
   authorization request with another redirect URI is refused
@@ -5743,20 +6700,19 @@ The authorization server may issue a "client_id" and bind the
 
   -  Impersonation of public client applications
 
+</td>
+</tr>
+<tr markdown="block">
+<td>6</td>
+<td markdown="block">
 
 
+**Title (ID):** Validate Pre-Registered "redirect_uri" (`5_2_3_5_VALIDATE_REDIRECT_URI`)
 
-<a name='validate-pre-registered-"redirect_uri"'></a>
-## Validate pre-registered "redirect_uri"
+**Mitigates:** <a href="#OAuth2.Client.Client_Secrets_disclosure">Client Secrets Disclosure and impersonation</a>
 
-
-**ID:** `OAuth2.Client.Client_Secrets_disclosure.5_2_3_5_VALIDATE_REDIRECT_URI`
-
-**Mitigates:** Client Secrets Disclosure and impersonation
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 An authorization server should require all clients to register their
 "redirect_uri", and the "redirect_uri" should be the full URI as
 defined in [RFC6749].  The way that this registration is performed is
@@ -5807,20 +6763,19 @@ typically refers to device local resources, e.g., a custom scheme.
 So, a malicious client on a particular device can use the valid
 redirect URI the legitimate client uses on all other devices.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>7</td>
+<td markdown="block">
 
 
+**Title (ID):** TLS for the authorization server (`5_1_2_AUTH_SERVER_AUTHENTICATION`)
 
-<a name='tls-for-the-authorization-server'></a>
-## Tls for the authorization server
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.AuthServerPhishing1">Password Phishing by Counterfeit Authorization Server</a>
 
-
-**ID:** `OAuth2.AuthorizationServer.AuthServerPhishing1.5_1_2_AUTH_SERVER_AUTHENTICATION`
-
-**Mitigates:** Password Phishing by Counterfeit Authorization Server
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Authorization servers should consider such attacks when developing
 services based on OAuth and should require the use of transport-
 layer security for any requests where the authenticity of the
@@ -5843,39 +6798,37 @@ This is a countermeasure against the following threats:
 <br/>o Proxying
 <br/>o Phishing by counterfeit servers
 
+</td>
+</tr>
+<tr markdown="block">
+<td>8</td>
+<td markdown="block">
 
 
+**Title (ID):** Users educated to avoid phishing attacks (`USER_PHISHING_AWARENESS`)
 
-<a name='users-educated-to-avoid-phishing-attacks'></a>
-## Users educated to avoid phishing attacks
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.AuthServerPhishing1">Password Phishing by Counterfeit Authorization Server</a>
 
-
-**ID:** `OAuth2.AuthorizationServer.AuthServerPhishing1.USER_PHISHING_AWARENESS`
-
-**Mitigates:** Password Phishing by Counterfeit Authorization Server
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Authorization servers should attempt to educate users about the
 risks posed by phishing attacks and should provide mechanisms that
 make it easy for users to confirm the authenticity of their sites.
 Section 5.1.2).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>9</td>
+<td markdown="block">
 
 
+**Title (ID):** AUTHORIZATION_SERVER policy discretional decision (`AUTH_SERVER_RE_CHECK_GRANTS`)
 
-<a name='authorization_server-policy-discretional-decision'></a>
-## Authorization_server policy discretional decision
+**Mitigates:** <a href="#OAuth2.Client.TOO_MUCH_GRANT">User Unintentionally Grants Too Much Access Scope</a>
 
-
-**ID:** `OAuth2.Client.TOO_MUCH_GRANT.AUTH_SERVER_RE_CHECK_GRANTS`
-
-**Mitigates:** User Unintentionally Grants Too Much Access Scope
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Narrow the scope, based on the client.  When obtaining end-user
 authorization and where the client requests scope, the
 authorization server may want to consider whether to honor that
@@ -5885,39 +6838,37 @@ this spec.  The authorization server may also want to consider
 what scope to grant based on the client type, e.g., providing
 lower scope to public clients (Section 5.1.5.1).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>10</td>
+<td markdown="block">
 
 
+**Title (ID):** Users educated to avoid phishing attacks (`USER_AUTH_AWARENESS`)
 
-<a name='users-educated-to-avoid-phishing-attacks'></a>
-## Users educated to avoid phishing attacks
+**Mitigates:** <a href="#OAuth2.Client.TOO_MUCH_GRANT">User Unintentionally Grants Too Much Access Scope</a>
 
-
-**ID:** `OAuth2.Client.TOO_MUCH_GRANT.USER_AUTH_AWARENESS`
-
-**Mitigates:** User Unintentionally Grants Too Much Access Scope
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Authorization servers should attempt to educate users about the
 risks posed by phishing attacks and should provide mechanisms that
 make it easy for users to confirm the authenticity of their sites.
 Section 5.1.2).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>11</td>
+<td markdown="block">
 
 
+**Title (ID):** AUTHORIZATION_SERVER policy discretional decision (`AUTH_SERVER_RE_CHECK_GRANTS`)
 
-<a name='authorization_server-policy-discretional-decision'></a>
-## Authorization_server policy discretional decision
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.TOO_MUCH_GRANT">User Unintentionally Grants Too Much Access Scope</a>
 
-
-**ID:** `OAuth2.AuthorizationServer.TOO_MUCH_GRANT.AUTH_SERVER_RE_CHECK_GRANTS`
-
-**Mitigates:** User Unintentionally Grants Too Much Access Scope
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Narrow the scope, based on the client.  When obtaining end-user
 authorization and where the client requests scope, the
 authorization server may want to consider whether to honor that
@@ -5927,26 +6878,28 @@ this spec.  The authorization server may also want to consider
 what scope to grant based on the client type, e.g., providing
 lower scope to public clients (Section 5.1.5.1).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>12</td>
+<td markdown="block">
 
 
+**Title (ID):** Users educated to avoid phishing attacks (`USER_AUTH_AWARENESS`)
 
-<a name='users-educated-to-avoid-phishing-attacks'></a>
-## Users educated to avoid phishing attacks
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.TOO_MUCH_GRANT">User Unintentionally Grants Too Much Access Scope</a>
 
-
-**ID:** `OAuth2.AuthorizationServer.TOO_MUCH_GRANT.USER_AUTH_AWARENESS`
-
-**Mitigates:** User Unintentionally Grants Too Much Access Scope
-
-**Operated by: **AUTHORIZATION_SERVER
-
-
+**Description:**
+<br/>
 Authorization servers should attempt to educate users about the
 risks posed by phishing attacks and should provide mechanisms that
 make it easy for users to confirm the authenticity of their sites.
 Section 5.1.2).
 
+</td>
+</tr>
 
+</table>
 
 
 
@@ -5955,40 +6908,44 @@ Section 5.1.2).
 
 <a name='operational-guide-for-the-operators-in-the-authorization-server.
 [...]'></a>
-# Operational guide for The operators in the Authorization Server.
-[...]
+
+### Operational guide for The operators in the Authorization Server.
+[...] {: data-toc-label="Operational guide for The operators in the Authorization Server.
+[...]"}
 
 
 
-
-<a name='enforce-standard-system-security-means'></a>
-## Enforce standard system security means
-
-
-**ID:** `OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE.5_1_4_1_1_SYS_SEC`
-
-**Mitigates:** Obtaining Access Tokens from Authorization Server Database
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
+<table markdown="block" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;">
+  <tr>
+    <th>Seq</th><th>Countermeasure</th>
+  </tr>
+<tr markdown="block">
+<td>1</td>
+<td markdown="block">
 
 
+**Title (ID):** Enforce Standard System Security Means (`5_1_4_1_1_SYS_SEC`)
+
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE">Obtaining Access Tokens from Authorization Server Database</a>
+
+**Description:**
+<br/>
 A server system may be locked down so that no attacker may get access
 to sensitive configuration files and databases.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>2</td>
+<td markdown="block">
 
 
+**Title (ID):** Binding of Authorization "code" to "client_id" (`5_2_4_4_CLIENT_TO_CODE_BINDING`)
 
-<a name='binding-of-authorization-"code"-to-"client_id"'></a>
-## Binding of authorization "code" to "client_id"
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE">Eavesdropping or Leaking Authorization codes</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_4_4_CLIENT_TO_CODE_BINDING`
-
-**Mitigates:** Eavesdropping or Leaking Authorization codes
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 The authorization server should bind every authorization "code" to
 the id of the respective client that initiated the end-user
 authorization process. This measure is a countermeasure against:
@@ -6005,20 +6962,19 @@ wherever possible, so the binding of the authorization "code" to a
 certain client can be validated in a reliable way (see
 Section 5.2.4.4).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>3</td>
+<td markdown="block">
 
 
+**Title (ID):** Use Short Expiration Time (`5_1_5_3_SHORT_EXPIRY_CODE`)
 
-<a name='use-short-expiration-time'></a>
-## Use short expiration time
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE">Eavesdropping or Leaking Authorization codes</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_1_5_3_SHORT_EXPIRY_CODE`
-
-**Mitigates:** Eavesdropping or Leaking Authorization codes
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 A short expiration time for tokens is a means of protection against
 the following threats:
 <br/>o replay
@@ -6031,20 +6987,19 @@ Furthermore, shorter duration may require more token refreshes
 (access token) or repeated end-user authorization processes
 (authorization "code" and refresh token).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>4</td>
+<td markdown="block">
 
 
+**Title (ID):** Limit Number of Usages or One-Time Usage (`5_1_5_4_ONE_TIME_USE_TOKEN`)
 
-<a name='limit-number-of-usages-or-one-time-usage'></a>
-## Limit number of usages or one-time usage
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE">Eavesdropping or Leaking Authorization codes</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_1_5_4_ONE_TIME_USE_TOKEN`
-
-**Mitigates:** Eavesdropping or Leaking Authorization codes
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 The authorization server may restrict the number of requests or
 operations that can be performed with a certain token. This
 mechanism can be used to mitigate the following threats:
@@ -6060,56 +7015,53 @@ to re-authenticate and use a refresh token to obtain a fresh access
 token, or forces the client to re-authorize the access token by
 involving the user.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>5</td>
+<td markdown="block">
 
 
+**Title (ID):** Automatic Revocation of Derived Tokens If Abuse Is Detected (`5_2_1_1_TOKEN_ABUSE_DETECTION`)
 
-<a name='automatic-revocation-of-derived-tokens-if-abuse-is-detected'></a>
-## Automatic revocation of derived tokens if abuse is detected
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE">Eavesdropping or Leaking Authorization codes</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.5_2_1_1_TOKEN_ABUSE_DETECTION`
-
-**Mitigates:** Eavesdropping or Leaking Authorization codes
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 If an authorization server observes multiple attempts to redeem an
 authorization grant (e.g., such as an authorization "code"), the
 authorization server may want to revoke all tokens granted based on
 the authorization grant
 
+</td>
+</tr>
+<tr markdown="block">
+<td>6</td>
+<td markdown="block">
 
 
+**Title (ID):** Users can be educated to not follow untrusted URLs (`USER_EDUCATION`)
 
-<a name='users-can-be-educated-to-not-follow-untrusted-urls'></a>
-## Users can be educated to not follow untrusted urls
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT">CSRF Attack against redirect-uri</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT.USER_EDUCATION`
-
-**Mitigates:** CSRF Attack against redirect-uri
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 Client developers and end users can be educated to not follow
 untrusted URLs.    
 
+</td>
+</tr>
+<tr markdown="block">
+<td>7</td>
+<td markdown="block">
 
 
+**Title (ID):** Link the state Parameter to User Agent Session (anti CSRF) (`5_2_2_6_X_FRAME_OPTION`)
 
-<a name='link-the-state-parameter-to-user-agent-session-(anti-csrf)'></a>
-## Link the state parameter to user agent session (anti csrf)
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING">Clickjacking Attack against Authorization</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING.5_2_2_6_X_FRAME_OPTION`
-
-**Mitigates:** Clickjacking Attack against Authorization
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 For newer browsers, avoidance of iFrames can be enforced on the
   server side by using the X-FRAME-OPTIONS header (see
   [X-Frame-Options]). This header can have two values, "DENY" and
@@ -6120,37 +7072,35 @@ For newer browsers, avoidance of iFrames can be enforced on the
 
   o Clickjacking attacks
 
+</td>
+</tr>
+<tr markdown="block">
+<td>8</td>
+<td markdown="block">
 
 
+**Title (ID):** JavaScript frame-busting (`FRAMEBUSTING`)
 
-<a name='javascript-frame-busting'></a>
-## Javascript frame-busting
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING">Clickjacking Attack against Authorization</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING.FRAMEBUSTING`
-
-**Mitigates:** Clickjacking Attack against Authorization
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 For older browsers, JavaScript frame-busting (see [Framebusting])
 techniques can be used but may not be effective in all browsers. 
 
+</td>
+</tr>
+<tr markdown="block">
+<td>9</td>
+<td markdown="block">
 
 
+**Title (ID):** Interactive (non automatic) user approval (`INTERACTIVE_APPROVAL`)
 
-<a name='interactive-(non-automatic)-user-approval'></a>
-## Interactive (non automatic) user approval
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1">Resource Owner Impersonation</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1.INTERACTIVE_APPROVAL`
-
-**Mitigates:** Resource Owner Impersonation
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 Authorization servers should decide, based on an analysis of the risk
 associated with this threat, whether to detect and prevent this
 threat.
@@ -6165,76 +7115,72 @@ o make use of CAPTCHAs, or
 o use one-time secrets sent out of band to the resource owner (e.g.,
 via text or instant message).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>10</td>
+<td markdown="block">
 
 
+**Title (ID):** Notify User's approval (`NOTIFY_APPROVAL`)
 
-<a name='notify-users-approval'></a>
-## Notify user's approval
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1">Resource Owner Impersonation</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1.NOTIFY_APPROVAL`
-
-**Mitigates:** Resource Owner Impersonation
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 In order to allow the resource owner to detect abuse,
 the authorization server could notify the resource owner of any
 approval by appropriate means, e.g., text or instant message, or
 email.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>11</td>
+<td markdown="block">
 
 
+**Title (ID):** Enforce Credential Storage Protection Best Practices (`5_1_4_1_CRED_PROTECTION`)
 
-<a name='enforce-credential-storage-protection-best-practices'></a>
-## Enforce credential storage protection best practices
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.4_3_4_CLIENT_CREDENTIALS_DISCLOSURE">Obtaining Client Secret from Authorization Server Database</a>
 
-
-**ID:** `OAuth2.AuthorizationServer.4_3_4_CLIENT_CREDENTIALS_DISCLOSURE.5_1_4_1_CRED_PROTECTION`
-
-**Mitigates:** Obtaining Client Secret from Authorization Server Database
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 Administrators should undertake industry best practices to protect
 the storage of credentials (for example, see [OWASP]). Such
 practices may include but are not limited to the following
 sub-sections.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>12</td>
+<td markdown="block">
 
 
+**Title (ID):** Sign Self-Contained Tokens (`5_1_5_9_SIGNED_TOKEN`)
 
-<a name='sign-self-contained-tokens'></a>
-## Sign self-contained tokens
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE">Online Guessing of Authorization codes</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE.5_1_5_9_SIGNED_TOKEN`
-
-**Mitigates:** Online Guessing of Authorization codes
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 Self-contained tokens should be signed in order to detect any attempt
 to modify or produce faked tokens (e.g., Hash-based Message
 Authentication Code or digital signatures).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>13</td>
+<td markdown="block">
 
 
+**Title (ID):** Binding of Authorization "code" to "redirect_uri" (`5_2_4_5_REDIRECT_CODE_BINDING`)
 
-<a name='binding-of-authorization-"code"-to-"redirect_uri"'></a>
-## Binding of authorization "code" to "redirect_uri"
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE">Online Guessing of Authorization codes</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE.5_2_4_5_REDIRECT_CODE_BINDING`
-
-**Mitigates:** Online Guessing of Authorization codes
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 The authorization server should be able to bind every authorization
 "code" to the actual redirect URI used as the redirect target of the
 client in the end-user authorization process. This binding should be
@@ -6244,40 +7190,38 @@ countermeasure against authorization "code" leakage through
 counterfeit web sites, since an attacker cannot use another redirect
 URI to exchange an authorization "code" into a token.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>14</td>
+<td markdown="block">
 
 
+**Title (ID):** Automatic Processing of Repeated Authorizations Requires Client Validation (`5_2_4_1_REPEAT_VALIDATE_CLIENT`)
 
-<a name='automatic-processing-of-repeated-authorizations-requires-client-validation'></a>
-## Automatic processing of repeated authorizations requires client validation
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1">Malicious Client Obtains Authorization</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_1_REPEAT_VALIDATE_CLIENT`
-
-**Mitigates:** Malicious Client Obtains Authorization
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 Authorization servers should NOT automatically process repeat
 authorizations where the client is not authenticated through a client
 secret or some other authentication mechanism such as a signed
 authentication assertion certificate (Section 5.2.3.7) or validation
 of a pre-registered redirect URI (Section 5.2.3.5).
 
+</td>
+</tr>
+<tr markdown="block">
+<td>15</td>
+<td markdown="block">
 
 
+**Title (ID):** Automatic Processing of Repeated Authorizations Requires Client Validation (`REQUIRE_USER_MANUAL_STEP`)
 
-<a name='automatic-processing-of-repeated-authorizations-requires-client-validation'></a>
-## Automatic processing of repeated authorizations requires client validation
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1">Malicious Client Obtains Authorization</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.REQUIRE_USER_MANUAL_STEP`
-
-**Mitigates:** Malicious Client Obtains Authorization
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 If the authorization server automatically authenticates the end
 user, it may nevertheless require some user input in order to
 prevent screen scraping. Examples are CAPTCHAs (Completely
@@ -6285,20 +7229,19 @@ Automated Public Turing tests to tell Computers and Humans Apart)
 or other multi-factor authentication techniques such as random
 questions, token code generators, etc.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>16</td>
+<td markdown="block">
 
 
+**Title (ID):** Limit Token Scope (`5_1_5_1_LIMITED_SCOPE_TOKEN`)
 
-<a name='limit-token-scope'></a>
-## Limit token scope
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1">Malicious Client Obtains Authorization</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_1_5_1_LIMITED_SCOPE_TOKEN`
-
-**Mitigates:** Malicious Client Obtains Authorization
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 The authorization server may decide to reduce or limit the scope
 associated with a token. The basis of this decision is out of scope;
 examples are:
@@ -6320,20 +7263,19 @@ following threats:
 <br/>o unintended issuance of powerful tokens with resource owner
 credentials flow
 
+</td>
+</tr>
+<tr markdown="block">
+<td>17</td>
+<td markdown="block">
 
 
+**Title (ID):** Issue Installation-Specific Client Secrets (`5_2_3_4_SPECIFIC_CLIENT_SECRETS`)
 
-<a name='issue-installation-specific-client-secrets'></a>
-## Issue installation-specific client secrets
+**Mitigates:** <a href="#OAuth2.Client.Client_Secrets_disclosure">Client Secrets Disclosure and impersonation</a>
 
-
-**ID:** `OAuth2.Client.Client_Secrets_disclosure.5_2_3_4_SPECIFIC_CLIENT_SECRETS`
-
-**Mitigates:** Client Secrets Disclosure and impersonation
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 An authorization server may issue separate client identifiers and
 corresponding secrets to the different installations of a particular
 client (i.e., software package).  The effect of such an approach
@@ -6369,79 +7311,78 @@ to prevent several replay attacks.  Moreover, installation-specific
 "client_ids" and secrets allow the selective revocation of all
 refresh tokens of a specific installation at once.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>18</td>
+<td markdown="block">
 
 
+**Title (ID):** Limit access tokens granted per user (`AUTH_SERVER_PER_USER_LIMIT`)
 
-<a name='limit-access-tokens-granted-per-user'></a>
-## Limit access tokens granted per user
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_11_DOS_TOKEN_ENTROPY">Resource Owner Impersonation</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_11_DOS_TOKEN_ENTROPY.AUTH_SERVER_PER_USER_LIMIT`
-
-**Mitigates:** Resource Owner Impersonation
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 The authorization server should consider limiting the number of
 access tokens granted per user.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>19</td>
+<td markdown="block">
 
 
+**Title (ID):** Make responses non-cacheable. (`NON_CACHEABLE_RESPONSES`)
 
-<a name='make-responses-non-cacheable.'></a>
-## Make responses non-cacheable.
+**Mitigates:** <a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY">Access Token Leak in Browser History</a>
 
-
-**ID:** `OAuth2.Flows.Flows_ImplicitGrant.4_4_2_2_TOKEN_LEAK2_BROWSER_HISTORY.NON_CACHEABLE_RESPONSES`
-
-**Mitigates:** Access Token Leak in Browser History
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 Make responses non-cacheable.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>20</td>
+<td markdown="block">
 
 
+**Title (ID):** Clients indicate their ids in requests (`IN_REQUEST_CLIENTID`)
 
-<a name='clients-indicate-their-ids-in-requests'></a>
-## Clients indicate their ids in requests
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION">DoS Using Manufactured Authorization "codes"</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION.IN_REQUEST_CLIENTID`
-
-**Mitigates:** DoS Using Manufactured Authorization "codes"
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 All clients must indicate their client ids with every request to
 exchange an authorization "code" for an access token. The
 authorization server must validate whether the particular
 authorization "code" has been issued to the particular client. If
 possible, the client shall be authenticated beforehand.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>21</td>
+<td markdown="block">
 
 
+**Title (ID):** Client limits authenticated users codes (`AUTH_RATE_LIMIT`)
 
-<a name='client-limits-authenticated-users-codes'></a>
-## Client limits authenticated users codes
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2">DoS Using Manufactured Authorization "codes"</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2.AUTH_RATE_LIMIT`
-
-**Mitigates:** DoS Using Manufactured Authorization "codes"
-
-**Operated by: **AUTHORIZATION_SERVER_OPERATOR
-
-
+**Description:**
+<br/>
 The authorization server should send an error response to the
 client reporting an invalid authorization "code" and rate-limit or
 disallow connections from clients whose number of invalid requests
 exceeds a threshold.
 
+</td>
+</tr>
 
+</table>
 
 
 
@@ -6450,55 +7391,58 @@ exceeds a threshold.
 
 <a name='operational-guide-for-the-operators-of-the-client.
 [...]'></a>
-# Operational guide for The operators of the CLIENT.
-[...]
+
+### Operational guide for The operators of the CLIENT.
+[...] {: data-toc-label="Operational guide for The operators of the CLIENT.
+[...]"}
 
 
 
-
-<a name='reload-the-target-page'></a>
-## Reload the target page
-
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE.USER_AGENT_PAGE_RELOAD`
-
-**Mitigates:** Eavesdropping or Leaking Authorization codes
-
-**Operated by: **CLIENT_OPERATOR
+<table markdown="block" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;">
+  <tr>
+    <th>Seq</th><th>Countermeasure</th>
+  </tr>
+<tr markdown="block">
+<td>1</td>
+<td markdown="block">
 
 
+**Title (ID):** Reload the target page (`USER_AGENT_PAGE_RELOAD`)
+
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE">Eavesdropping or Leaking Authorization codes</a>
+
+**Description:**
+<br/>
 The client server may reload the target page of the redirect URI
 in order to automatically clean up the browser cache.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>2</td>
+<td markdown="block">
 
 
+**Title (ID):** Link the state Parameter to User Agent Session (anti CSRF) (`5_3_5_ANTI_CSRF_STATE_PARAM`)
 
-<a name='link-the-state-parameter-to-user-agent-session-(anti-csrf)'></a>
-## Link the state parameter to user agent session (anti csrf)
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT">CSRF Attack against redirect-uri</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT.5_3_5_ANTI_CSRF_STATE_PARAM`
-
-**Mitigates:** CSRF Attack against redirect-uri
-
-**Operated by: **CLIENT_OPERATOR
-
-
+**Description:**
+<br/>
 The "state" parameter is used to link client requests and prevent CSRF attacks, for example, attacks against the redirect URI. An attacker could inject their own authorization "code" or access token, which can result in the client using an access token associated with the attacker’s protected resources rather than the victim’s (e.g., save the victim’s bank account information to a protected resource controlled by the attacker). The client should utilize the "state" request parameter to send the authorization server a value that binds the request to the user agent’s authenticated state (e.g., a hash of the session cookie used to authenticate the user agent) when making an authorization request. Once authorization has been obtained from the end user, the authorization server redirects the end-user’s user agent back to the client with the required binding value contained in the "state" parameter. The binding value enables the client to verify the validity of the request by matching the binding value to the user agent’s authenticated state.
+</td>
+</tr>
+<tr markdown="block">
+<td>3</td>
+<td markdown="block">
 
 
+**Title (ID):** Ensure Confidentiality of Requests (TLS) (`5_1_1_CONFIDENTIAL_REQUESTS`)
 
-<a name='ensure-confidentiality-of-requests-(tls)'></a>
-## Ensure confidentiality of requests (tls)
+**Mitigates:** <a href="#OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE">Disclosure of Client Credentials during Transmission</a>
 
-
-**ID:** `OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE.5_1_1_CONFIDENTIAL_REQUESTS`
-
-**Mitigates:** Disclosure of Client Credentials during Transmission
-
-**Operated by: **CLIENT_OPERATOR
-
-
+**Description:**
+<br/>
 This is applicable to all requests sent from the client to the
 authorization server or resource server. While OAuth provides a
 mechanism for verifying the integrity of requests, it provides no
@@ -6522,59 +7466,56 @@ Replay of authorization "codes" obtained on the token’s endpoint
 (redirect?)
 <br/>o Replay of user passwords and client secrets
 
+</td>
+</tr>
+<tr markdown="block">
+<td>4</td>
+<td markdown="block">
 
 
+**Title (ID):** Secure User Login Protocol (`SECURE_USER_LOGIN_PROTOCOL`)
 
-<a name='secure-user-login-protocol'></a>
-## Secure user login protocol
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION">DoS Using Manufactured Authorization "codes"</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION.SECURE_USER_LOGIN_PROTOCOL`
-
-**Mitigates:** DoS Using Manufactured Authorization "codes"
-
-**Operated by: **CLIENT_OPERATOR
-
-
+**Description:**
+<br/>
 Clients should use an appropriate protocol, such as OpenID (cf.
 [OPENID]) or SAML (cf. [OASIS.sstc-saml-bindings-1.1]) to
 implement user login. Both support audience restrictions on
 clients.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>5</td>
+<td markdown="block">
 
 
+**Title (ID):** One-time, per-use secrets (e.g., "client_secret") (`ONE_TIME_PER_USE_SECRET`)
 
-<a name='one-time-per-use-secrets-(e.g.-"client_secret")'></a>
-## One-time, per-use secrets (e.g., "client_secret")
+**Mitigates:** <a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_4_MANIPULATION_SCRIPTS">Manipulation of Scripts</a>
 
-
-**ID:** `OAuth2.Flows.Flows_ImplicitGrant.4_4_2_4_MANIPULATION_SCRIPTS.ONE_TIME_PER_USE_SECRET`
-
-**Mitigates:** Manipulation of Scripts
-
-**Operated by: **CLIENT_OPERATOR
-
-
+**Description:**
+<br/>
 Introduce one-time, per-use secrets (e.g., "client_secret") values
 that can only be used by scripts in a small time window once
 loaded from a server. The intention would be to reduce the
 effectiveness of copying client-side scripts for re-use in an
 attacker’s modified code.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>6</td>
+<td markdown="block">
 
 
+**Title (ID):** Link the authorization request with the redirect URI (state param) (`STATE_PARAM_VALIDATION`)
 
-<a name='link-the-authorization-request-with-the-redirect-uri-(state-param)'></a>
-## Link the authorization request with the redirect uri (state param)
+**Mitigates:** <a href="#OAuth2.Flows.Flows_ImplicitGrant.4_4_2_5_CSRF_IMPLICIT">CSRF Attack against redirect-uri</a>
 
-
-**ID:** `OAuth2.Flows.Flows_ImplicitGrant.4_4_2_5_CSRF_IMPLICIT.STATE_PARAM_VALIDATION`
-
-**Mitigates:** CSRF Attack against redirect-uri
-
-**Operated by: **CLIENT_OPERATOR
-
-
+**Description:**
+<br/>
 The "state" parameter should be used to link the authorization
 request with the redirect URI used to deliver the access token.
 This will ensure that the client is not tricked into completing
@@ -6583,27 +7524,29 @@ request initiated by the client. The "state" parameter should not
 be guessable, and the client should be capable of keeping the
 "state" parameter secret.
 
+</td>
+</tr>
+<tr markdown="block">
+<td>7</td>
+<td markdown="block">
 
 
+**Title (ID):** Client limits authenticated users codes (`CLIENT_LIMITS_PER_USER`)
 
-<a name='client-limits-authenticated-users-codes'></a>
-## Client limits authenticated users codes
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2">DoS Using Manufactured Authorization "codes"</a>
 
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2.CLIENT_LIMITS_PER_USER`
-
-**Mitigates:** DoS Using Manufactured Authorization "codes"
-
-**Operated by: **CLIENT_OPERATOR
-
-
+**Description:**
+<br/>
 If the client authenticates the user, either through a single-
 sign-on protocol or through local authentication, the client
 should suspend the access by a user account if the number of
 invalid authorization "codes" submitted by this user exceeds a
 certain threshold.
 
+</td>
+</tr>
 
+</table>
 
 
 
@@ -6611,22 +7554,26 @@ certain threshold.
 
 
 <a name='operational-guide-for-an-entity-capable-of-granting-access-to-a-protecte[...]'></a>
-# Operational guide for An entity capable of granting access to a protecte[...]
+
+### Operational guide for An entity capable of granting access to a protecte[...] {: data-toc-label="Operational guide for An entity capable of granting access to a protecte[...]"}
 
 
 
-
-<a name='validation-of-client-properties-by-end-user'></a>
-## Validation of client properties by end user
-
-
-**ID:** `OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1.5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER`
-
-**Mitigates:** Malicious Client Obtains Authorization
-
-**Operated by: **RESOURCE_OWNER
+<table markdown="block" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;">
+  <tr>
+    <th>Seq</th><th>Countermeasure</th>
+  </tr>
+<tr markdown="block">
+<td>1</td>
+<td markdown="block">
 
 
+**Title (ID):** Validation of Client Properties by End User (`5_2_4_3_VALIDATION_OF_CLIENT_BY_END_USER`)
+
+**Mitigates:** <a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1">Malicious Client Obtains Authorization</a>
+
+**Description:**
+<br/>
 In the authorization process, the user is typically asked to approve
 a client’s request for authorization. This is an important security
 mechanism by itself because the end user can be involved in the
@@ -6638,7 +7585,10 @@ authenticate the client. It is a countermeasure against:
 <br/>o A malicious application
 <br/>o A client application masquerading as another client
 
+</td>
+</tr>
 
+</table>
 
 
 
@@ -6648,8 +7598,514 @@ authenticate the client. It is a countermeasure against:
 
 <div class="pagebreak"></div>
 
-<a name='annex-2'></a>
-# Annex 2
+
+
+
+
+ 
+
+ 
+
+<a name='testing-guide'></a>
+
+## Testing guide {: data-toc-label="Testing guide"}
+
+
+
+This guide lists all testable attacks described in the threat model
+
+<table markdown="block" style="print-color-adjust: exact; -webkit-print-color-adjust: exact;">
+<tr><th>Seq</th><th>Attack to test</th><th>Pass/Fail/NA</th></tr>
+<tr markdown="block">
+
+
+
+
+<td>1</td>
+<td markdown="block">
+<a href="#OAuth2.Client.Client_Secrets_disclosure">Client Secrets Disclosure and impersonation</a><br/>
+**Attack description:** Obtain Secret From Source Code or Binary:
+This applies for all client types.  For open source projects, secrets
+can be extracted directly from source code in their public
+repositories.  Secrets can be extracted from application binaries
+just as easily when the published source is not available to the
+attacker.  Even if an application takes significant measures to
+obfuscate secrets in their application distribution, one should
+consider that the secret can still be reverse-engineered by anyone
+with access to a complete functioning application bundle or binary.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>2</td>
+<td markdown="block">
+<a href="#OAuth2.Client.TOO_MUCH_GRANT">User Unintentionally Grants Too Much Access Scope</a><br/>
+**Attack description:** When obtaining end-user authorization, the end user may not
+understand the scope of the access being granted and to whom, or they
+may end up providing a client with access to resources that should
+not be permitted.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>3</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.AuthServerPhishing1">Password Phishing by Counterfeit Authorization Server</a><br/>
+**Attack description:** A hostile party could take advantage of this
+by intercepting the client's requests and returning misleading or
+otherwise incorrect responses.  This could be achieved using DNS or
+Address Resolution Protocol (ARP) spoofing.  Wide deployment of OAuth
+and similar protocols may cause users to become inured to the
+practice of being redirected to web sites where they are asked to
+enter their passwords.  If users are not careful to verify the
+authenticity of these web sites before entering their credentials, it
+will be possible for attackers to exploit this practice to steal
+users' passwords.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>4</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.TOO_MUCH_GRANT">User Unintentionally Grants Too Much Access Scope</a><br/>
+**Attack description:** When obtaining end-user authorization, the end user may not
+understand the scope of the access being granted and to whom, or they
+may end up providing a client with access to resources that should
+not be permitted.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>5</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.OPEN_REDIRECTOR">Authorization server open redirect</a><br/>
+**Attack description:** An attacker could use the end-user authorization endpoint and the
+redirect URI parameter to abuse the authorization server as an open
+redirector. An open redirector is an endpoint using a parameter to
+automatically redirect a user agent to the location specified by the
+parameter value without any validation.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>6</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.PUBLIC_CLIENT_SPOOFING1">Malicious Client Obtains Existing Authorization by Fraud</a><br/>
+**Attack description:** Authorization servers may wish to automatically process authorization
+requests from clients that have been previously authorized by the
+user. When the user is redirected to the authorization server's end-
+user authorization endpoint to grant access, the authorization server
+detects that the user has already granted access to that particular
+client. Instead of prompting the user for approval, the
+authorization server automatically redirects the user back to the
+client.
+
+A malicious client may exploit that feature and try to obtain such an
+authorization "code" instead of the legitimate client.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>7</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.4_3_1_EAVESDROPPING_ACCESS_TOKENS1">Eavesdropping Access Tokens</a><br/>
+**Attack description:** Attackers may attempt to eavesdrop access tokens in transit from the
+authorization server to the client.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>8</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.4_3_2_AS_DB_TOKEN_DISCLOSURE">Obtaining Access Tokens from Authorization Server Database</a><br/>
+**Attack description:** An attacker may obtain access
+tokens from the authorization server’s database by gaining access to
+the database or launching a SQL injection attack. 
+
+This threat is applicable if the authorization server stores access
+tokens as handles in a database.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>9</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.4_3_3_CLIENT_CREDENTIALS_DISCLOSURE">Disclosure of Client Credentials during Transmission</a><br/>
+**Attack description:** An attacker could attempt to eavesdrop the transmission of client
+credentials between the client and server during the client
+authentication process or during OAuth token requests.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>10</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.4_3_4_CLIENT_CREDENTIALS_DISCLOSURE">Obtaining Client Secret from Authorization Server Database</a><br/>
+**Attack description:** An attacker may obtain valid "client_id"/secret combinations from the
+authorization server’s database by gaining access to the database or
+launching a SQL injection attack.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>11</td>
+<td markdown="block">
+<a href="#OAuth2.AuthorizationServer.4_3_5_CLIENT_SECRET_BRUTE_FORCE">Obtaining Client Secret by Online Guessing</a><br/>
+**Attack description:** An attacker may try to guess valid "client_id"/secret pairs.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>12</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_1_AUTH_CODE_DISCLOSURE">Eavesdropping or Leaking Authorization codes</a><br/>
+**Attack description:** An attacker could try to eavesdrop transmission of the authorization
+"code" between the authorization server and client. Furthermore,
+authorization "codes" are passed via the browser, which may
+unintentionally leak those codes to untrusted web sites and attackers
+in different ways:
+<br/>o Referrer headers: Browsers frequently pass a "referer" header when
+a web page embeds content, or when a user travels from one web
+page to another web page. These referrer headers may be sent even
+when the origin site does not trust the destination site. The
+referrer header is commonly logged for traffic analysis purposes.
+<br/>o Request logs: Web server request logs commonly include query
+parameters on requests.
+<br/>o Open redirectors: Web sites sometimes need to send users to
+another destination via a redirector. Open redirectors pose a
+particular risk to web-based delegation protocols because the
+redirector can leak verification codes to untrusted destination
+sites.
+<br/>o Browser history: Web browsers commonly record visited URLs in the
+browser history. Another user of the same web browser may be able
+to view URLs that were visited by previous users.
+Note: A description of similar attacks on the SAML protocol can be
+found at [OASIS.sstc-saml-bindings-1.1], Section 4.1.1.9.1;
+[Sec-Analysis]; and [OASIS.sstc-sec-analysis-response-01].
+
+</td>
+<td></td>
+
+</tr>
+
+<td>13</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_2_AUTH_CODE_DISCLOSURE_DB">Obtaining Authorization codes from AuthorizationServer Database</a><br/>
+**Attack description:** This threat is applicable if the authorization server stores
+ authorization "codes" as handles in a database. An attacker may
+ obtain authorization "codes" from the authorization server’s database
+ by gaining access to the database or launching a SQL injection
+ attack.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>14</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_3_AUTH_CODE_BRUTE_FORCE">Online Guessing of Authorization codes</a><br/>
+**Attack description:** An attacker may try to guess valid authorization "code" values and
+ send the guessed code value using the grant type "code" in order to
+ obtain a valid access token.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>15</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_4_CLIENT_SPOOFING1">Malicious Client Obtains Authorization</a><br/>
+**Attack description:** A malicious client could pretend to be a valid client and obtain an
+access authorization in this way. The malicious client could even
+utilize screen-scraping techniques in order to simulate a user’s
+consent in the authorization flow.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>16</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_5_CLIENT_SPOOFING2">Authorization code Phishing</a><br/>
+**Attack description:** A hostile party could impersonate the client site and get access to
+the authorization "code". This could be achieved using DNS or ARP
+spoofing. This applies to clients, which are web applications; thus,
+the redirect URI is not local to the host where the user’s browser is
+running.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>17</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_6_CLIENT_SPOOFING3">Authorization code Phishing</a><br/>
+**Attack description:** A hostile party could impersonate the client site and impersonate the
+user’s session on this client. This could be achieved using DNS or
+ARP spoofing. This applies to clients, which are web applications;
+thus, the redirect URI is not local to the host where the user’s
+browser is running.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>18</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_7_CLIENT_SPOOFING4">Authorization code Leakage through Counterfeit Client</a><br/>
+**Attack description:** The attacker leverages the authorization "code" grant type in an
+attempt to get another user (victim) to log in, authorize access to
+his/her resources, and subsequently obtain the authorization "code"
+and inject it into a client application using the attacker’s account.
+The goal is to associate an access authorization for resources of the
+victim with the user account of the attacker on a client site.
+The attacker abuses an existing client application and combines it
+with his own counterfeit client web site. The attacker depends on
+the victim expecting the client application to request access to a
+certain resource server. The victim, seeing only a normal request
+from an expected application, approves the request. The attacker
+then uses the victim’s authorization to gain access to the
+information unknowingly authorized by the victim.
+The attacker conducts the following flow:
+
+1. The attacker accesses the client web site (or application) and
+initiates data access to a particular resource server. The
+client web site in turn initiates an authorization request to the
+resource server’s authorization server. Instead of proceeding
+with the authorization process, the attacker modifies the
+authorization server end-user authorization URL as constructed by
+the client to include a redirect URI parameter referring to a web
+site under his control (attacker’s web site).
+
+2. The attacker tricks another user (the victim) into opening that
+modified end-user authorization URI and authorizing access (e.g.,
+via an email link or blog link). The way the attacker achieves
+this goal is out of scope.
+
+3. Having clicked the link, the victim is requested to authenticate
+and authorize the client site to have access.
+
+4. After completion of the authorization process, the authorization
+server redirects the user agent to the attacker’s web site
+instead of the original client web site.
+
+5. The attacker obtains the authorization "code" from his web site
+by means that are out of scope of this document.
+
+6. He then constructs a redirect URI to the target web site (or
+application) based on the original authorization request’s
+redirect URI and the newly obtained authorization "code", and
+directs his user agent to this URL. The authorization "code" is
+injected into the original client site (or application).
+
+7. The client site uses the authorization "code" to fetch a token
+from the authorization server and associates this token with the
+attacker’s user account on this site.
+
+8. The attacker may now access the victim’s resources using the
+client site.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>19</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_8_CSRF_ON_REDIRECT">CSRF Attack against redirect-uri</a><br/>
+**Attack description:** Cross-site request forgery (CSRF) is a web-based attack whereby HTTP
+requests are transmitted from a user that the web site trusts or has
+authenticated (e.g., via HTTP redirects or HTML forms). CSRF attacks
+on OAuth approvals can allow an attacker to obtain authorization to
+OAuth protected resources without the consent of the user.
+This attack works against the redirect URI used in the authorization
+"code" flow. An attacker could authorize an authorization "code" to
+their own protected resources on an authorization server. He then
+aborts the redirect flow back to the client on his device and tricks
+the victim into executing the redirect back to the client. The
+client receives the redirect, fetches the token(s) from the
+authorization server, and associates the victim’s client session with
+the resources accessible using the token.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>20</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_9_CLICKJACKING">Clickjacking Attack against Authorization</a><br/>
+**Attack description:** With clickjacking, a malicious site loads the target site in a
+transparent iFrame (see [iFrame]) overlaid on top of a set of dummy
+buttons that are carefully constructed to be placed directly under
+important buttons on the target site. When a user clicks a visible
+button, they are actually clicking a button (such as an "Authorize"
+button) on the hidden page.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>21</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_10_RESOURCE_OWNER_SPOOFING1">Resource Owner Impersonation</a><br/>
+**Attack description:** When a client requests access to protected resources, the
+authorization flow normally involves the resource owner’s explicit
+response to the access request, either granting or denying access to
+the protected resources. A malicious client can exploit knowledge of
+the structure of this flow in order to gain authorization without the
+resource owner’s consent, by transmitting the necessary requests
+programmatically and simulating the flow against the authorization
+server. That way, the client may gain access to the victim’s
+resources without her approval. An authorization server will be
+vulnerable to this threat if it uses non-interactive authentication
+mechanisms or splits the authorization flow across multiple pages.
+The malicious client might embed a hidden HTML user agent, interpret
+the HTML forms sent by the authorization server, and automatically
+send the corresponding form HTTP POST requests. As a prerequisite,
+the attacker must be able to execute the authorization process in the
+context of an already-authenticated session of the resource owner
+with the authorization server. There are different ways to achieve
+this:
+
+o The malicious client could abuse an existing session in an
+external browser or cross-browser cookies on the particular
+device.
+
+  o The malicious client could also request authorization for an
+initial scope acceptable to the user and then silently abuse the
+resulting session in his browser instance to "silently" request
+another scope.
+
+o Alternatively, the attacker might exploit an authorization
+server’s ability to authenticate the resource owner automatically
+and without user interactions, e.g., based on certificates.
+In all cases, such an attack is limited to clients running on the
+victim’s device, either within the user agent or as a native app.
+Please note: Such attacks cannot be prevented using CSRF
+countermeasures, since the attacker just "executes" the URLs as
+prepared by the authorization server including any nonce, etc.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>22</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_11_DOS_TOKEN_ENTROPY">Resource Owner Impersonation</a><br/>
+**Attack description:** If an authorization server includes a nontrivial amount of entropy in
+ authorization "codes" or access tokens (limiting the number of
+ possible codes/tokens) and automatically grants either without user
+ intervention and has no limit on codes or access tokens per user, an
+ attacker could exhaust the pool of authorization "codes" by
+ repeatedly directing the user’s browser to request authorization
+  "codes" or access tokens.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>23</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_12_DOS2">DoS Using Manufactured Authorization "codes"</a><br/>
+**Attack description:** An attacker who owns a botnet can locate the redirect URIs of clients
+ that listen on HTTP, access them with random authorization "codes",
+ and cause a large number of HTTPS connections to be concentrated onto
+ the authorization server. This can result in a denial-of-service
+ (DoS) attack on the authorization server.
+ This attack can still be effective even when CSRF defense/the "state"
+ parameter (see Section 4.4.1.8) is deployed on the client side. With
+ such a defense, the attacker might need to incur an additional HTTP
+ request to obtain a valid CSRF code/"state" parameter. This
+ apparently cuts down the effectiveness of the attack by a factor of
+ 2. However, if the HTTPS/HTTP cost ratio is higher than 2 (the cost
+ factor is estimated to be around 3.5x at [SSL-Latency]), the attacker
+ still achieves a magnification of resource utilization at the expense
+ of the authorization server.
+
+</td>
+<td></td>
+
+</tr>
+
+<td>24</td>
+<td markdown="block">
+<a href="#OAuth2.Flows.Flows_AuthCode.4_4_1_13_CODE_SUBSTITUTION">DoS Using Manufactured Authorization "codes"</a><br/>
+**Attack description:** An attacker could attempt to log into an application or web site
+ using a victim’s identity. Applications relying on identity data
+ provided by an OAuth protected service API to login users are
+ vulnerable to this threat. This pattern can be found in so-called
+ "social login" scenarios.
+ As a prerequisite, a resource server offers an API to obtain personal
+ information about a user that could be interpreted as having obtained
+ a user identity. In this sense, the client is treating the resource
+ server API as an "identity" API. A client utilizes OAuth to obtain
+ an access token for the identity API. It then queries the identity
+ API for an identifier and uses it to look up its internal user
+ account data (login). The client assumes that, because it was able
+ to obtain information about the user, the user has been
+ authenticated.
+ If the client uses the grant type "code", the attacker needs to
+ gather a valid authorization "code" of the respective victim from the
+ same Identity Provider used by the target client application. The
+ attacker tricks the victim into logging into a malicious app (which
+ may appear to be legitimate to the Identity Provider) using the same
+ Identity Provider as the target application. This results in the
+ Identity Provider’s authorization server issuing an authorizatio
+ "code" for the respective identity API. The malicious app then sends
+ this code to the attacker, which in turn triggers a login process
+ within the target application. The attacker now manipulates the
+ authorization response and substitutes their code (bound to their
+ identity) for the victim’s code. This code is then exchanged by the
+ client for an access token, which in turn is accepted by the identity
+ API, since the audience, with respect to the resource server, is
+ correct. But since the identifier returned by the identity API is
+ determined by the identity in the access token (issued based on the
+ victim’s code), the attacker is logged into the target application
+ under the victim’s identity.
+
+</td>
+<td></td>
+
+</tr>
+</table>
+
+
+
+
+
+
+<div class="pagebreak"></div>
 
 
 
@@ -6658,10 +8114,12 @@ authenticate the client. It is a countermeasure against:
 
  
 
+ 
  
 
 <a name='keys-classification'></a>
-# Keys classification
+
+## Keys classification {: data-toc-label="Keys classification"}
 
 
 
@@ -6673,7 +8131,8 @@ authenticate the client. It is a countermeasure against:
 
   
 <a name='credentials'></a>
-## Credentials
+
+### Credentials {: data-toc-label="Credentials"}
 
   
 

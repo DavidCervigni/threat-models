@@ -12,12 +12,12 @@
 <!-- 4_4_1_11_DOS_TOKEN_ENTROPY -->
 <g id="node1" class="node">
 <title>4_4_1_11_DOS_TOKEN_ENTROPY</title>
-<polygon fill="#f8cecc" stroke="#b85450" points="430,-295 58,-295 58,-222 430,-222 430,-295"/>
-<text text-anchor="start" x="221" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="68" y="-267.9" font-family="Arial" font-size="12.00"> Denial of Service in: dataflow Auth User Agent Redirection</text>
+<polygon fill="#f8cecc" stroke="#b85450" points="350.5,-295 137.5,-295 137.5,-222 350.5,-222 350.5,-295"/>
+<text text-anchor="start" x="221.5" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
+<text text-anchor="start" x="148" y="-267.9" font-family="Arial" font-size="12.00"> Resource Owner Impersonation</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.AVAILABILITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="76,-235.5 76,-252.5 412,-252.5 412,-235.5 76,-235.5"/>
-<text text-anchor="start" x="204" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">AVAILABILITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="156,-235.5 156,-252.5 333,-252.5 333,-235.5 156,-235.5"/>
+<text text-anchor="start" x="204.5" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">AVAILABILITY</text>
 </a>
 </g>
 </g>

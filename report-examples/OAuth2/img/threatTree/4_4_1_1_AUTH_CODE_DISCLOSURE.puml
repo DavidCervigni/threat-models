@@ -9,7 +9,7 @@ rankdir="BT";
     <<table border="0" cellborder="0" cellspacing="0">
      <tr><td align="center"><b>Threat</b><br/> 
 
-Spoofing, Elevation of privileges, Information Disclosure in: credential<br/>Authorization Grant
+Eavesdropping or Leaking Authorization codes
 </td></tr>
      <tr><td><table border="0" cellborder="0" cellspacing="8"><tr>
                 ret += secObj.linkedImpactMDText()

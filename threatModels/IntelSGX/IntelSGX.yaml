@@ -1,0 +1,146 @@
+ID: IntelSGX
+title: Intel SGX Threat Model
+version: 1.0
+authors: |
+  David Cervigni
+scope:
+  description: |
+    **NOTE:** this is an example if threat model created with by training an LLM
+    
+    This document outlines potential threats to Intel SGX (Software Guard Extensions), focusing on threats to enclave integrity, confidentiality, and availability. It includes countermeasures to mitigate these threats.
+  securityObjectives:
+    - ID: ENCLAVE_CONFIDENTIALITY
+      title: Enclave Confidentiality
+      description: |
+        Ensure the confidentiality of data and code within SGX enclaves, protecting them from unauthorized access.
+      group: Data Security
+
+    - ID: ENCLAVE_INTEGRITY
+      title: Enclave Integrity
+      description: |
+        Ensure the integrity of the data and execution within SGX enclaves, preventing unauthorized modifications.
+      group: System Integrity
+
+    - ID: PLATFORM_TRUST
+      title: Platform Trust
+      description: |
+        Maintain trust in the hardware root of trust and the integrity of SGX attestation mechanisms.
+      group: Trust Assurance
+
+  assumptions:
+    - ID: PRIVILEGED_ATTACKER
+      description: |
+        Attackers may have elevated privileges (e.g., OS-level or hypervisor control).
+    - ID: SIDE_CHANNEL_RISK
+      description: |
+        Side-channel attacks are a known class of threats, exploiting physical or timing-based information.
+
+  attackers:
+    - ID: MALICIOUS_OS
+      description: |
+        A malicious or compromised operating system attempting to subvert the SGX enclaves.
+      inScope: true
+    - ID: HARDWARE_ATTACKERS
+      description: |
+        Attackers targeting the hardware or firmware to bypass SGX protections.
+      inScope: true
+    - ID: SIDE_CHANNEL_ACTORS
+      description: |
+        Attackers exploiting side channels to infer sensitive information from SGX enclaves.
+      inScope: true
+
+analysis:
+
+threats:
+  - ID: ENCLAVE_SIDE_CHANNEL
+    title: Side-Channel Attacks
+    threatType: Information Disclosure
+    impactDesc: |
+      Leakage of sensitive information through side-channel analysis, such as cache timing or power consumption.
+    attack: |
+      Attackers monitor cache timing, memory access patterns, or power consumption during enclave execution to infer sensitive information, such as cryptographic keys.
+    impactedSecObj:
+      - REFID: ENCLAVE_CONFIDENTIALITY
+    attackers:
+      - REFID: SIDE_CHANNEL_ACTORS
+    countermeasures:
+      - ID: CONSTANT_TIME_EXECUTION
+        title: Constant-Time Execution
+        description: |
+          Ensure that critical enclave operations, especially cryptographic routines, execute in constant time to minimize timing variations.
+        inPlace: false
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: MALICIOUS_OS_MANIPULATION
+    title: Privileged OS Attacks
+    threatType: Elevation of Privilege
+    impactDesc: |
+      Exploitation of OS-level control to manipulate enclave memory or execution, potentially leading to enclave compromise.
+    attack: |
+      A malicious or compromised OS can attempt to inspect, modify, or inject data into enclave memory through controlled interrupts or debugging tools.
+    impactedSecObj:
+      - REFID: ENCLAVE_INTEGRITY
+    attackers:
+      - REFID: MALICIOUS_OS
+    countermeasures:
+      - ID: MEMORY_ENCRYPTION
+        title: Encrypted Memory and Integrity Checks
+        description: |
+          Leverage SGX's memory encryption engine to ensure data confidentiality and integrity, even under malicious OS control.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: HARDWARE_EXPLOIT
+    title: Hardware Vulnerabilities
+    threatType: Spoofing
+    impactDesc: |
+      Exploitation of vulnerabilities in the SGX hardware or firmware to bypass protections, leading to unauthorized access to enclave data.
+    attack: |
+      Attackers exploit flaws in the SGX implementation (e.g., speculative execution vulnerabilities) to extract sensitive data from enclaves.
+    impactedSecObj:
+      - REFID: PLATFORM_TRUST
+      - REFID: ENCLAVE_CONFIDENTIALITY
+    attackers:
+      - REFID: HARDWARE_ATTACKERS
+    countermeasures:
+      - ID: MICROCODE_UPDATES
+        title: Microcode Updates
+        description: |
+          Ensure systems are patched with the latest microcode updates from Intel to mitigate hardware vulnerabilities.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: ATTESTATION_SPOOFING
+    title: Fake Attestation Responses
+    threatType: Spoofing
+    impactDesc: |
+      Undermining the trust in SGX attestation by presenting fake attestation responses, potentially leading to trust in compromised enclaves.
+    attack: |
+      Attackers intercept and manipulate attestation requests or responses to make compromised enclaves appear legitimate.
+    impactedSecObj:
+      - REFID: PLATFORM_TRUST
+    attackers:
+      - REFID: MALICIOUS_OS
+    countermeasures:
+      - ID: REMOTE_ATTESTATION_VALIDATION
+        title: Validate Remote Attestation Responses
+        description: |
+          Ensure attestation responses are validated against trusted Intel attestation servers.
+        inPlace: true
+        public: true
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false

@@ -12,17 +12,17 @@
 <!-- 4_4_1_4_CLIENT_SPOOFING1 -->
 <g id="node1" class="node">
 <title>4_4_1_4_CLIENT_SPOOFING1</title>
-<polygon fill="#f8cecc" stroke="#b85450" points="1054,-283 697,-283 697,-210 1054,-210 1054,-283"/>
+<polygon fill="#f8cecc" stroke="#b85450" points="1000,-283 751,-283 751,-210 1000,-210 1000,-283"/>
 <text text-anchor="start" x="853" y="-267.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="707.5" y="-255.9" font-family="Arial" font-size="12.00"> Spoofing, Elevation of privileges, Information Disclosure</text>
+<text text-anchor="start" x="761.5" y="-255.9" font-family="Arial" font-size="12.00"> Malicious Client Obtains Authorization</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.CONFIDENTIALITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="715.5,-223.5 715.5,-240.5 894.5,-240.5 894.5,-223.5 715.5,-223.5"/>
-<text text-anchor="start" x="750.5" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="769.5,-223.5 769.5,-240.5 894.5,-240.5 894.5,-223.5 769.5,-223.5"/>
+<text text-anchor="start" x="777.5" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
 </a>
 </g>
 <g id="a_node1_1"><a xlink:href="#OAuth2.INTEGRITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="902.5,-223.5 902.5,-240.5 1036.5,-240.5 1036.5,-223.5 902.5,-223.5"/>
-<text text-anchor="start" x="937.5" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">INTEGRITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="902.5,-223.5 902.5,-240.5 982.5,-240.5 982.5,-223.5 902.5,-223.5"/>
+<text text-anchor="start" x="910.5" y="-228.9" font-family="Arial" font-size="12.00" fill="blue">INTEGRITY</text>
 </a>
 </g>
 </g>

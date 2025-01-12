@@ -1,0 +1,185 @@
+ID: Kubernetes
+title: Kubernetes Threat Model
+version: 1.0
+
+children:
+  - ID: Secrets
+
+authors: |
+  David Cervigni
+scope:
+  description: |
+    
+    a **NOTE:** this is an example if threat model created with by training an LLM
+
+    This document outlines potential threats to Kubernetes, including its core components, workloads, and supporting infrastructure. It addresses threats to the API server, worker nodes, and the control plane, providing mitigations to secure the cluster.
+  securityObjectives:
+    - ID: API_SERVER_SECURITY
+      title: API Server Security
+      description: |
+        Ensure the Kubernetes API server is secure, preventing unauthorized access and ensuring proper authentication and authorization.
+      group: Access Control
+
+    - ID: NODE_ISOLATION
+      title: Node Isolation
+      description: |
+        Maintain isolation between workloads running on the same or different nodes, ensuring one compromised workload cannot affect others.
+      group: Workload Isolation
+
+    - ID: DATA_CONFIDENTIALITY
+      title: Data Confidentiality
+      description: |
+        Ensure that sensitive data, such as secrets and configuration files, is protected in transit and at rest.
+      group: Data Security
+
+    - ID: RUNTIME_SECURITY
+      title: Runtime Security
+      description: |
+        Protect the runtime environment to prevent unauthorized actions or access by compromised containers.
+      group: Runtime Protection
+
+    - ID: SUPPLY_CHAIN_SECURITY
+      title: Supply Chain Security
+      description: |
+        Ensure that the Kubernetes environment and its components are free from malicious or compromised images, configurations, or code.
+      group: Supply Chain Protection
+
+  assumptions:
+    - ID: PUBLIC_CLUSTER_ACCESS
+      description: |
+        Kubernetes clusters may be exposed to public networks, increasing the risk of external attacks.
+    - ID: COMPROMISED_WORKLOAD
+      description: |
+        A single workload may become compromised due to application-level vulnerabilities or malicious actors.
+
+  attackers:
+    - ID: EXTERNAL_ACTORS
+      description: |
+        Unauthenticated or unauthorized users attempting to exploit exposed APIs or services.
+      inScope: true
+    - ID: MALICIOUS_WORKLOAD
+      description: |
+        A compromised container or workload attempting to exploit cluster resources or affect other workloads.
+      inScope: true
+    - ID: SUPPLY_CHAIN_ATTACKERS
+      description: |
+        Attackers introducing vulnerabilities or malicious code into container images, Helm charts, or infrastructure configurations.
+      inScope: true
+
+analysis:
+
+threats:
+  - ID: UNAUTHORIZED_API_ACCESS
+    title: Unauthorized API Access
+    threatType: Elevation of Privilege
+    impactDesc: |
+      Unauthorized users gain access to the Kubernetes API server, enabling them to perform privileged operations on the cluster.
+    attack: |
+      Attackers exploit weak authentication mechanisms, API server misconfigurations, or exposed endpoints to access the Kubernetes API server.
+    impactedSecObj:
+      - REFID: API_SERVER_SECURITY
+    attackers:
+      - REFID: EXTERNAL_ACTORS
+    countermeasures:
+      - ID: RBAC_ENFORCEMENT
+        title: Enforce RBAC Policies
+        description: |
+          Use Role-Based Access Control (RBAC) to limit access to Kubernetes resources based on user roles.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: NODE_ESCALATION
+    title: Node-Level Escalation
+    threatType: Elevation of Privilege
+    impactDesc: |
+      A compromised workload escapes its container and gains access to the underlying node, potentially affecting other workloads.
+    attack: |
+      Attackers exploit container runtime vulnerabilities or misconfigured pod security policies to escape container boundaries.
+    impactedSecObj:
+      - REFID: NODE_ISOLATION
+    attackers:
+      - REFID: MALICIOUS_WORKLOAD
+    countermeasures:
+      - ID: POD_SECURITY_POLICIES
+        title: Apply Pod Security Policies
+        description: |
+          Use Pod Security Policies (PSPs) or Pod Security Admission (PSA) to restrict workload capabilities and enforce best practices.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: DATA_LEAKAGE
+    title: Sensitive Data Leakage
+    threatType: Information Disclosure
+    impactDesc: |
+      Exposure of sensitive information such as Kubernetes secrets, configuration files, or environment variables.
+    attack: |
+      Attackers gain access to improperly secured secrets or intercept data in transit due to missing encryption.
+    impactedSecObj:
+      - REFID: DATA_CONFIDENTIALITY
+    attackers:
+      - REFID: MALICIOUS_WORKLOAD
+    countermeasures:
+      - ID: ENCRYPT_SECRETS
+        title: Encrypt Secrets and Data
+        description: |
+          Enable encryption at rest for Kubernetes secrets and enforce HTTPS for communication between cluster components.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: RUNTIME_COMPROMISE
+    title: Compromise of Runtime Environment
+    threatType: Tampering
+    impactDesc: |
+      Attackers modify or tamper with running containers to execute unauthorized actions or escalate privileges.
+    attack: |
+      Attackers exploit misconfigured containers, runtime vulnerabilities, or privileged container permissions.
+    impactedSecObj:
+      - REFID: RUNTIME_SECURITY
+    attackers:
+      - REFID: MALICIOUS_WORKLOAD
+    countermeasures:
+      - ID: RUNTIME_MONITORING
+        title: Monitor Runtime Behavior
+        description: |
+          Use runtime security tools to detect and block unauthorized actions within running containers.
+        inPlace: false
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: SUPPLY_CHAIN_COMPROMISE
+    title: Supply Chain Attack
+    threatType: Spoofing
+    impactDesc: |
+      Malicious or vulnerable images, Helm charts, or configurations are introduced into the Kubernetes environment.
+    attack: |
+      Attackers inject vulnerabilities or malicious code into container images, third-party Helm charts, or infrastructure-as-code templates.
+    impactedSecObj:
+      - REFID: SUPPLY_CHAIN_SECURITY
+    attackers:
+      - REFID: SUPPLY_CHAIN_ATTACKERS
+    countermeasures:
+      - ID: IMAGE_SCANNING
+        title: Scan Container Images
+        description: |
+          Use automated tools to scan container images for vulnerabilities or malicious code before deployment.
+        inPlace: true
+        public: true
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false

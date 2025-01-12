@@ -1,0 +1,183 @@
+ID: ARM_TrustedPlatform
+title: ARM Trusted Platform Threat Model
+
+version: 1.0
+
+children:
+  - ID: Trusted_Firmware
+
+authors: |
+  David Cervigni
+scope:
+  description: |2
+
+    **NOTE:** this is an example if threat model created with by training an LLM
+
+
+    This document outlines potential threats to the ARM Trusted Platform, focusing on threats to trusted execution environments (TEEs), secure boot mechanisms, and the integrity of platform firmware. Countermeasures are included to mitigate these threats.
+  securityObjectives:
+    - ID: TEE_CONFIDENTIALITY
+      title: Trusted Execution Environment Confidentiality
+      description: |
+        Ensure that data and code within ARM TEEs remain confidential and inaccessible to unauthorized entities.
+      group: Data Security
+
+    - ID: TEE_INTEGRITY
+      title: Trusted Execution Environment Integrity
+      description: |
+        Ensure the integrity of data, execution, and communication within ARM TEEs.
+      group: System Integrity
+
+    - ID: SECURE_BOOT
+      title: Secure Boot Integrity
+      description: |
+        Ensure the integrity and authenticity of firmware and boot loaders to prevent unauthorized code execution.
+      group: Boot Integrity
+
+    - ID: PLATFORM_TRUST
+      title: Platform Trust
+      description: |
+        Maintain trust in the ARM hardware root of trust and secure firmware updates.
+      group: Trust Assurance
+
+  assumptions:
+    - ID: PRIVILEGED_ATTACKER
+      description: |
+        Attackers may have privileged access (e.g., kernel-level or hypervisor control) and may attempt to subvert trusted components.
+    - ID: SIDE_CHANNEL_RISK
+      description: |
+        Side-channel attacks exploiting timing, power, or electromagnetic leakage are considered potential threats.
+
+  attackers:
+    - ID: MALICIOUS_KERNEL
+      description: |
+        A malicious or compromised kernel attempting to interfere with ARM TEE operations.
+      inScope: true
+    - ID: HARDWARE_ATTACKERS
+      description: |
+        Attackers targeting the ARM hardware, secure elements, or firmware to bypass protections.
+      inScope: true
+    - ID: SIDE_CHANNEL_ACTORS
+      description: |
+        Attackers leveraging side-channel analysis to infer sensitive information.
+      inScope: true
+
+analysis:
+
+threats:
+  - ID: SIDE_CHANNEL_ATTACK
+    title: Side-Channel Attacks on TEE
+    threatType: Information Disclosure
+    impactDesc: |
+      Leakage of sensitive information, such as cryptographic keys or private data, through side-channel analysis.
+    attack: |
+      Attackers exploit physical or timing-based side channels, such as cache behavior, power consumption, or electromagnetic signals, to infer data processed within the TEE.
+    impactedSecObj:
+      - REFID: TEE_CONFIDENTIALITY
+    attackers:
+      - REFID: SIDE_CHANNEL_ACTORS
+    countermeasures:
+      - ID: CONSTANT_TIME_ALGORITHMS
+        title: Use Constant-Time Algorithms
+        description: |
+          Implement constant-time cryptographic and critical operations to eliminate timing-based side-channel vulnerabilities.
+        inPlace: false
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: MALICIOUS_KERNEL_ACCESS
+    title: Kernel-Level Attacks on TEE
+    threatType: Elevation of Privilege
+    impactDesc: |
+      Exploitation of kernel-level privileges to interfere with or compromise the ARM TEE.
+    attack: |
+      A compromised or malicious kernel attempts to read, write, or manipulate memory assigned to the TEE, breaking its isolation guarantees.
+    impactedSecObj:
+      - REFID: TEE_INTEGRITY
+    attackers:
+      - REFID: MALICIOUS_KERNEL
+    countermeasures:
+      - ID: MEMORY_ISOLATION
+        title: Enforce Strong Memory Isolation
+        description: |
+          Utilize ARM's memory management unit (MMU) and hardware-based isolation mechanisms to prevent unauthorized kernel access to TEE memory.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: FIRMWARE_EXPLOIT
+    title: Exploitation of Insecure Firmware
+    threatType: Spoofing
+    impactDesc: |
+      Execution of unauthorized or malicious code by exploiting vulnerabilities in platform firmware.
+    attack: |
+      Attackers inject malicious firmware or exploit bugs in existing firmware to gain control over secure operations, potentially bypassing the TEE or secure boot.
+    impactedSecObj:
+      - REFID: SECURE_BOOT
+    attackers:
+      - REFID: HARDWARE_ATTACKERS
+    countermeasures:
+      - ID: FIRMWARE_VERIFICATION
+        title: Verify Firmware Signatures
+        description: |
+          Enforce cryptographic signature validation during firmware updates and secure boot processes.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: ROGUE_DEVICE_ACCESS
+    title: Rogue Peripheral Attacks
+    threatType: Tampering
+    impactDesc: |
+      Compromise of TEE operations through unauthorized access or manipulation by malicious peripherals.
+    attack: |
+      Malicious devices connected to the platform exploit DMA (Direct Memory Access) or other interfaces to manipulate or extract data from the TEE.
+    impactedSecObj:
+      - REFID: TEE_INTEGRITY
+      - REFID: TEE_CONFIDENTIALITY
+    attackers:
+      - REFID: HARDWARE_ATTACKERS
+    countermeasures:
+      - ID: DMA_PROTECTION
+        title: Restrict DMA Access
+        description: |
+          Implement IOMMU (Input-Output Memory Management Unit) to limit peripheral access to memory regions used by the TEE.
+        inPlace: false
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: SECURE_BOOT_SPOOFING
+    title: Spoofing Secure Boot
+    threatType: Spoofing
+    impactDesc: |
+      Undermining trust in the secure boot process by executing malicious code under the guise of legitimate firmware.
+    attack: |
+      Attackers intercept or modify the boot process to execute unverified firmware or boot loaders, compromising the root of trust.
+    impactedSecObj:
+      - REFID: SECURE_BOOT
+      - REFID: PLATFORM_TRUST
+    attackers:
+      - REFID: HARDWARE_ATTACKERS
+    countermeasures:
+      - ID: ROOT_OF_TRUST
+        title: Use Hardware Root of Trust
+        description: |
+          Ensure the secure boot process is anchored to an immutable hardware root of trust to verify all stages of the boot chain.
+        inPlace: true
+        public: true
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false

@@ -14,7 +14,7 @@
 <title>4_4_1_13_CODE_SUBSTITUTION</title>
 <polygon fill="#f8cecc" stroke="#b85450" points="412,-295 58,-295 58,-222 412,-222 412,-295"/>
 <text text-anchor="start" x="212" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="182" y="-267.9" font-family="Arial" font-size="12.00"> Denial of Service</text>
+<text text-anchor="start" x="92.5" y="-267.9" font-family="Arial" font-size="12.00"> DoS Using Manufactured Authorization &quot;codes&quot;</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.CONFIDENTIALITY" xlink:title="&lt;TABLE&gt;">
 <polygon fill="#eeeeee" stroke="transparent" points="76,-235.5 76,-252.5 189,-252.5 189,-235.5 76,-235.5"/>
 <text text-anchor="start" x="78" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>

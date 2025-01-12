@@ -1,0 +1,141 @@
+ID: Bitcoin
+title: Bitcoin Threat Model
+version: 1.0
+authors: |
+  David Cervigni
+children:
+  - ID: LightningNetwork
+scope:
+  description: |
+    This document outlines potential threats to the Bitcoin network based on its design and operations as outlined in the Bitcoin whitepaper. It includes security measures to mitigate these threats.
+  securityObjectives:
+    - ID: NETWORK_RESILIENCE
+      title: Resilience of the Bitcoin Network
+      description: |
+        Ensure Bitcoin's blockchain remains secure and available even under attacks.
+      group: Network Security
+
+    - ID: TRANSACTION_INTEGRITY
+      title: Transaction Integrity
+      description: |
+        Maintain the integrity of transactions recorded on the blockchain.
+      group: Data Integrity
+
+    - ID: MINING_SECURITY
+      title: Mining Security
+      description: |
+        Ensure miners operate fairly and follow the network's protocol.
+      group: Operational Security
+
+  assumptions:
+    - ID: ADVANCED_ATTACKER
+      description: |
+        Attackers have significant computational power, potentially exceeding honest participants.
+    - ID: PUBLIC_NETWORK
+      description: |
+        Bitcoin operates on a public and open network.
+
+  attackers:
+    - ID: SYBIL_ACTORS
+      description: |
+        Attackers attempting to dominate the network with numerous fake identities.
+      inScope: true
+    - ID: MALICIOUS_MINERS
+      description: |
+        Miners attempting to rewrite or fork the blockchain for selfish purposes.
+      inScope: true
+
+analysis:
+
+threats:
+  - ID: 51_PERCENT_ATTACK
+    title: Control of Majority Hashing Power
+    threatType: Elevation of Privilege
+    impactDesc: |
+      Allows an attacker to rewrite transaction history, double-spend, or block transactions.
+    attack: |
+      An attacker accumulates more than 50% of the total mining power and uses this control to create a longer blockchain fork, thereby rewriting transaction history or blocking new transactions.
+    impactedSecObj:
+      - REFID: TRANSACTION_INTEGRITY
+      - REFID: NETWORK_RESILIENCE
+    attackers:
+      - REFID: MALICIOUS_MINERS
+    countermeasures:
+      - ID: DIVERSE_HASHPOWER
+        title: Encourage diverse miner participation
+        description: |
+          Promote geographic and organizational decentralization of miners to reduce the likelihood of any single entity achieving majority hash power.
+        inPlace: false
+        public: true
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H
+
+    fullyMitigated: false
+  - ID: DOUBLE_SPENDING
+    title: Double Spending
+    threatType: Tampering
+    impactDesc: |
+      Compromise of transaction validity by spending the same Bitcoin multiple times.
+    attack: |
+      The attacker broadcasts two conflicting transactions to the network, one to make a purchase and another to send the same funds back to their own wallet, exploiting timing and confirmation delays.
+    impactedSecObj:
+      - REFID: TRANSACTION_INTEGRITY
+    attackers:
+      - REFID: SYBIL_ACTORS
+    countermeasures:
+      - ID: LONGER_CONFIRMATION
+        title: Increase block confirmations
+        description: |
+          Encourage waiting for multiple block confirmations to ensure transaction permanence.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: NETWORK_PARTITION
+    title: Network Partitioning (Eclipse Attack)
+    threatType: Denial of Service
+    impactDesc: |
+      Isolate nodes from the main network, manipulating their view of the blockchain.
+    attack: |
+      By controlling a node’s peers, the attacker isolates the target node from the rest of the network, feeding it incorrect blockchain data or preventing it from receiving updates.
+    impactedSecObj:
+      - REFID: NETWORK_RESILIENCE
+    attackers:
+      - REFID: SYBIL_ACTORS
+    countermeasures:
+      - ID: PEER_DIVERSITY
+        title: Peer Diversity
+        description: |
+          Nodes should maintain diverse peer connections to prevent isolation.
+        inPlace: false
+        public: false
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: MINING_REORG
+    title: Blockchain Reorganizations
+    threatType: Information Disclosure
+    impactDesc: |
+      Reverse transactions by introducing a longer fork.
+    attack: |
+      Malicious miners use their hashing power to create an alternate chain that invalidates recent blocks, causing a reorganization of the blockchain.
+    impactedSecObj:
+      - REFID: TRANSACTION_INTEGRITY
+    attackers:
+      - REFID: MALICIOUS_MINERS
+    countermeasures:
+      - ID: TIMESTAMP_MONITORING
+        title: Monitor blockchain timestamps
+        description: |
+          Use timestamps and multiple confirmations to minimize reorganization threats.
+        inPlace: true
+        public: true
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false

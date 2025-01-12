@@ -12,22 +12,22 @@
 <!-- 4_4_1_7_CLIENT_SPOOFING4 -->
 <g id="node1" class="node">
 <title>4_4_1_7_CLIENT_SPOOFING4</title>
-<polygon fill="#f8cecc" stroke="#b85450" points="783,-295 426,-295 426,-222 783,-222 783,-295"/>
-<text text-anchor="start" x="582" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="436.5" y="-267.9" font-family="Arial" font-size="12.00"> Spoofing, Elevation of privileges, Information Disclosure</text>
+<polygon fill="#f8cecc" stroke="#b85450" points="781.5,-295 427.5,-295 427.5,-222 781.5,-222 781.5,-295"/>
+<text text-anchor="start" x="581.5" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
+<text text-anchor="start" x="439" y="-267.9" font-family="Arial" font-size="12.00"> Authorization code Leakage through Counterfeit Client</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.CONFIDENTIALITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="444.5,-235.5 444.5,-252.5 558.5,-252.5 558.5,-235.5 444.5,-235.5"/>
-<text text-anchor="start" x="447" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="445.5,-235.5 445.5,-252.5 558.5,-252.5 558.5,-235.5 445.5,-235.5"/>
+<text text-anchor="start" x="447.5" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
 </a>
 </g>
 <g id="a_node1_1"><a xlink:href="#OAuth2.INTEGRITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="566.5,-235.5 566.5,-252.5 635.5,-252.5 635.5,-235.5 566.5,-235.5"/>
-<text text-anchor="start" x="569" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">INTEGRITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="566.5,-235.5 566.5,-252.5 634.5,-252.5 634.5,-235.5 566.5,-235.5"/>
+<text text-anchor="start" x="568.5" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">INTEGRITY</text>
 </a>
 </g>
 <g id="a_node1_2"><a xlink:href="#OAuth2.NON_REPUDIATION" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="643.5,-235.5 643.5,-252.5 765.5,-252.5 765.5,-235.5 643.5,-235.5"/>
-<text text-anchor="start" x="646" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">NON_REPUDIATION</text>
+<polygon fill="#eeeeee" stroke="transparent" points="642.5,-235.5 642.5,-252.5 763.5,-252.5 763.5,-235.5 642.5,-235.5"/>
+<text text-anchor="start" x="644.5" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">NON_REPUDIATION</text>
 </a>
 </g>
 </g>

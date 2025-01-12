@@ -12,12 +12,12 @@
 <!-- TOO_MUCH_GRANT -->
 <g id="node1" class="node">
 <title>TOO_MUCH_GRANT</title>
-<polygon fill="#f8cecc" stroke="#b85450" points="511,-271 154,-271 154,-198 511,-198 511,-271"/>
-<text text-anchor="start" x="310" y="-255.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="164.5" y="-243.9" font-family="Arial" font-size="12.00"> Spoofing, Elevation of privileges, Information Disclosure</text>
+<polygon fill="#f8cecc" stroke="#b85450" points="499.5,-271 165.5,-271 165.5,-198 499.5,-198 499.5,-271"/>
+<text text-anchor="start" x="309.5" y="-255.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
+<text text-anchor="start" x="175.5" y="-243.9" font-family="Arial" font-size="12.00"> User Unintentionally Grants Too Much Access Scope</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.CONFIDENTIALITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="172.5,-211.5 172.5,-228.5 493.5,-228.5 493.5,-211.5 172.5,-211.5"/>
-<text text-anchor="start" x="278.5" y="-216.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
+<polygon fill="#eeeeee" stroke="transparent" points="183.5,-211.5 183.5,-228.5 481.5,-228.5 481.5,-211.5 183.5,-211.5"/>
+<text text-anchor="start" x="278" y="-216.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
 </a>
 </g>
 </g>

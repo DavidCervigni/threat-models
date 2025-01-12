@@ -1,3 +1,23 @@
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 4 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 4 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 20 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 20 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 29 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 29 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 29 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 29 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 31 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 31 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 41 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 41 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 41 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 41 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 43 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 43 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 53 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 53 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '4.3.' in line 53 of <stdin> splits into two tokens
+Warning: syntax ambiguity - badly delimited number '.1_' in line 53 of <stdin> splits into two tokens
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">

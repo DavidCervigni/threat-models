@@ -4,8 +4,32 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
+
         {
-            "name": "Directory fullBuild (html and diagrams/images)",
+            "name": "in Examples Directory fullBuild (html and diagrams/images) ",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.fullBuildDirectory",
+            "justMyCode": false,
+            "args": [
+                "--TMDirectory",
+                "threatModels",
+                // "--browserSync",
+                "--outputDir",
+                "report-examples/",
+                "--template",
+                "TM_templateMKDOCS",
+                //                "TM_templateFull",
+                // "--formatYAML",
+                // "--generatePDF",
+                // "--pdfHeaderNote" , "Generated with: https://github.com/corda/threat-model-tool"
+                // "--assetDir",
+                // "threatModels/assets"
+            ]
+        } ,
+
+        {
+            "name": "Directory fullBuild MKDOCS",
             "type": "python",
             "request": "launch",
             "module": "r3threatmodeling.fullBuildDirectory",
@@ -15,16 +39,101 @@
                 "threatModels",
                 "--browserSync",
                 "--outputDir",
-                "report-examples/",
+                "build/docs",
+                "--template",
+                "TM_templateMKDOCS",
+                "--formatYAML",
+                "--assetDir",
+                "threatModels/assets",
+                "--templateSiteFolderSRC",
+                "scripts/mkdocs",
+                "--templateSiteFolderDST",
+                "build",
+                "--MKDocsSiteDir",
+                "public",
+                "--MKDocsDir",
+                "build"
+                // ,"--generatePDF"
+            ]
+        },
+
+        {
+            "name": "Build HTML for BITCOIN",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/Bitcoin/Bitcoin.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/Bitcoin/",
                 "--template",
                 "TM_templateFull",
-                "--formatYAML",
-                "--generatePDF",
-                "--pdfHeaderNote" , "Generated with: https://github.com/corda/threat-model-tool"
                 // "--assetDir",
-                // "threatModels/assets"
+                // "threatModels/Bitcoin/assets",
+                "--formatYAML"
             ]
-        } ,
+
+        },
+        {
+            "name": "Build HTML for ARM TEE",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/ARM_TrustedPlatform/ARM_TrustedPlatform.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/ARM_TrustedPlatform/",
+                "--template",
+                "TM_templateFull",
+                "--formatYAML"
+            ]
+
+        },
+
+        {
+            "name": "Build HTML for IntelSGX",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/IntelSGX/IntelSGX.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/IntelSGX/",
+                "--template",
+                "TM_templateFull",
+                "--formatYAML"
+            ]
+
+        },
+        {
+            "name": "Build HTML for Kubernetes",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/Kubernetes/Kubernetes.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/Kubernetes/",
+                "--template",
+                "TM_templateFull",
+                "--formatYAML"
+            ]
+
+        },
+
+
        {
             "name": "Build HTML for OAuth2.0",
             "type": "python",
@@ -63,6 +172,23 @@
                 "--assetDir",
                 "threatModels/assets"
             ]
-        }
+        },
+          {
+      "label": "Build PDF with Docker",
+      "type": "shell",
+      "command": "docker",
+      "args": [
+        "run", "--rm",
+        "--volume", "${workspaceFolder}:/data",
+        "--user", "$(id -u):$(id -g)",
+        "pandoc/latex",
+        "--pdf-engine=xelatex", "manuscript/**/*.md",
+        "--resource-path=manuscript",
+        "--toc",
+        "-o", "build/TMBook$(date +%y-%m-%d_%H:%M).pdf"
+      ],
+      "problemMatcher": [],
+      "detail": "Runs Docker to build the PDF using pandoc/latex."
+    }
     ]
 }

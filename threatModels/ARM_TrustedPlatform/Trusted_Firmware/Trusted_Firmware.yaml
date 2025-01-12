@@ -1,0 +1,175 @@
+ID: Trusted_Firmware
+title: Trusted Firmware Threat Model
+version: 1.0
+authors: |
+  David Cervigni
+parent: ARM_Trusted_Platform
+
+scope:
+  description: |
+    This document extends the ARM Trusted Platform threat model to focus specifically on threats to Trusted Firmware-A (TF-A). It addresses issues such as firmware integrity, secure storage, and runtime attacks, leveraging details from the Trusted Firmware-A documentation.
+  securityObjectives:
+    - ID: FIRMWARE_INTEGRITY
+      title: Firmware Integrity
+      description: |
+        Ensure that firmware is not tampered with during development, deployment, or runtime.
+      group: System Integrity
+
+    - ID: RUNTIME_RESILIENCE
+      title: Runtime Resilience
+      description: |
+        Protect the Trusted Firmware during execution, ensuring it cannot be subverted by runtime attacks.
+      group: Runtime Security
+
+    - ID: SECURE_STORAGE
+      title: Secure Storage
+      description: |
+        Protect sensitive data stored by the Trusted Firmware, ensuring confidentiality and integrity.
+      group: Data Security
+
+    - ID: FIRMWARE_UPDATES
+      title: Secure Firmware Updates
+      description: |
+        Ensure that firmware updates are authenticated and authorized to prevent malicious firmware from being executed.
+      group: Update Security
+
+  assumptions:
+    - ID: PLATFORM_INTEGRITY_RISK
+      description: |
+        The platform may be exposed to physical or logical attacks targeting the integrity of firmware components.
+    - ID: PRIVILEGED_ATTACKERS
+      description: |
+        Privileged attackers (e.g., with kernel-level control) may attempt to compromise firmware operations.
+
+  attackers:
+    - ID: MALICIOUS_FIRMWARE
+      description: |
+        Attackers inserting or modifying firmware to execute malicious actions.
+      inScope: true
+    - ID: RUNTIME_EXPLOITERS
+      description: |
+        Attackers exploiting runtime vulnerabilities in Trusted Firmware.
+      inScope: true
+    - ID: SUPPLY_CHAIN_ATTACKERS
+      description: |
+        Attackers compromising firmware integrity during the development or distribution phases.
+      inScope: true
+
+analysis:
+
+threats:
+  - ID: MALICIOUS_FIRMWARE_UPDATE
+    title: Unauthorized Firmware Updates
+    threatType: Spoofing
+    impactDesc: |
+      Execution of unauthorized or malicious firmware due to unverified updates, potentially compromising system integrity.
+    attack: |
+      Attackers distribute unauthorized firmware updates by bypassing signature validation or exploiting insecure update mechanisms.
+    impactedSecObj:
+      - REFID: FIRMWARE_UPDATES
+    attackers:
+      - REFID: SUPPLY_CHAIN_ATTACKERS
+    countermeasures:
+      - ID: UPDATE_SIGNING
+        title: Enforce Update Signing
+        description: |
+          Require all firmware updates to be signed with a trusted cryptographic key before installation.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: RUNTIME_MEMORY_ATTACK
+    title: Runtime Memory Manipulation
+    threatType: Tampering
+    impactDesc: |
+      Exploitation of vulnerabilities in Trusted Firmware's runtime memory, allowing attackers to inject malicious code or extract sensitive data.
+    attack: |
+      Attackers use buffer overflows, heap spraying, or other techniques to manipulate memory used by Trusted Firmware.
+    impactedSecObj:
+      - REFID: RUNTIME_RESILIENCE
+    attackers:
+      - REFID: RUNTIME_EXPLOITERS
+    countermeasures:
+      - ID: MEMORY_PROTECTION_UNITS
+        title: Use Memory Protection Units (MPUs)
+        description: |
+          Leverage MPUs to enforce strict memory access policies, preventing unauthorized access or modification of firmware memory.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: SUPPLY_CHAIN_INJECTION
+    title: Supply Chain Injection
+    threatType: Spoofing
+    impactDesc: |
+      Introduction of malicious firmware into the supply chain, compromising the integrity of devices using the firmware.
+    attack: |
+      Attackers inject malicious code into firmware during development, testing, or distribution, exploiting weak supply chain controls.
+    impactedSecObj:
+      - REFID: FIRMWARE_INTEGRITY
+    attackers:
+      - REFID: SUPPLY_CHAIN_ATTACKERS
+    countermeasures:
+      - ID: SUPPLY_CHAIN_AUDITS
+        title: Conduct Supply Chain Audits
+        description: |
+          Regularly audit firmware development and distribution processes to detect and mitigate supply chain risks.
+        inPlace: false
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: SECURE_STORAGE_COMPROMISE
+    title: Secure Storage Breach
+    threatType: Information Disclosure
+    impactDesc: |
+      Breach of confidential data stored by Trusted Firmware, such as encryption keys or sensitive configuration settings.
+    attack: |
+      Attackers exploit vulnerabilities in secure storage implementations or gain unauthorized access to storage areas.
+    impactedSecObj:
+      - REFID: SECURE_STORAGE
+    attackers:
+      - REFID: MALICIOUS_FIRMWARE
+    countermeasures:
+      - ID: ENCRYPT_STORAGE
+        title: Encrypt Sensitive Storage
+        description: |
+          Use strong encryption algorithms to protect data stored by Trusted Firmware, ensuring confidentiality even if storage is compromised.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: BOOTLOADER_ATTACK
+    title: Bootloader Exploitation
+    threatType: Elevation of Privilege
+    impactDesc: |
+      Exploitation of vulnerabilities in the bootloader to gain unauthorized control over the system or bypass secure boot mechanisms.
+    attack: |
+      Attackers manipulate the bootloader or inject malicious code during the boot process, compromising the root of trust.
+    impactedSecObj:
+      - REFID: FIRMWARE_INTEGRITY
+      - REFID: SECURE_BOOT
+    attackers:
+      - REFID: SUPPLY_CHAIN_ATTACKERS
+    countermeasures:
+      - ID: SECURE_BOOT_VERIFICATION
+        title: Verify Bootloader Integrity
+        description: |
+          Use cryptographic signatures to ensure the bootloader has not been tampered with before execution.
+        inPlace: true
+        public: true
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false

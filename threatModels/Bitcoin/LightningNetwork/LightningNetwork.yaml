@@ -1,0 +1,183 @@
+ID: LightningNetwork
+parent: Bitcoin
+title: Bitcoin Lightning Network Threat Model
+version: 1.1
+authors: |
+  David Cervigni
+scope:
+  description: |
+    This document extends the Bitcoin threat model to focus on the Lightning Network, addressing threats to payment channels, routing nodes, and channel state integrity. The Lightning Network improves Bitcoin's scalability by facilitating off-chain transactions, but introduces specific security challenges. Transaction examples are derived from the Lightning Network whitepaper, incorporating the role of watchtowers to mitigate specific threats.
+  securityObjectives:
+    - ID: CHANNEL_CONFIDENTIALITY
+      title: Channel Confidentiality
+      description: |
+        Ensure that the details of payment channels and transactions remain confidential and are not exposed to unauthorized entities.
+      group: Data Security
+
+    - ID: CHANNEL_INTEGRITY
+      title: Channel Integrity
+      description: |
+        Protect the integrity of payment channel states to prevent tampering or unauthorized modifications.
+      group: System Integrity
+
+    - ID: ROUTING_NODE_RESILIENCE
+      title: Routing Node Resilience
+      description: |
+        Ensure routing nodes are protected against denial-of-service attacks and can handle high transaction volumes securely.
+      group: Network Resilience
+
+    - ID: TIMELY_CLOSURE
+      title: Timely Channel Closure
+      description: |
+        Ensure channels can be closed promptly and securely in the event of disputes or failures.
+      group: Operational Security
+
+    - ID: WATCHTOWER_RELIABILITY
+      title: Watchtower Reliability
+      description: |
+        Ensure watchtowers function correctly to detect and penalize malicious channel state broadcasts.
+      group: Dispute Resolution
+
+  assumptions:
+    - ID: PUBLIC_NETWORK
+      description: |
+        The Lightning Network operates over a public and decentralized network, exposing nodes to potential adversaries.
+    - ID: PARTIAL_TRUST
+      description: |
+        Routing nodes may not be fully trusted by participants but are required for facilitating payments.
+    - ID: WATCHTOWER_AVAILABILITY
+      description: |
+        Watchtowers must remain available to detect and respond to malicious behavior promptly.
+
+  attackers:
+    - ID: MALICIOUS_ROUTING_NODE
+      description: |
+        Routing nodes attempting to disrupt payments, intercept funds, or exploit network vulnerabilities.
+      inScope: true
+    - ID: CHANNEL_PARTNER
+      description: |
+        A malicious channel partner attempting to cheat by broadcasting outdated or invalid channel states.
+      inScope: true
+    - ID: NETWORK_ADVERSARY
+      description: |
+        An external attacker attempting to disrupt the network or compromise node communications.
+      inScope: true
+
+analysis:
+
+threats:
+  - ID: CHANNEL_STATE_TAMPERING
+    title: Tampering with Channel States
+    threatType: Tampering
+    impactDesc: |
+      Attackers tamper with channel states, leading to disputes or financial loss for participants.
+    attack: |
+      A malicious channel partner broadcasts an outdated channel state to reclaim funds already spent. For example, Alice and Bob open a channel with 1 BTC each. Alice pays Bob 0.5 BTC off-chain, but later broadcasts the original channel state to reclaim her initial 1 BTC.
+    impactedSecObj:
+      - REFID: CHANNEL_INTEGRITY
+    attackers:
+      - REFID: CHANNEL_PARTNER
+    countermeasures:
+      - ID: PENALTY_MECHANISM
+        title: Enforce Penalty Mechanisms
+        description: |
+          Use penalty transactions to ensure that any attempt to broadcast an outdated state results in a financial penalty for the attacker. Watchtowers monitor the blockchain for outdated states and broadcast penalty transactions on behalf of the victim.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: ROUTING_NODE_DOS
+    title: Denial of Service on Routing Nodes
+    threatType: Denial of Service
+    impactDesc: |
+      Attackers overwhelm routing nodes, disrupting payment processing and reducing network availability.
+    attack: |
+      A network adversary floods routing nodes with fake or excessive requests, causing them to exhaust resources. For instance, an attacker could repeatedly attempt to route payments through a specific node, forcing it to handle an unsustainable load.
+    impactedSecObj:
+      - REFID: ROUTING_NODE_RESILIENCE
+    attackers:
+      - REFID: NETWORK_ADVERSARY
+    countermeasures:
+      - ID: RATE_LIMITING
+        title: Implement Rate Limiting
+        description: |
+          Use rate limiting and request validation to mitigate denial-of-service attacks on routing nodes. Monitor traffic patterns and reject requests from nodes exhibiting suspicious behavior.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: CHANNEL_CLOSURE_DELAY
+    title: Delayed Channel Closure
+    threatType: Elevation of Privilege
+    impactDesc: |
+      A malicious channel partner delays the closure of a channel, locking funds and causing financial loss.
+    attack: |
+      The attacker refuses to cooperate during the channel closure process or uses the dispute mechanism maliciously. For example, Bob delays closing a channel with Alice, preventing her from accessing her locked funds during a time-sensitive event.
+    impactedSecObj:
+      - REFID: TIMELY_CLOSURE
+    attackers:
+      - REFID: CHANNEL_PARTNER
+    countermeasures:
+      - ID: FORCE_CLOSURE
+        title: Support Force Closures
+        description: |
+          Allow participants to unilaterally close a channel after a timeout to recover locked funds. Watchtowers can assist by ensuring the closure process is secure and detecting malicious delays.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: PRIVACY_LEAK
+    title: Privacy Leak in Payment Routing
+    threatType: Information Disclosure
+    impactDesc: |
+      Sensitive transaction details are exposed to unauthorized entities, compromising user privacy.
+    attack: |
+      Malicious routing nodes or external adversaries analyze payment routes to infer transaction amounts and participants. For example, a routing node could monitor the flow of payments to deduce Alice is paying Charlie 0.2 BTC via Bob.
+    impactedSecObj:
+      - REFID: CHANNEL_CONFIDENTIALITY
+    attackers:
+      - REFID: MALICIOUS_ROUTING_NODE
+      - REFID: NETWORK_ADVERSARY
+    countermeasures:
+      - ID: ROUTE_ENCRYPTION
+        title: Encrypt Payment Routes
+        description: |
+          Use onion routing to encrypt payment routes and protect transaction details from unauthorized disclosure. Ensure each hop only knows the adjacent nodes, preventing end-to-end correlation.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: WATCHTOWER_FAILURE
+    title: Watchtower Unavailability
+    threatType: Denial of Service
+    impactDesc: |
+      Unavailable watchtowers fail to detect and penalize malicious behavior, weakening channel security.
+    attack: |
+      A network adversary targets watchtowers with a DoS attack, preventing them from monitoring channel state broadcasts. For example, an attacker floods a watchtower with traffic to render it non-functional during a critical dispute.
+    impactedSecObj:
+      - REFID: WATCHTOWER_RELIABILITY
+    attackers:
+      - REFID: NETWORK_ADVERSARY
+    countermeasures:
+      - ID: DISTRIBUTED_WATCHTOWERS
+        title: Use Distributed Watchtowers
+        description: |
+          Encourage the use of multiple, geographically distributed watchtowers to ensure redundancy and availability during disputes.
+        inPlace: false
+        public: true
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false

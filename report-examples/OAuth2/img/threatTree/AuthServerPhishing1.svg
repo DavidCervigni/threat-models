@@ -12,11 +12,11 @@
 <!-- AuthServerPhishing1 -->
 <g id="node1" class="node">
 <title>AuthServerPhishing1</title>
-<polygon fill="#f8cecc" stroke="#b85450" points="432,-295 75,-295 75,-222 432,-222 432,-295"/>
+<polygon fill="#f8cecc" stroke="#b85450" points="428,-295 79,-295 79,-222 428,-222 428,-295"/>
 <text text-anchor="start" x="231" y="-279.9" font-family="Arial" font-weight="bold" font-size="12.00">Threat</text>
-<text text-anchor="start" x="85.5" y="-267.9" font-family="Arial" font-size="12.00"> Spoofing, Elevation of privileges, Information Disclosure</text>
+<text text-anchor="start" x="89.5" y="-267.9" font-family="Arial" font-size="12.00"> Password Phishing by Counterfeit Authorization Server</text>
 <g id="a_node1_0"><a xlink:href="#OAuth2.CONFIDENTIALITY" xlink:title="&lt;TABLE&gt;">
-<polygon fill="#eeeeee" stroke="transparent" points="93.5,-235.5 93.5,-252.5 414.5,-252.5 414.5,-235.5 93.5,-235.5"/>
+<polygon fill="#eeeeee" stroke="transparent" points="97.5,-235.5 97.5,-252.5 410.5,-252.5 410.5,-235.5 97.5,-235.5"/>
 <text text-anchor="start" x="199.5" y="-240.9" font-family="Arial" font-size="12.00" fill="blue">CONFIDENTIALITY</text>
 </a>
 </g>
