@@ -9,8 +9,7 @@ authors: |
   David Cervigni
 scope:
   description: |
-    
-    a **NOTE:** this is an example if threat model created with by training an LLM
+    **NOTE:** this is an example of threat model created by training an LLM
 
     This document outlines potential threats to Kubernetes, including its core components, workloads, and supporting infrastructure. It addresses threats to the API server, worker nodes, and the control plane, providing mitigations to secure the cluster.
   securityObjectives:

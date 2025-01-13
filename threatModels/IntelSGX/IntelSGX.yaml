@@ -5,8 +5,8 @@ authors: |
   David Cervigni
 scope:
   description: |
-    **NOTE:** this is an example if threat model created with by training an LLM
-    
+    **NOTE:** this is an example of threat model created by training an LLM
+
     This document outlines potential threats to Intel SGX (Software Guard Extensions), focusing on threats to enclave integrity, confidentiality, and availability. It includes countermeasures to mitigate these threats.
   securityObjectives:
     - ID: ENCLAVE_CONFIDENTIALITY
