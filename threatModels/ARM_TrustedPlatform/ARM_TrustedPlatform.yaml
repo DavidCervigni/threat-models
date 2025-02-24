@@ -9,7 +9,7 @@ children:
 authors: |
   David Cervigni
 scope:
-  description: |2
+  description: |
     **NOTE:** this is an example is a threat model created by training an LLM
 
     This document outlines potential threats to the ARM Trusted Platform, focusing on threats to trusted execution environments (TEEs), secure boot mechanisms, and the integrity of platform firmware. Countermeasures are included to mitigate these threats.

@@ -1,0 +1,149 @@
+ID: Mixing
+parent: Bitcoin_Threat_Model
+title: Bitcoin Mixing Techniques Security
+version: 1.0
+authors: |
+  David Cervigni
+scope:
+  description: |
+    This document provides a threat model for various Bitcoin mixing techniques aimed at enhancing privacy by obfuscating transaction trails. Mixing techniques such as CoinJoin, Tumbler services, and Chaumian mixing introduce potential security risks that need to be addressed.
+  securityObjectives:
+    - ID: TRANSACTION_PRIVACY
+      title: Transaction Privacy
+      description: |
+        Ensure Bitcoin transactions remain unlinkable and anonymous to third parties.
+      group: Privacy Enhancement
+
+    - ID: MIXING_INTEGRITY
+      title: Mixing Integrity
+      description: |
+        Ensure that the Bitcoin mixing process is free from tampering and fraudulent activity.
+      group: System Integrity
+
+    - ID: PARTICIPANT_ANONYMITY
+      title: Participant Anonymity
+      description: |
+        Protect the identity of participants engaging in mixing services.
+      group: Identity Protection
+
+  assumptions:
+    - ID: TRUSTED_MIXING_SERVICE
+      description: |
+        Users assume that mixing services are not colluding with adversaries or law enforcement.
+    - ID: NETWORK_OBSERVATION
+      description: |
+        Adversaries may monitor the Bitcoin network to track transaction patterns despite mixing attempts.
+
+  attackers:
+    - ID: MALICIOUS_MIXER
+      title: Malicious Mixing Service
+      description: |
+        A mixing service that colludes with attackers to deanonymize users.
+      inScope: true
+    - ID: NETWORK_OBSERVER
+      title: Network Observer
+      description: |
+        Entities monitoring the Bitcoin network to analyze transaction patterns and break anonymity.
+      inScope: true
+    - ID: PARTICIPANT_COLLUSION
+      title: Participant Collusion
+      description: |
+        Collaborating participants within a mixing process attempting to deanonymize others.
+      inScope: true
+
+analysis:
+
+threats:
+  - ID: PRIVACY_LEAK
+    title: Privacy Leakage
+    threatType: Information Disclosure
+    impactDesc: |
+      Users' Bitcoin addresses and transaction history may be linked due to weaknesses in the mixing process.
+    attack: |
+      A network observer analyzes mixing transaction patterns and timings to correlate addresses, revealing user identities.
+    impactedSecObj:
+      - REFID: TRANSACTION_PRIVACY
+    attackers:
+      - REFID: NETWORK_OBSERVER
+    countermeasures:
+      - ID: COIN_JOIN
+        title: Use CoinJoin Techniques
+        description: |
+          Utilize CoinJoin-based mixing that combines multiple users' transactions to break address linkability.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: MIXER_EXIT_SCAM
+    title: Mixer Exit Scam
+    threatType: Fraud
+    impactDesc: |
+      A mixing service may abscond with users' Bitcoin instead of returning mixed outputs.
+    attack: |
+      A malicious mixer operator collects deposits and disappears without processing the mixing, resulting in financial loss for users.
+    impactedSecObj:
+      - REFID: MIXING_INTEGRITY
+    attackers:
+      - REFID: MALICIOUS_MIXER
+    countermeasures:
+      - ID: TRUSTED_SERVICES
+        title: Use Trusted and Audited Mixing Services
+        description: |
+          Prefer decentralized, open-source mixers with a proven track record of transparency.
+        inPlace: false
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: PARTICIPANT_LINKAGE
+    title: Participant Linkage Attack
+    threatType: Information Disclosure
+    impactDesc: |
+      Participants within a mixing process collude to track inputs and outputs, reducing anonymity.
+    attack: |
+      Malicious participants join mixing transactions with the intent of analyzing inputs and outputs to deanonymize other users.
+    impactedSecObj:
+      - REFID: PARTICIPANT_ANONYMITY
+    attackers:
+      - REFID: PARTICIPANT_COLLUSION
+    countermeasures:
+      - ID: RANDOMIZED_INPUTS
+        title: Randomize Input and Output Patterns
+        description: |
+          Use randomized transaction structures and delays to reduce linkability between participants.
+        inPlace: true
+        public: true
+
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false
+  - ID: NETWORK_LEVEL_ANALYSIS
+    title: Network-Level Transaction Analysis
+    threatType: Information Disclosure
+    impactDesc: |
+      Adversaries analyze network traffic to uncover the relationships between mixed transactions.
+    attack: |
+      An attacker monitors Bitcoin network traffic and uses timing analysis to correlate mixed transactions.
+    impactedSecObj:
+      - REFID: TRANSACTION_PRIVACY
+    attackers:
+      - REFID: NETWORK_OBSERVER
+    # CVSS:
+    #   vector: cvss:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N
+    countermeasures:
+      - ID: TOR_VPN_USAGE
+        title: Use Privacy-Enhancing Technologies
+        description: |
+          Users should leverage Tor or VPN services to obfuscate their network traffic and enhance anonymity.
+        inPlace: false
+        public: true
+    CVSS:
+      base: TODO CVSS
+      vector: ''
+    fullyMitigated: false

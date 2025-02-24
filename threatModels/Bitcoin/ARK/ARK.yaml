@@ -1,0 +1,205 @@
+ID: ARK
+title: ARK Layer 2 Threat Model for Bitcoin
+version: 1.1
+authors: |
+  Example by David Cervigni
+parent: Bitcoin
+
+scope:
+  description: |
+    Threat model for ARK Layer 2 scaling solution for Bitcoin. ARK aims to provide efficient off-chain scaling and enhanced privacy while preserving decentralization and security.
+  diagram: ARK_L2_Architecture.png
+  assets:
+    - ID: BITCOIN_LAYER1
+      type: system
+      title: Bitcoin Layer 1
+      description: |
+        The base layer of Bitcoin blockchain used for anchoring Layer 2 transactions.
+      inScope: true
+
+    - ID: ARK_TRANSACTIONS
+      type: dataflow
+      title: ARK Off-chain Transactions
+      description: |
+        Transactions processed off-chain within the ARK network before final settlement on Bitcoin L1.
+      inScope: true
+
+    - ID: ARK_HUB
+      type: system
+      title: ARK Hub
+      description: |
+        Centralized or semi-centralized hubs that facilitate batching and processing of ARK transactions.
+      inScope: true
+
+    - ID: USER_WALLETS
+      type: system
+      title: User Wallets
+      description: |
+        Wallets used by end-users to interact with the ARK network and execute transactions.
+      inScope: true
+
+  # attackers:
+  #   - ID: MALICIOUS_HUB
+  #     title: Malicious Hub Operator
+  #     description: |
+  #       A rogue hub operator attempting to steal funds or delay transactions.
+  #     inScope: true
+  attackers:
+    - ID: MALICIOUS_HUB
+      title: Malicious Hub Operator
+      description: |
+        A rogue hub operator attempting to steal funds or delay transactions.
+      inScope: true
+
+    - ID: NETWORK_ATTACKER
+      title: Network Attacker
+      description: |
+        An adversary attempting to exploit ARK's communication network.
+      inScope: true
+
+    - ID: INTERNAL_THREAT
+      title: Internal Threat
+      description: |
+        Insider threats from within the ARK network operations team.
+      inScope: true
+
+  assumptions:
+    - ID: OFF_CHAIN_RISK
+      description: |
+        Off-chain transactions are inherently vulnerable to counterparty risks and require trust assumptions.
+    - ID: HUB_OPERATORS
+      description: |
+        ARK hubs may be operated by third parties with varying trust levels.
+    - ID: BITCOIN_FINALITY
+      description: |
+        ARK transactions are only final once confirmed on Bitcoin L1.
+
+
+
+analysis:
+
+threats:
+  - ID: ARK_DOUBLE_SPENDING
+    title: Double Spending in Off-chain Transactions
+    impactDesc: |
+      A malicious user may attempt to spend funds multiple times by exploiting delays in settlement finality.
+    impactedSecObj:
+      - REFID: DOUBLE_SPENDING_PREVENTION
+    assets:
+      - REFID: ARK_TRANSACTIONS
+    # attackers:
+    #   - REFID: MALICIOUS_HUB
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N
+    threatType: Integrity, Financial Fraud
+    attack: |
+      The attacker attempts to make multiple payments before the finalization of off-chain transactions.
+    countermeasures:
+      - ID: TIMELOCKS
+        title: Timelocks on Transactions
+        description: |
+          Implement timelocks to prevent double-spending attempts.
+        operational: true
+        inPlace: true
+        public: true
+
+    fullyMitigated: false
+  - ID: HUB_COLLUSION
+    title: Hub Collusion Attack
+    impactDesc: |
+      Colluding hub operators could manipulate transaction processing or withhold transactions.
+    impactedSecObj:
+      - REFID: AVAILABILITY
+    assets:
+      - REFID: ARK_HUB
+    attackers:
+      - REFID: MALICIOUS_HUB
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:C/C:L/I:H/A:H
+    threatType: Availability, Collusion
+    attack: |
+      Multiple hubs conspire to delay or censor transactions to gain an unfair advantage.
+    countermeasures:
+      - ID: HUB_DECENTRALIZATION
+        title: Distributed Hub Network
+        description: |
+          Encourage a decentralized set of hubs to reduce collusion risks.
+        operational: true
+        inPlace: false
+        public: true
+
+    fullyMitigated: false
+  - ID: PRIVACY_LEAK
+    title: User Privacy Leakage
+    impactDesc: |
+      User transaction data could be leaked due to weak privacy mechanisms.
+    impactedSecObj:
+      - REFID: CONFIDENTIALITY
+    assets:
+      - REFID: USER_WALLETS
+    attackers:
+      - REFID: NETWORK_ATTACKER
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:L/A:N
+    threatType: Privacy Violation
+    attack: |
+      An attacker monitors transaction flow to de-anonymize users.
+    countermeasures:
+      - ID: COINJOIN_INTEGRATION
+        title: CoinJoin Integration
+        description: |
+          Use privacy-enhancing techniques like CoinJoin to obfuscate transactions.
+        operational: false
+        inPlace: false
+        public: true
+
+    fullyMitigated: false
+  - ID: FUND_LOCKUP
+    title: Funds Locked Due to Hub Unresponsiveness
+    impactDesc: |
+      If a hub becomes unresponsive, user funds may become locked and inaccessible.
+    impactedSecObj:
+      - REFID: AVAILABILITY
+    assets:
+      - REFID: ARK_TRANSACTIONS
+    attackers:
+      - REFID: MALICIOUS_HUB
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:H
+    threatType: Availability, Financial Loss
+    attack: |
+      The hub operator ceases operations or withholds processing transactions, leading to user funds being locked.
+    countermeasures:
+      - ID: REFUND_TRANSACTION
+        title: Refund Transactions After 4 Weeks
+        description: |
+          Implement automatic refund transactions to return locked funds to the original owners after a pre-defined timeout period (e.g., 4 weeks).
+        operational: true
+        inPlace: false
+        public: true
+
+    fullyMitigated: false
+  - ID: DOS_ATTACK
+    title: Denial of Service Attack on Hubs
+    impactDesc: |
+      A flood of transactions could overwhelm ARK hubs and degrade service.
+    impactedSecObj:
+      - REFID: AVAILABILITY
+    assets:
+      - REFID: ARK_HUB
+    attackers:
+      - REFID: NETWORK_ATTACKER
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H
+    threatType: Denial of Service
+    attack: |
+      An attacker sends a large volume of requests to overload the network.
+    countermeasures:
+      - ID: RATE_LIMITING
+        title: Rate Limiting on Hubs
+        description: |
+          Implement rate limiting and anomaly detection to mitigate attacks.
+        operational: true
+        inPlace: false
+        public: true
+    fullyMitigated: false

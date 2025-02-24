@@ -51,14 +51,17 @@ scope:
 
   attackers:
     - ID: MALICIOUS_ROUTING_NODE
+      title: Malicious Routing Node
       description: |
         Routing nodes attempting to disrupt payments, intercept funds, or exploit network vulnerabilities.
       inScope: true
     - ID: CHANNEL_PARTNER
+      title: Malicious Channel Partner
       description: |
         A malicious channel partner attempting to cheat by broadcasting outdated or invalid channel states.
       inScope: true
     - ID: NETWORK_ADVERSARY
+      title: Network Adversary
       description: |
         An external attacker attempting to disrupt the network or compromise node communications.
       inScope: true
@@ -177,7 +180,9 @@ threats:
           Encourage the use of multiple, geographically distributed watchtowers to ensure redundancy and availability during disputes.
         inPlace: false
         public: true
+    # CVSS:
+    #   vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     CVSS:
       base: TODO CVSS
       vector: ''
-    fullyMitigated: false

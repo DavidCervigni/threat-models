@@ -5,6 +5,8 @@ authors: |
   David Cervigni
 children:
   - ID: LightningNetwork
+  - ID: Mixing
+  - ID: ARK
 scope:
   description: |
     Note: This i an example of threat model created by training an LLM
@@ -28,6 +30,23 @@ scope:
       description: |
         Ensure miners operate fairly and follow the network's protocol.
       group: Operational Security
+    - ID: AVAILABILITY
+      title: Network Availability
+      description: |
+        Ensure the Bitcoin network remains available and responsive to users.
+      group: Operational Security
+
+    - ID: CONFIDENTIALITY
+      title: Transaction Confidentiality
+      description: |
+        Protect the privacy of Bitcoin transactions and user identities.
+      group: Privacy Protection
+    - ID: DOUBLE_SPENDING_PREVENTION
+      title: Double Spending Prevention
+      description: |
+        Prevent the double-spending of Bitcoin.
+      contributesTo: TRANSACTION_INTEGRITY
+      group: Data Integrity
 
   assumptions:
     - ID: ADVANCED_ATTACKER
@@ -39,12 +58,19 @@ scope:
 
   attackers:
     - ID: SYBIL_ACTORS
+      title: Sybil Actors
       description: |
         Attackers attempting to dominate the network with numerous fake identities.
       inScope: true
     - ID: MALICIOUS_MINERS
+      title: Malicious Miners
       description: |
         Miners attempting to rewrite or fork the blockchain for selfish purposes.
+      inScope: true
+    - ID: NETWORK_ATTACKER
+      title: Network Attacker
+      description: |
+        Attackers attempting to disrupt the network's confidentiality availability or integrity.
       inScope: true
 
 analysis:
@@ -62,6 +88,8 @@ threats:
       - REFID: NETWORK_RESILIENCE
     attackers:
       - REFID: MALICIOUS_MINERS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H
     countermeasures:
       - ID: DIVERSE_HASHPOWER
         title: Encourage diverse miner participation
@@ -69,8 +97,7 @@ threats:
           Promote geographic and organizational decentralization of miners to reduce the likelihood of any single entity achieving majority hash power.
         inPlace: false
         public: true
-    CVSS:
-      vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H
+
 
     fullyMitigated: false
   - ID: DOUBLE_SPENDING
