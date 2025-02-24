@@ -1,0 +1,4 @@
+include: threatModelTool.m6r
+
+action: 
+    Create a yaml threat model about bitcoin based on the whitepaper
