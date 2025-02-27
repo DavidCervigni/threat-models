@@ -1,0 +1,14 @@
+{
+  "language": "EN",
+  "fontSize": null,
+  "conversation": {
+    "model": "gemini-1.5-flash",
+    "temperature": 0.7
+  },
+  "editor": {
+    "useSoftTabs": true,
+    "tabSize": 4,
+    "autoBackup": false,
+    "autoBackupInterval": 300
+  }
+}

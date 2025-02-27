@@ -1,0 +1,7 @@
+Include: metaphor/threatModelTool.m6r
+
+    Context: insufficient fee market
+        Also consider the problem that happens when there will be no block rewards, create threats and mitigatinos about it too
+
+Action: 
+    Create a yaml threat model about bitcoin based on the whitepaper

@@ -155,7 +155,7 @@
 
         },
         {
-            "name": "Directory fullBuild (html and diagrams/images)",
+            "name": "OS TM Directory fullBuild (html and diagrams/images)",
             "type": "python",
             "request": "launch",
             "module": "r3threatmodeling.fullBuildDirectory",

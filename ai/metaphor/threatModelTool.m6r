@@ -102,3 +102,16 @@ Context: threat modeling and ist terminilogy
 
         Defining a scope (or sub-scope) that exactly matches one dev team's work also makes the process more streamlined and actionable. Reviewing the findings, for example the missing countermeasures, can be done within a single's team responsibility, tools and processes.
 
+    Context: yaml threats section
+        This sectino contains indications about the threat in yaml (-ID:...)
+        countermeasures: should be the last attribtue on the list (not fullyMitigated: or others)
+        Use this order for attributed:  ID title attack threatType attackers impactDesc impactedSecObj CVSS fullyMitigated countermeasures
+        Do not get too repetitive with the IDs of the threats, like addind "ENHANCED" everywhere
+    Context: CVSS section
+        Here is an example of a threat CVSS section. Create the vector as in this example:
+         ```yaml
+            CVSS:
+                  vector: CVSS:3.1/AV:A/AC:H/PR:L/UI:N/S:U/C:H/I:L/A:N
+            ```
+         do not use "base:" attribute
+        
