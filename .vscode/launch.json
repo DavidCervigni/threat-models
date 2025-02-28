@@ -29,7 +29,7 @@
                 "threatModels",
                 // "--browserSync",
                 "--outputDir",
-                "report-examples/",
+                "build/report-examples/",
                 "--template",
                 "TM_templateMKDOCS",
                 //                "TM_templateFull",

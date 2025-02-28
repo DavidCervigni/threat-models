@@ -126,13 +126,15 @@ Context: threat modeling and its terminilogy
                   vector: CVSS:3.1/AV:A/AC:H/PR:L/UI:N/S:U/C:H/I:L/A:N
             ```
          do not use "base:" attribute
-    Context: insufficient fee market
-        Also consider the problem that happens when there will be no block rewards, create threats and mitigatinos about it too
-    Context: We are working on refining a Bitcoin threat model now! Following is the yaml threat model we are wokring on
-        Embed: threatModels/Bitcoin/Bitcoin.yaml
     Context: Attacker
         YAML Referecnes to attackers needs the attacker itself to be previously defined e.g.- REFID: ECONOMIC_ACTORS needs a previous 
         definition is scope!
+    Context: We are working on refining a Bitcoin threat model now! Following is the yaml threat model we are wokring on
+        Embed: threatModels/Bitcoin/Bitcoin.yaml
+        Context: insufficient fee market
+            Also consider the problem that happens when there will be no block rewards, create threats and mitigatinos about it too
+ 
 Action: 
-    add missing attackers definition in scope
+    Show me a detailed yaml threat about what happens after all coins have been mined and the incentives for the 
+    miners are not there.
 
