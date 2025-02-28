@@ -9,7 +9,7 @@ children:
   - ID: ARK
 scope:
   description: |
-    Note: This i an example of threat model created by training an LLM
+    Note: This is an example of threat model created by training an LLM
 
     This document outlines potential threats to the Bitcoin network based on its design and operations as outlined in the Bitcoin whitepaper. It includes security measures to mitigate these threats.
   securityObjectives:
@@ -72,6 +72,26 @@ scope:
       description: |
         Attackers attempting to disrupt the network's confidentiality availability or integrity.
       inScope: true
+      attackers:
+    - ID: ECONOMIC_ACTORS
+      description: |
+        Actors whose economic interests could lead to disruptions in the network. This includes individuals or entities that may manipulate the mining rewards and transaction fees based on economic conditions or market demand.
+      inScope: true
+
+    - ID: OTHER_ONCHAIN_ACTORS
+      description: |
+        Actors involved in on-chain activities that could influence the security and availability of the network, including users transacting in Bitcoin and service providers.
+      inScope: true
+
+    - ID: ROGUE_MINING_POOL
+      description: |
+        A collective of miners acting maliciously to alter block history or engage in fraudulent activities such as double spending.
+      inScope: true
+
+    - ID: GOVERNMENT_ACTORS
+      description: |
+        Regulatory bodies or governments that may implement laws affecting Bitcoin's use and operation, with the potential to disrupt network stability through regulatory changes.
+      inScope: true
 
 analysis:
 
@@ -90,6 +110,7 @@ threats:
       - REFID: MALICIOUS_MINERS
     CVSS:
       vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H
+    fullyMitigated: false
     countermeasures:
       - ID: DIVERSE_HASHPOWER
         title: Encourage diverse miner participation
@@ -98,8 +119,6 @@ threats:
         inPlace: false
         public: true
 
-
-    fullyMitigated: false
   - ID: DOUBLE_SPENDING
     title: Double Spending
     threatType: Tampering
@@ -111,6 +130,9 @@ threats:
       - REFID: TRANSACTION_INTEGRITY
     attackers:
       - REFID: SYBIL_ACTORS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H
+    fullyMitigated: false
     countermeasures:
       - ID: LONGER_CONFIRMATION
         title: Increase block confirmations
@@ -119,10 +141,6 @@ threats:
         inPlace: true
         public: true
 
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: NETWORK_PARTITION
     title: Network Partitioning (Eclipse Attack)
     threatType: Denial of Service
@@ -134,6 +152,9 @@ threats:
       - REFID: NETWORK_RESILIENCE
     attackers:
       - REFID: SYBIL_ACTORS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:H
+    fullyMitigated: false
     countermeasures:
       - ID: PEER_DIVERSITY
         title: Peer Diversity
@@ -142,10 +163,6 @@ threats:
         inPlace: false
         public: false
 
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: MINING_REORG
     title: Blockchain Reorganizations
     threatType: Information Disclosure
@@ -157,6 +174,9 @@ threats:
       - REFID: TRANSACTION_INTEGRITY
     attackers:
       - REFID: MALICIOUS_MINERS
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:N/I:N/A:N
+    fullyMitigated: false
     countermeasures:
       - ID: TIMESTAMP_MONITORING
         title: Monitor blockchain timestamps
@@ -164,7 +184,33 @@ threats:
           Use timestamps and multiple confirmations to minimize reorganization threats.
         inPlace: true
         public: true
+
+  - ID: HASH_POWER_DECREASE
+    title: Loss of Hash Power Due to Incentives
+    threatType: Economic Threat
+    impactDesc: |
+      A significant decrease in hash power can lead to a drop in Bitcoin's price, reducing miner incentives, and potentially causing a negative feedback loop of further decreases in hash power before the next difficulty adjustment occurs. This creates a risk to the stability and security of the network, potentially making it more susceptible to attacks.
+    attack: |
+      If the prevailing market conditions lead to low Bitcoin prices, miners may exit the market as profitability decreases. This reduction in mining activity could create a downward spiral where the network becomes less secure due to lower hash power, leading to longer confirmation times and increased vulnerability to attacks.
+    impactedSecObj:
+      - REFID: AVAILABILITY
+      - REFID: NETWORK_RESILIENCE
+    attackers:
+      - REFID: ECONOMIC_ACTORS
     CVSS:
-      base: TODO CVSS
-      vector: ''
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H
     fullyMitigated: false
+    countermeasures:
+      - ID: MINER_SUBSIDY
+        title: Maintain Miner Subsidies to Support Hash Power
+        description: |
+          Implement strategies to support miners during low price periods, such as temporarily lowering the mining difficulty adjustment period or providing incentives for miners to remain active in the ecosystem.
+        inPlace: false
+        public: true
+
+      - ID: DIVERSIFIED_REVENUE_MODELS
+        title: Encourage Diversified Revenue Streams for Miners
+        description: |
+          Promote diversified revenue opportunities for miners, such as participating in transaction fee markets or providing ancillary services to the network to maintain viability even during low block reward phases.
+        inPlace: false
+        public: true

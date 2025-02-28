@@ -1,0 +1,5 @@
+m6rclib
+argparse
+langchain-core
+openai
+langchain[openai]

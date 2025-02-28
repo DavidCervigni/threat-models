@@ -4,7 +4,20 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
+        {
+            "name": "incrementalAITM for Bitcoin",
+            "type": "debugpy",
+            "justMyCode": false,
+            "request": "launch",
+            "program": "ai/src/incrementalAITM.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m6r",
+                "ai/metaphor/BitcoinTM_CURRENT.m6r",
+                "-i", "ai/metaphor/",
+                "-e", ".",
+            ]
+        },
         {
             "name": "in Examples Directory fullBuild (html and diagrams/images) ",
             "type": "python",
@@ -26,8 +39,7 @@
                 // "--assetDir",
                 // "threatModels/assets"
             ]
-        } ,
-
+        },
         {
             "name": "Directory fullBuild MKDOCS",
             "type": "python",
@@ -56,7 +68,6 @@
                 // ,"--generatePDF"
             ]
         },
-
         {
             "name": "Build HTML for BITCOIN",
             "type": "python",
@@ -75,7 +86,6 @@
                 // "threatModels/Bitcoin/assets",
                 "--formatYAML"
             ]
-
         },
         {
             "name": "Build HTML for ARM TEE",
@@ -93,9 +103,7 @@
                 "TM_templateFull",
                 "--formatYAML"
             ]
-
         },
-
         {
             "name": "Build HTML for IntelSGX",
             "type": "python",
@@ -112,7 +120,6 @@
                 "TM_templateFull",
                 "--formatYAML"
             ]
-
         },
         {
             "name": "Build HTML for Kubernetes",
@@ -130,11 +137,8 @@
                 "TM_templateFull",
                 "--formatYAML"
             ]
-
         },
-
-
-       {
+        {
             "name": "Build HTML for OAuth2.0",
             "type": "python",
             "request": "launch",
@@ -152,7 +156,6 @@
                 "threatModels/OAuth2/assets",
                 "--formatYAML"
             ]
-
         },
         {
             "name": "OS TM Directory fullBuild (html and diagrams/images)",
@@ -173,22 +176,27 @@
                 "threatModels/assets"
             ]
         },
-          {
-      "label": "Build PDF with Docker",
-      "type": "shell",
-      "command": "docker",
-      "args": [
-        "run", "--rm",
-        "--volume", "${workspaceFolder}:/data",
-        "--user", "$(id -u):$(id -g)",
-        "pandoc/latex",
-        "--pdf-engine=xelatex", "manuscript/**/*.md",
-        "--resource-path=manuscript",
-        "--toc",
-        "-o", "build/TMBook$(date +%y-%m-%d_%H:%M).pdf"
-      ],
-      "problemMatcher": [],
-      "detail": "Runs Docker to build the PDF using pandoc/latex."
-    }
+        {
+            "label": "Build PDF with Docker",
+            "type": "shell",
+            "command": "docker",
+            "args": [
+                "run",
+                "--rm",
+                "--volume",
+                "${workspaceFolder}:/data",
+                "--user",
+                "$(id -u):$(id -g)",
+                "pandoc/latex",
+                "--pdf-engine=xelatex",
+                "manuscript/**/*.md",
+                "--resource-path=manuscript",
+                "--toc",
+                "-o",
+                "build/TMBook$(date +%y-%m-%d_%H:%M).pdf"
+            ],
+            "problemMatcher": [],
+            "detail": "Runs Docker to build the PDF using pandoc/latex."
+        }
     ]
 }

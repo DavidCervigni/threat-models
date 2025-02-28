@@ -1,9 +1,9 @@
 {
   "language": "EN",
-  "fontSize": null,
+  "fontSize": 13.0,
   "conversation": {
-    "model": "gemini-1.5-flash",
-    "temperature": 0.7
+    "model": "gpt-4o-mini",
+    "temperature": 1.0
   },
   "editor": {
     "useSoftTabs": true,
