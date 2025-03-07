@@ -5,6 +5,21 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "m6r test1",
+            "type": "debugpy",
+            "justMyCode": false,
+            "request": "launch",
+            "program": "ai/src/parserTest.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m6r",
+                "ai/metaphor/RSAaccumulators.m6r",
+                "-i", "ai/metaphor/",
+                "-e", ".",
+            ]
+        },       
+        
+        {
             "name": "incrementalAITM for Bitcoin",
             "type": "debugpy",
             "justMyCode": false,

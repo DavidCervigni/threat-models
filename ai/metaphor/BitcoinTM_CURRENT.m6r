@@ -135,6 +135,5 @@ Context: threat modeling and its terminilogy
             Also consider the problem that happens when there will be no block rewards, create threats and mitigatinos about it too
  
 Action: 
-    Show me a detailed yaml threat about what happens after all coins have been mined and the incentives for the 
-    miners are not there.
-
+    add a threat about quantum cryptography breaking pay to pub key scripts (instead of the hash)
+    one mitigation is to transfer to pay to pub key hash
