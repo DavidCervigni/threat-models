@@ -20,7 +20,7 @@
         },
 
         {
-            "name": "Python: Per TM AttackTree Diagram Generation (Module)",
+            "name": "Per OAuth2 TM AttackTree Diagram Generation (Module)",
             "type": "python",
             "request": "launch",
             "module": "r3threatmodeling.TM_AttackTreePlantUMLDiagram",
@@ -28,6 +28,19 @@
             "args": [
                 "--rootTMYaml",
                 "threatModels/OAuth2/OAuth2.yaml",
+                "--outputDir",
+                "build/img"
+            ]
+        },
+        {
+            "name": "Per Bitcoin TM AttackTree Diagram Generation (Module)",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.TM_AttackTreePlantUMLDiagram",
+            "justMyCode": true,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/Bitcoin/Bitcoin.yaml",
                 "--outputDir",
                 "build/img"
             ]
