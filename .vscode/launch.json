@@ -17,7 +17,23 @@
                 "-i", "ai/metaphor/",
                 "-e", ".",
             ]
-        },       
+        },
+
+        {
+            "name": "Python: Per TM AttackTree Diagram Generation (Module)",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.TM_AttackTreePlantUMLDiagram",
+            "justMyCode": true,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/OAuth2/OAuth2.yaml",
+                "--outputDir",
+                "build/img"
+            ]
+        },
+
+
         
         {
             "name": "incrementalAITM for Bitcoin",
