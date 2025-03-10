@@ -57,6 +57,12 @@ scope:
         Bitcoin operates on a public and open network.
 
   attackers:
+    - ID: NETWORK_PARTICIPANT
+      title: Network Participants
+      description: |
+        Participants in the Bitcoin network who may attempt to exploit vulnerabilities or disrupt network operations.
+      inScope: true
+
     - ID: SYBIL_ACTORS
       title: Sybil Actors
       description: |
@@ -204,15 +210,47 @@ threats:
       - ID: MINER_SUBSIDY
         title: Maintain Miner Subsidies to Support Hash Power
         description: |
-          Implement strategies to support miners during low price periods, such as temporarily lowering the mining difficulty adjustment period or providing incentives for miners to remain active in the ecosystem.
+          Implement strategies to support miners during low price periods, 
+          such as temporarily lowering the mining difficulty adjustment period or providing
+           incentives for miners to remain active in the ecosystem.
         inPlace: false
         public: true
 
       - ID: DIVERSIFIED_REVENUE_MODELS
         title: Encourage Diversified Revenue Streams for Miners
         description: |
-          Promote diversified revenue opportunities for miners, such as participating in transaction fee markets or providing ancillary services to the network to maintain viability even during low block reward phases.
+          Promote diversified revenue opportunities for miners, such as participating in 
+          transaction fee markets or providing ancillary services to the network to maintain 
+          viability even during low block reward phases.
         inPlace: false
         public: true
 
-
+  # - ID: UNCOLLABORATIVE_COUNTERPARTY_CONDITIONAL_PAYMENT
+  #   title: Uncollaborative Counterparty in Conditional Payment
+  #   threatType: Elevation of Privilege
+  #   impactDesc: |
+  #     A counterparty may fail to cooperate in a conditional transaction, 
+  #     leading to potential loss of funds or delayed transaction finalization.
+  #      This could happen if the counterparty refuses to fulfill their part of the agreement,
+  #       such as not providing necessary signatures or data.
+  #   attack: |
+  #     An adversary could exploit the lack of collaboration
+  #      by either ignoring transaction conditions or attempting to
+  #       manipulate the terms to their advantage. 
+  #   impactedSecObj:
+  #     - REFID: AVAILABILITY
+  #   attackers:
+  #     - REFID: NETWORK_PARTICIPANT
+  #   CVSS:
+  #     vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:L
+  #   fullyMitigated: true
+  #   countermeasures:
+  #     - ID: CHECKLOCKTIMEVERIFY
+  #       title: Implement CheckLockTimeVerify (CLTV)
+  #       description: |
+  #         Utilize CheckLockTimeVerify (CLTV) techniques to impose time-based conditions on 
+  #         the transaction that prevent uncollaborative behavior. Implementing CLTV ensures that funds can only be
+  #          spent after a particular time or block height, thus providing a potential exit strategy if the counterparty
+  #           becomes uncollaborative.
+  #       inPlace: true
+  #       public: true  

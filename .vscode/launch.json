@@ -133,7 +133,7 @@
                 "public",
                 "--MKDocsDir",
                 "build"
-                ,"--generatePDF"
+                // ,"--generatePDF"
             ]
         },
         {
