@@ -1,6 +1,6 @@
 ID: Mixing
 parent: Bitcoin_Threat_Model
-title: Bitcoin Mixing Techniques Security
+title: Mixing
 version: 1.0
 authors: |
   David Cervigni

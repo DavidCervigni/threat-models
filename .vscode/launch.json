@@ -5,7 +5,7 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "m6r test1",
+            "name": "AI m6r RSAaccumulators test",
             "type": "debugpy",
             "justMyCode": false,
             "request": "launch",
@@ -14,8 +14,8 @@
             "args": [
                 "-m6r",
                 "ai/metaphor/RSAaccumulators.m6r",
-                "-i", "ai/metaphor/",
-                "-e", ".",
+                // "-i", "ai/metaphor/",
+                // "-e", ".",
             ]
         },
 
@@ -45,11 +45,35 @@
                 "build/img"
             ]
         },
-
-
-        
         {
-            "name": "incrementalAITM for Bitcoin",
+            "name": "AI:  BaselineNewTMTest.m6r",
+            "type": "debugpy",
+            "justMyCode": false,
+            "request": "launch",
+            "program": "ai/src/incrementalAITM.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m6r",
+                "ai/metaphor/BaselineNewTMTest.m6r"
+            ]
+        },
+        {
+            "name": "AI: incrementalAITM for RSA accumulators in JWT",
+            "type": "debugpy",
+            "justMyCode": false,
+            "request": "launch",
+            "program": "ai/src/incrementalAITM.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m6r",
+                "ai/metaphor/RSAaccumulators.m6r",
+                // "-i", "ai/metaphor/",
+                // "-e", ".",
+            ]
+        },
+  
+        {
+            "name": "AI incrementalAITM for Bitcoin",
             "type": "debugpy",
             "justMyCode": false,
             "request": "launch",
@@ -58,8 +82,8 @@
             "args": [
                 "-m6r",
                 "ai/metaphor/BitcoinTM_CURRENT.m6r",
-                "-i", "ai/metaphor/",
-                "-e", ".",
+                // "-i", "ai/metaphor/",
+                // "-e", ".",
             ]
         },
         {
@@ -109,7 +133,7 @@
                 "public",
                 "--MKDocsDir",
                 "build"
-                // ,"--generatePDF"
+                ,"--generatePDF"
             ]
         },
         {

@@ -1,6 +1,5 @@
 ID: IntelSGX
-title: Intel SGX Threat Model
-version: 1.0
+title: Intel SGX
 authors: |
   David Cervigni
 scope:

@@ -1,10 +1,16 @@
-Include: threatModelTool.m6r
+Include: ai/metaphor/threatModelTool.m6r
 
 Context:
     we want to use the accumulators to store accessible URLs from the web client.
     The we client authenticates with a JTW token. An api gateway should filter out unallowed urls even
     before they hit the backend. the allowed URLs should be accumulated into a value of the JWT.
-
+    Context: assumptions
+        
+        - assume TLS is in place
+        - assume URLs accumulated in the JST attribute are sesitive, but not too much, in CVSS the disclosure on any URL is Low confidentiality impact
+    Context: what this thhreat model is not about
+        - this in not JWT security in iteself, just how to use a special attribute (URL RSA accumulator) for an authorization enforcement point
 Action: 
     Create a yaml threat model about RSA accumulators for allowed URLs into a JWT
+
     

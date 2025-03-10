@@ -1,0 +1,6 @@
+Include: ai/metaphor/threatModelTool.m6r
+
+Action: 
+    Create a yaml threat model about using public open source LLM in critical application development
+
+    

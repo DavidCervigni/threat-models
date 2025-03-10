@@ -1,0 +1,34 @@
+@startuml
+actor User
+
+== Document Ingestion Phase ==
+participant "Document Loader" as DL
+participant "Text Splitter" as TS
+participant "Embedding Model" as EMB
+participant "Vector Store" as VS
+
+User -> DL: Load Document(s)
+DL -> TS: Split document into chunks
+TS -> EMB: embed_documents(chunks)
+EMB -> VS: Store (embedding, text chunk) pairs
+
+== Query Retrieval Phase ==
+participant "Retriever" as RET
+participant "LLM" as LLM
+
+User -> RET: Submit query ("What is NLP?")
+RET -> EMB: embed_query("What is NLP?")
+EMB --> RET: Return query vector
+RET -> VS: similarity_search(query vector)
+VS --> RET: Return top relevant text chunks
+
+RET -> LLM: Create enriched prompt:
+note over Retriever
+Context: 
+1. [Retrieved Chunk 1]
+2. [Retrieved Chunk 2] 
+Question: What is NLP?
+end note
+LLM --> RET: Generate answer
+RET --> User: Display answer
+@enduml
