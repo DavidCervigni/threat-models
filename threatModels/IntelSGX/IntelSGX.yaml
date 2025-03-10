@@ -2,6 +2,7 @@ ID: IntelSGX
 title: Intel SGX
 authors: |
   David Cervigni
+version: 1.0
 scope:
   description: |
     **NOTE:** this is an example of threat model created by training an LLM
