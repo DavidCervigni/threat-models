@@ -375,5 +375,5 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H"
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
     fullyMitigated: false
