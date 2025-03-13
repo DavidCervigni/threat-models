@@ -3,3 +3,6 @@ argparse
 langchain-core
 openai
 langchain[openai]
+langchain-core
+langchain-community
+pymupdf

@@ -1,0 +1,379 @@
+ID: LLM_ADOPTION_THREAT_MODEL
+title: LLM Adoption
+version: "1.0"
+authors: |
+  David Cervigni Using GenAI
+scope:
+  description: |
+    **NOTE:** This threat model addresses potential risks associated with the adoption 
+    of large language models (LLMs) in enterprise environments. It is based on the OWASP Top 10 for LLM Applications 2025 and defines the assets, security objectives, assumptions, and attackers relevant to LLM deployment.
+  securityObjectives:
+    - ID: SAFE_LLM_USAGE
+      title: Safe LLM Usage
+      description: |
+        Ensure that LLM-based applications maintain confidentiality, integrity, and availability; prevent unauthorized access, data leakage, and unintended model behavior.
+      treeImage: false
+      group: Operational Security
+
+  assumptions:
+    - ID: TRUSTED_ENVIRONMENT
+      description: |
+        The underlying infrastructure is assumed to have baseline security controls, though LLM-specific risks remain.
+    - ID: STATIC_MODEL_CONFIGURATION
+      description: |
+        The deployed LLM is configured with fixed parameters that may not dynamically adjust to emerging threats.
+
+  attackers:
+    - ID: MALICIOUS_USER
+      description: |
+        Authorized users with malicious intent seeking to exploit the LLM application for unauthorized actions.
+      inScope: true
+    - ID: EXTERNAL_ATTACKER
+      description: |
+        Unauthenticated external entities attempting to exploit vulnerabilities in the LLM deployment.
+      inScope: true
+analysis: |
+  This threat model evaluates the key risks involved in adopting large language models by mapping potential threat vectors—derived from the OWASP Top 10 for LLM Applications 2025—against specific countermeasures. It is intended to support secure integration within the software development lifecycle, ensuring continuous monitoring and effective mitigation of risks.
+threats:
+  - ID: LLM01_PROMPT_INJECTION
+    title: Prompt Injection
+    threatType: Injection
+    impactDesc: |
+      Malicious input may alter the model's behavior, leading to unauthorized actions, disclosure of sensitive information, or harmful outputs.
+    attack: |
+      Attackers craft inputs—either directly or indirectly—to inject malicious commands into the prompt, bypassing safety constraints and altering the intended response.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: MALICIOUS_USER
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: CONSTRAINED_PROMPT
+        title: Constrain Model Prompts
+        description: |
+          Define and enforce strict system prompts that limit the scope of user inputs, preventing unauthorized modifications.
+        inPlace: true
+        public: true
+      - ID: INPUT_OUTPUT_FILTERING
+        title: Input and Output Filtering
+        description: |
+          Apply robust filtering and validation for all data entering and exiting the model to detect and block injection attempts.
+        inPlace: true
+        public: true
+      - ID: ADVERSARIAL_TESTING
+        title: Regular Adversarial Testing
+        description: |
+          Conduct periodic red team exercises and adversarial simulations to identify and remediate prompt injection vulnerabilities.
+        inPlace: false
+        public: false
+    CVSS:
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    fullyMitigated: false
+  - ID: LLM02_SENSITIVE_INFO_DISCLOSURE
+    title: Sensitive Information Disclosure
+    threatType: Information Disclosure
+    impactDesc: |
+      The unintended exposure of confidential data, proprietary algorithms, or internal configurations via LLM outputs.
+    attack: |
+      Exploiting inadequate data sanitization or prompt injection flaws, an attacker can force the LLM to reveal sensitive information.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+      - REFID: MALICIOUS_USER
+    countermeasures:
+      - ID: DATA_SANITIZATION
+        title: Data Sanitization
+        description: |
+          Implement comprehensive scrubbing and masking techniques on both training inputs and model outputs to prevent leakage of sensitive data.
+        inPlace: true
+        public: true
+      - ID: ACCESS_CONTROL
+        title: Strict Access Control
+        description: |
+          Enforce role-based access controls and data classification policies to restrict access to sensitive information.
+        inPlace: true
+        public: true
+      - ID: OUTPUT_VALIDATION
+        title: Output Validation and Review
+        description: |
+          Regularly review and validate outputs with automated tools and human oversight to detect and mitigate unintended disclosures.
+        inPlace: false
+        public: false
+    CVSS:
+      base: 7.0
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    fullyMitigated: false
+  - ID: LLM03_SUPPLY_CHAIN
+    title: Supply Chain Risks
+    threatType: Supply Chain Attack
+    impactDesc: |
+      Vulnerabilities in third-party models, datasets, or fine-tuning processes may compromise the integrity of the LLM.
+    attack: |
+      Attackers tamper with third-party components or training data during procurement or integration, introducing malicious modifications that undermine model security.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: SUPPLIER_AUDIT
+        title: Third-Party Supplier Audit
+        description: |
+          Regularly audit and verify the security posture of suppliers, including models, datasets, and fine-tuning tools, to ensure compliance with security standards.
+        inPlace: true
+        public: true
+      - ID: SBOM_INTEGRATION
+        title: Software Bill of Materials (SBOM)
+        description: |
+          Implement SBOM practices to document and monitor all third-party components, ensuring timely updates and vulnerability management.
+        inPlace: false
+        public: false
+      - ID: INTEGRITY_CHECKS
+        title: Model and Data Integrity Checks
+        description: |
+          Perform cryptographic integrity validations and provenance checks on models and datasets before deployment.
+        inPlace: true
+        public: true
+    CVSS:
+      base: 8.0
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    fullyMitigated: false
+  - ID: LLM04_DATA_MODEL_POISONING
+    title: Data and Model Poisoning
+    threatType: Integrity Attack
+    impactDesc: |
+      Malicious alteration of training data or fine-tuning processes can introduce biases, backdoors, or degrade model performance.
+    attack: |
+      Attackers inject adversarial or manipulated data into the training pipeline to compromise model outputs, causing systemic errors or hidden vulnerabilities.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: TRAINING_DATA_VALIDATION
+        title: Rigorous Training Data Validation
+        description: |
+          Validate and verify the provenance and integrity of all training and fine-tuning datasets using version control and anomaly detection.
+        inPlace: true
+        public: true
+      - ID: RED_TEAMING
+        title: Regular Red Teaming Exercises
+        description: |
+          Conduct red team exercises to simulate poisoning attacks and identify vulnerabilities in the training pipeline.
+        inPlace: false
+        public: false
+      - ID: PIPELINE_MONITORING
+        title: Continuous Pipeline Monitoring
+        description: |
+          Implement real-time monitoring and logging of training pipelines to quickly detect anomalies indicative of data poisoning.
+        inPlace: true
+        public: true
+    CVSS:
+      base: 8.5
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    fullyMitigated: false
+  - ID: LLM05_IMPROPER_OUTPUT_HANDLING
+    title: Improper Output Handling
+    threatType: Information Disclosure/Manipulation
+    impactDesc: |
+      Improperly formatted or unfiltered outputs can disclose sensitive data or be manipulated to mislead end users.
+    attack: |
+      Exploiting weak output controls, an attacker may trigger the model to emit outputs that reveal confidential information or misrepresent data.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: MALICIOUS_USER
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: OUTPUT_FORMAT_ENFORCEMENT
+        title: Enforce Standardized Output Formats
+        description: |
+          Define and enforce deterministic output formats with strict validation rules to ensure consistency and prevent data leaks.
+        inPlace: true
+        public: true
+      - ID: HUMAN_REVIEW
+        title: Human-in-the-Loop Review
+        description: |
+          Integrate manual review processes for high-risk outputs to provide an additional layer of verification.
+        inPlace: false
+        public: false
+      - ID: AUTOMATED_MONITORING
+        title: Automated Output Monitoring
+        description: |
+          Deploy automated monitoring solutions to continuously analyze model outputs and detect deviations from expected patterns.
+        inPlace: true
+        public: true
+    CVSS:
+      base: 7.0
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    fullyMitigated: false
+  - ID: LLM06_EXCESSIVE_AGENCY
+    title: Excessive Agency
+    threatType: Over-Automation/Control
+    impactDesc: |
+      Granting excessive autonomy to LLM-driven agents can lead to unauthorized actions or unintended system modifications.
+    attack: |
+      An attacker exploits overly permissive agent configurations or permissions to drive the LLM into executing tasks without proper oversight.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: MALICIOUS_USER
+    countermeasures:
+      - ID: LEAST_PRIVILEGE_AGENCY
+        title: Enforce Least Privilege for Autonomous Agents
+        description: |
+          Restrict agent permissions strictly to only those functions necessary for operation, and monitor for deviations.
+        inPlace: true
+        public: true
+      - ID: HUMAN_IN_THE_LOOP
+        title: Human-in-the-Loop Controls
+        description: |
+          Integrate manual approval for high-risk agent actions to ensure human oversight over autonomous decisions.
+        inPlace: false
+        public: false
+      - ID: PERMISSION_AUDITS
+        title: Regular Permission Audits
+        description: |
+          Conduct periodic audits of agent permissions and operational logs to verify adherence to security policies.
+        inPlace: true
+        public: false
+    CVSS:
+      base: 7.5
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+    fullyMitigated: false
+  - ID: LLM07_SYSTEM_PROMPT_LEAKAGE
+    title: System Prompt Leakage
+    threatType: Information Disclosure
+    impactDesc: |
+      Leakage of internal system prompts or configuration details can enable attackers to reverse-engineer or subvert LLM behavior.
+    attack: |
+      An attacker gains access to internal system prompt data through vulnerabilities in prompt management or inadequate access controls.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: PROMPT_ISOLATION
+        title: Secure Prompt Isolation
+        description: |
+          Isolate system prompts from user-facing interfaces and restrict access using strong authentication and access controls.
+        inPlace: true
+        public: true
+      - ID: ACCESS_LOGGING
+        title: Detailed Prompt Access Logging
+        description: |
+          Maintain comprehensive logs of all accesses to system prompt data to detect and investigate potential breaches.
+        inPlace: true
+        public: false
+      - ID: REGULAR_AUDITS
+        title: Regular Security Audits for Prompts
+        description: |
+          Conduct periodic audits of prompt storage and management systems to ensure no leakage of sensitive information.
+        inPlace: false
+        public: false
+    CVSS:
+      base: 7.0
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    fullyMitigated: false
+  - ID: LLM08_VECTOR_EMBEDDING_WEAKNESS
+    title: Vector and Embedding Weaknesses
+    threatType: Information Disclosure
+    impactDesc: |
+      Vulnerabilities in the storage and retrieval of vector embeddings can lead to the unintended disclosure of sensitive context or data.
+    attack: |
+      An attacker exploits insecure embedding databases or indexing methods to extract sensitive information from vector representations.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: ENCRYPT_EMBEDDINGS
+        title: Encrypt Embedding Storage
+        description: |
+          Apply strong encryption to embedding databases and enforce robust authentication controls.
+        inPlace: true
+        public: true
+      - ID: SECURE_INDEXING
+        title: Implement Secure Indexing
+        description: |
+          Use secure indexing and query mechanisms to restrict unauthorized access to embeddings.
+        inPlace: true
+        public: false
+      - ID: EMBEDDING_ACCESS_CONTROL
+        title: Enforce Embedding Access Controls
+        description: |
+          Implement role-based access control for embedding data to limit exposure to only authorized users.
+        inPlace: true
+        public: true
+    CVSS:
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    fullyMitigated: false
+  - ID: LLM09_MISINFORMATION
+    title: Misinformation
+    threatType: Manipulation
+    impactDesc: |
+      Generation of biased or false outputs can mislead users and adversely affect decision-making processes.
+    attack: |
+      Attackers manipulate training data or craft adversarial prompts to induce the LLM to produce misleading or harmful outputs.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: MALICIOUS_USER
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: OUTPUT_CROSS_VALIDATION
+        title: Validate Outputs Against Trusted Sources
+        description: |
+          Implement mechanisms to cross-check LLM outputs with trusted datasets and human review for critical decisions.
+        inPlace: false
+        public: true
+      - ID: ADVERSARIAL_TRAINING
+        title: Adversarial Training
+        description: |
+          Regularly update and train the model with adversarial examples to improve resistance against manipulative inputs.
+        inPlace: true
+        public: true
+      - ID: TRANSPARENCY_LOGS
+        title: Maintain Transparency Logs
+        description: |
+          Keep detailed logs of output generation processes to enable post-incident analysis and continuous improvement.
+        inPlace: false
+        public: false
+    CVSS:
+      base: 7.0
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+    fullyMitigated: false
+
+  - ID: LLM10_UNBOUNDED_CONSUMPTION
+    title: Unbounded Consumption
+    threatType: Resource Exhaustion/DoS
+    impactDesc: |
+      Excessive or uncontrolled resource consumption may lead to service degradation, denial of service, and unanticipated cost escalations.
+    attack: |
+      An attacker triggers repeated or resource-intensive operations against the LLM system, exhausting computational resources and degrading performance.
+    impactedSecObj:
+      - REFID: SAFE_LLM_USAGE
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+    countermeasures:
+      - ID: RATE_LIMITING
+        title: Rate Limiting
+        description: |
+          Implement rate limiting controls on requests to the LLM application to prevent abuse and resource exhaustion.
+        inPlace: true
+        public: true
+      - ID: RESOURCE_MONITORING
+        title: Continuous Resource Monitoring
+        description: |
+          Deploy monitoring systems to track resource usage and trigger alerts when predefined thresholds are exceeded.
+        inPlace: true
+        public: true
+      - ID: COST_MANAGEMENT
+        title: Cost Management Practices
+        description: |
+          Establish policies and automated alerts to manage and control operational costs associated with resource consumption.
+        inPlace: false
+        public: false
+    CVSS:
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:H/A:H"
+    fullyMitigated: false

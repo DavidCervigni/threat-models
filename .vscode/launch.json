@@ -45,6 +45,23 @@
                 "build/img"
             ]
         },
+
+        
+
+        {
+            "name": "AI: LLM_adoptionTM.m6r",
+            "type": "debugpy",
+            "justMyCode": false,
+            "request": "launch",
+            "program": "ai/src/incrementalAITM.py",
+            "console": "integratedTerminal",
+            "args": [
+                "-m6r",
+                "ai/metaphor/LLM_adoptionTM.m6r",
+                "--extractTextDir", "ai/embeddings/LLM_securityDocs"
+            ]
+        },
+
         {
             "name": "AI:  BaselineNewTMTest.m6r",
             "type": "debugpy",
