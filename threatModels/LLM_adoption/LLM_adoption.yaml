@@ -8,11 +8,39 @@ scope:
     **NOTE:** This threat model addresses potential risks associated with the adoption 
     of large language models (LLMs) in enterprise environments. It is based on the OWASP Top 10 for LLM Applications 2025 and defines the assets, security objectives, assumptions, and attackers relevant to LLM deployment.
   securityObjectives:
-    - ID: SAFE_LLM_USAGE
-      title: Safe LLM Usage
+    - ID: DATA_PROTECTION
+      title: Data Protection
       description: |
-        Ensure that LLM-based applications maintain confidentiality, integrity, and availability; prevent unauthorized access, data leakage, and unintended model behavior.
-      treeImage: false
+        Protect sensitive data throughout the LLM lifecycle, including training data, model weights, and user inputs/outputs, ensuring proper classification, handling, and storage.
+      treeImage: true
+      group: Data Security
+
+    - ID: MODEL_INTEGRITY
+      title: Model Integrity
+      description: |
+        Maintain the integrity and reliability of the LLM system by preventing model poisoning, ensuring supply chain security, and validating model outputs against expected behaviors.
+      treeImage: true
+      group: System Security
+
+    - ID: ACCESS_CONTROL
+      title: Access Control
+      description: |
+        Implement robust authentication, authorization, and audit mechanisms to control access to LLM resources and ensure proper user permissions and accountability.
+      treeImage: true
+      group: Identity & Access Management
+
+    - ID: COMPLIANCE
+      title: Compliance & Governance
+      description: |
+        Ensure LLM operations adhere to regulatory requirements, industry standards, and organizational policies while maintaining transparency and auditability.
+      treeImage: true
+      group: Governance
+
+    - ID: RESILIENCE
+      title: System Resilience
+      description: |
+        Maintain system availability and performance under normal and adverse conditions, including protection against resource exhaustion and service degradation.
+      treeImage: true
       group: Operational Security
 
   assumptions:
@@ -43,7 +71,9 @@ threats:
     attack: |
       Attackers craft inputs—either directly or indirectly—to inject malicious commands into the prompt, bypassing safety constraints and altering the intended response.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: MODEL_INTEGRITY
+      - REFID: ACCESS_CONTROL
+      - REFID: DATA_PROTECTION
     attackers:
       - REFID: MALICIOUS_USER
       - REFID: EXTERNAL_ATTACKER
@@ -77,7 +107,8 @@ threats:
     attack: |
       Exploiting inadequate data sanitization or prompt injection flaws, an attacker can force the LLM to reveal sensitive information.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: DATA_PROTECTION
+      - REFID: COMPLIANCE
     attackers:
       - REFID: EXTERNAL_ATTACKER
       - REFID: MALICIOUS_USER
@@ -101,7 +132,6 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      base: 7.0
       vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
     fullyMitigated: false
   - ID: LLM03_SUPPLY_CHAIN
@@ -112,7 +142,8 @@ threats:
     attack: |
       Attackers tamper with third-party components or training data during procurement or integration, introducing malicious modifications that undermine model security.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: MODEL_INTEGRITY
+      - REFID: COMPLIANCE
     attackers:
       - REFID: EXTERNAL_ATTACKER
     countermeasures:
@@ -135,7 +166,6 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      base: 8.0
       vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
     fullyMitigated: false
   - ID: LLM04_DATA_MODEL_POISONING
@@ -146,7 +176,9 @@ threats:
     attack: |
       Attackers inject adversarial or manipulated data into the training pipeline to compromise model outputs, causing systemic errors or hidden vulnerabilities.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: MODEL_INTEGRITY
+      - REFID: DATA_PROTECTION
+      - REFID: COMPLIANCE
     attackers:
       - REFID: EXTERNAL_ATTACKER
     countermeasures:
@@ -169,7 +201,6 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      base: 8.5
       vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
     fullyMitigated: false
   - ID: LLM05_IMPROPER_OUTPUT_HANDLING
@@ -180,7 +211,9 @@ threats:
     attack: |
       Exploiting weak output controls, an attacker may trigger the model to emit outputs that reveal confidential information or misrepresent data.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: DATA_PROTECTION
+      - REFID: COMPLIANCE
+      - REFID: ACCESS_CONTROL
     attackers:
       - REFID: MALICIOUS_USER
       - REFID: EXTERNAL_ATTACKER
@@ -204,8 +237,7 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      base: 7.0
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
     fullyMitigated: false
   - ID: LLM06_EXCESSIVE_AGENCY
     title: Excessive Agency
@@ -215,7 +247,9 @@ threats:
     attack: |
       An attacker exploits overly permissive agent configurations or permissions to drive the LLM into executing tasks without proper oversight.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: ACCESS_CONTROL
+      - REFID: COMPLIANCE
+      - REFID: MODEL_INTEGRITY
     attackers:
       - REFID: MALICIOUS_USER
     countermeasures:
@@ -238,7 +272,6 @@ threats:
         inPlace: true
         public: false
     CVSS:
-      base: 7.5
       vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
     fullyMitigated: false
   - ID: LLM07_SYSTEM_PROMPT_LEAKAGE
@@ -249,7 +282,9 @@ threats:
     attack: |
       An attacker gains access to internal system prompt data through vulnerabilities in prompt management or inadequate access controls.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: DATA_PROTECTION
+      - REFID: ACCESS_CONTROL
+      - REFID: MODEL_INTEGRITY
     attackers:
       - REFID: EXTERNAL_ATTACKER
     countermeasures:
@@ -272,7 +307,6 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      base: 7.0
       vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
     fullyMitigated: false
   - ID: LLM08_VECTOR_EMBEDDING_WEAKNESS
@@ -283,7 +317,9 @@ threats:
     attack: |
       An attacker exploits insecure embedding databases or indexing methods to extract sensitive information from vector representations.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: DATA_PROTECTION
+      - REFID: ACCESS_CONTROL
+      - REFID: MODEL_INTEGRITY
     attackers:
       - REFID: EXTERNAL_ATTACKER
     countermeasures:
@@ -316,7 +352,9 @@ threats:
     attack: |
       Attackers manipulate training data or craft adversarial prompts to induce the LLM to produce misleading or harmful outputs.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: MODEL_INTEGRITY
+      - REFID: COMPLIANCE
+      - REFID: DATA_PROTECTION
     attackers:
       - REFID: MALICIOUS_USER
       - REFID: EXTERNAL_ATTACKER
@@ -340,8 +378,7 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      base: 7.0
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
     fullyMitigated: false
 
   - ID: LLM10_UNBOUNDED_CONSUMPTION
@@ -352,7 +389,9 @@ threats:
     attack: |
       An attacker triggers repeated or resource-intensive operations against the LLM system, exhausting computational resources and degrading performance.
     impactedSecObj:
-      - REFID: SAFE_LLM_USAGE
+      - REFID: RESILIENCE
+      - REFID: COMPLIANCE
+      - REFID: ACCESS_CONTROL
     attackers:
       - REFID: EXTERNAL_ATTACKER
     countermeasures:

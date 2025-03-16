@@ -131,3 +131,5 @@ Context: threat modeling and its terminilogy
         definition is scope!
     Context: countermeasure yaml attributes
         There is not "details:", use only "description:"
+    Context: order of main YAML attributes
+        ID, title, version: , children, authors, scope, analysis, threats

@@ -71,7 +71,20 @@ def main():
     if not os.environ.get("OPENAI_API_KEY"):
         os.environ["OPENAI_API_KEY"] = getpass.getpass("Enter API key for OpenAI: ")
 
-    model = init_chat_model("gpt-4o-mini", model_provider="openai")
+    # model = init_chat_model("gpt-4o-mini", model_provider="openai")
+    model = init_chat_model("o3-mini-high", model_provider="openai")
+
+
+    # if extract_text_dir:
+    #     texts = extract_texts_from_directory(extract_text_dir)
+    #     for filename, text in texts.items():
+    #         print(f"\n\nExtracted text from {filename}:\n{text}\n")
+
+    #         # Write the extracted text to a file
+    #         extracted_file_path = os.path.join(temp_dir, f"extracted_{filename}.txt")
+    #         with open(extracted_file_path, "w") as f:
+    #             f.write(text)
+
 
     parser = MetaphorParser()
 
@@ -81,27 +94,22 @@ def main():
 
     # Write the prompt to a file
     prompt_file_path = os.path.join(temp_dir, "final_prompt.txt")
+    print(f"final promt {prompt_file_path}")
     with open(prompt_file_path, "w") as f:
         f.write(prompt)
 
-    messages = [
-        HumanMessage(prompt),
-    ]
 
-    # model.invoke(messages)
 
-    for token in model.stream(messages):
-        print(token.content, end="")
+    # messages = [
+    #     HumanMessage(prompt),
+    # ]
 
-    if extract_text_dir:
-        texts = extract_texts_from_directory(extract_text_dir)
-        for filename, text in texts.items():
-            print(f"\n\nExtracted text from {filename}:\n{text}\n")
+    # # model.invoke(messages)
 
-            # Write the extracted text to a file
-            extracted_file_path = os.path.join(temp_dir, f"extracted_{filename}.txt")
-            with open(extracted_file_path, "w") as f:
-                f.write(text)
+    # for token in model.stream(messages):
+    #     print(token.content, end="")
+
+
 
 if __name__ == "__main__":
     main()
