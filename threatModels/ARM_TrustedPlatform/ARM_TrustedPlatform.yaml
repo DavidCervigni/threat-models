@@ -96,7 +96,7 @@ threats:
     attackers:
       - REFID: MALICIOUS_KERNEL
     CVSS:
-      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H'
     fullyMitigated: false
     countermeasures:
       - ID: MEMORY_ISOLATION
