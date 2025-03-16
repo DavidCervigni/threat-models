@@ -80,6 +80,9 @@ threats:
       - REFID: CHANNEL_INTEGRITY
     attackers:
       - REFID: CHANNEL_PARTNER
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:L'
+    fullyMitigated: false
     countermeasures:
       - ID: PENALTY_MECHANISM
         title: Enforce Penalty Mechanisms
@@ -88,10 +91,6 @@ threats:
         inPlace: true
         public: true
 
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: ROUTING_NODE_DOS
     title: Denial of Service on Routing Nodes
     threatType: Denial of Service
@@ -103,6 +102,9 @@ threats:
       - REFID: ROUTING_NODE_RESILIENCE
     attackers:
       - REFID: NETWORK_ADVERSARY
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: RATE_LIMITING
         title: Implement Rate Limiting
@@ -111,10 +113,6 @@ threats:
         inPlace: true
         public: true
 
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: CHANNEL_CLOSURE_DELAY
     title: Delayed Channel Closure
     threatType: Elevation of Privilege
@@ -126,6 +124,9 @@ threats:
       - REFID: TIMELY_CLOSURE
     attackers:
       - REFID: CHANNEL_PARTNER
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: FORCE_CLOSURE
         title: Support Force Closures
@@ -134,10 +135,6 @@ threats:
         inPlace: true
         public: true
 
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: PRIVACY_LEAK
     title: Privacy Leak in Payment Routing
     threatType: Information Disclosure
@@ -150,6 +147,9 @@ threats:
     attackers:
       - REFID: MALICIOUS_ROUTING_NODE
       - REFID: NETWORK_ADVERSARY
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: ROUTE_ENCRYPTION
         title: Encrypt Payment Routes
@@ -158,10 +158,6 @@ threats:
         inPlace: true
         public: true
 
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: WATCHTOWER_FAILURE
     title: Watchtower Unavailability
     threatType: Denial of Service
@@ -173,6 +169,9 @@ threats:
       - REFID: WATCHTOWER_RELIABILITY
     attackers:
       - REFID: NETWORK_ADVERSARY
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: DISTRIBUTED_WATCHTOWERS
         title: Use Distributed Watchtowers
@@ -180,9 +179,3 @@ threats:
           Encourage the use of multiple, geographically distributed watchtowers to ensure redundancy and availability during disputes.
         inPlace: false
         public: true
-    # CVSS:
-    #   vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
-    fullyMitigated: false
-    CVSS:
-      base: TODO CVSS
-      vector: ''
