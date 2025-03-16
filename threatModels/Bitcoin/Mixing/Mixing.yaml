@@ -65,6 +65,9 @@ threats:
       - REFID: TRANSACTION_PRIVACY
     attackers:
       - REFID: NETWORK_OBSERVER
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: COIN_JOIN
         title: Use CoinJoin Techniques
@@ -72,11 +75,6 @@ threats:
           Utilize CoinJoin-based mixing that combines multiple users' transactions to break address linkability.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: MIXER_EXIT_SCAM
     title: Mixer Exit Scam
     threatType: Fraud
@@ -88,6 +86,9 @@ threats:
       - REFID: MIXING_INTEGRITY
     attackers:
       - REFID: MALICIOUS_MIXER
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: TRUSTED_SERVICES
         title: Use Trusted and Audited Mixing Services
@@ -95,11 +96,6 @@ threats:
           Prefer decentralized, open-source mixers with a proven track record of transparency.
         inPlace: false
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: PARTICIPANT_LINKAGE
     title: Participant Linkage Attack
     threatType: Information Disclosure
@@ -111,6 +107,9 @@ threats:
       - REFID: PARTICIPANT_ANONYMITY
     attackers:
       - REFID: PARTICIPANT_COLLUSION
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: RANDOMIZED_INPUTS
         title: Randomize Input and Output Patterns
@@ -118,11 +117,6 @@ threats:
           Use randomized transaction structures and delays to reduce linkability between participants.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: NETWORK_LEVEL_ANALYSIS
     title: Network-Level Transaction Analysis
     threatType: Information Disclosure
@@ -134,8 +128,9 @@ threats:
       - REFID: TRANSACTION_PRIVACY
     attackers:
       - REFID: NETWORK_OBSERVER
-    # CVSS:
-    #   vector: cvss:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:L/I:L/A:N
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: TOR_VPN_USAGE
         title: Use Privacy-Enhancing Technologies
@@ -143,7 +138,3 @@ threats:
           Users should leverage Tor or VPN services to obfuscate their network traffic and enhance anonymity.
         inPlace: false
         public: true
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false

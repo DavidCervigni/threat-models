@@ -69,6 +69,9 @@ threats:
       - REFID: FIRMWARE_UPDATES
     attackers:
       - REFID: SUPPLY_CHAIN_ATTACKERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: UPDATE_SIGNING
         title: Enforce Update Signing
@@ -76,11 +79,6 @@ threats:
           Require all firmware updates to be signed with a trusted cryptographic key before installation.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: RUNTIME_MEMORY_ATTACK
     title: Runtime Memory Manipulation
     threatType: Tampering
@@ -92,6 +90,9 @@ threats:
       - REFID: RUNTIME_RESILIENCE
     attackers:
       - REFID: RUNTIME_EXPLOITERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: MEMORY_PROTECTION_UNITS
         title: Use Memory Protection Units (MPUs)
@@ -99,11 +100,6 @@ threats:
           Leverage MPUs to enforce strict memory access policies, preventing unauthorized access or modification of firmware memory.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: SUPPLY_CHAIN_INJECTION
     title: Supply Chain Injection
     threatType: Spoofing
@@ -115,6 +111,9 @@ threats:
       - REFID: FIRMWARE_INTEGRITY
     attackers:
       - REFID: SUPPLY_CHAIN_ATTACKERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: SUPPLY_CHAIN_AUDITS
         title: Conduct Supply Chain Audits
@@ -122,11 +121,6 @@ threats:
           Regularly audit firmware development and distribution processes to detect and mitigate supply chain risks.
         inPlace: false
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: SECURE_STORAGE_COMPROMISE
     title: Secure Storage Breach
     threatType: Information Disclosure
@@ -138,6 +132,9 @@ threats:
       - REFID: SECURE_STORAGE
     attackers:
       - REFID: MALICIOUS_FIRMWARE
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: ENCRYPT_STORAGE
         title: Encrypt Sensitive Storage
@@ -146,10 +143,6 @@ threats:
         inPlace: true
         public: true
 
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: BOOTLOADER_ATTACK
     title: Bootloader Exploitation
     threatType: Elevation of Privilege
@@ -171,5 +164,5 @@ threats:
         public: true
     CVSS:
       base: TODO CVSS
-      vector: ''
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
     fullyMitigated: false

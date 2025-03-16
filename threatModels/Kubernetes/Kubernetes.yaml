@@ -79,6 +79,9 @@ threats:
       - REFID: API_SERVER_SECURITY
     attackers:
       - REFID: EXTERNAL_ACTORS
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: RBAC_ENFORCEMENT
         title: Enforce RBAC Policies
@@ -86,11 +89,6 @@ threats:
           Use Role-Based Access Control (RBAC) to limit access to Kubernetes resources based on user roles.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: NODE_ESCALATION
     title: Node-Level Escalation
     threatType: Elevation of Privilege
@@ -102,6 +100,9 @@ threats:
       - REFID: NODE_ISOLATION
     attackers:
       - REFID: MALICIOUS_WORKLOAD
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: POD_SECURITY_POLICIES
         title: Apply Pod Security Policies
@@ -109,11 +110,6 @@ threats:
           Use Pod Security Policies (PSPs) or Pod Security Admission (PSA) to restrict workload capabilities and enforce best practices.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: DATA_LEAKAGE
     title: Sensitive Data Leakage
     threatType: Information Disclosure
@@ -125,6 +121,9 @@ threats:
       - REFID: DATA_CONFIDENTIALITY
     attackers:
       - REFID: MALICIOUS_WORKLOAD
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: ENCRYPT_SECRETS
         title: Encrypt Secrets and Data
@@ -132,11 +131,6 @@ threats:
           Enable encryption at rest for Kubernetes secrets and enforce HTTPS for communication between cluster components.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: RUNTIME_COMPROMISE
     title: Compromise of Runtime Environment
     threatType: Tampering
@@ -148,6 +142,9 @@ threats:
       - REFID: RUNTIME_SECURITY
     attackers:
       - REFID: MALICIOUS_WORKLOAD
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:L/PR:L/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: RUNTIME_MONITORING
         title: Monitor Runtime Behavior
@@ -155,11 +152,6 @@ threats:
           Use runtime security tools to detect and block unauthorized actions within running containers.
         inPlace: false
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: SUPPLY_CHAIN_COMPROMISE
     title: Supply Chain Attack
     threatType: Spoofing
@@ -171,6 +163,9 @@ threats:
       - REFID: SUPPLY_CHAIN_SECURITY
     attackers:
       - REFID: SUPPLY_CHAIN_ATTACKERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: IMAGE_SCANNING
         title: Scan Container Images
@@ -178,7 +173,3 @@ threats:
           Use automated tools to scan container images for vulnerabilities or malicious code before deployment.
         inPlace: true
         public: true
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false

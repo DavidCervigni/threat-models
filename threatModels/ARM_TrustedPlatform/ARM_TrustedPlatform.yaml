@@ -74,6 +74,9 @@ threats:
       - REFID: TEE_CONFIDENTIALITY
     attackers:
       - REFID: SIDE_CHANNEL_ACTORS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: CONSTANT_TIME_ALGORITHMS
         title: Use Constant-Time Algorithms
@@ -81,10 +84,6 @@ threats:
           Implement constant-time cryptographic and critical operations to eliminate timing-based side-channel vulnerabilities.
         inPlace: false
         public: true
-
-    CVSS:
-      vector: CVSS:3.1/AV:P/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
-    fullyMitigated: false
   - ID: MALICIOUS_KERNEL_ACCESS
     title: Kernel-Level Attacks on TEE
     threatType: Elevation of Privilege
@@ -96,6 +95,9 @@ threats:
       - REFID: TEE_INTEGRITY
     attackers:
       - REFID: MALICIOUS_KERNEL
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: MEMORY_ISOLATION
         title: Enforce Strong Memory Isolation
@@ -103,10 +105,6 @@ threats:
           Utilize ARM's memory management unit (MMU) and hardware-based isolation mechanisms to prevent unauthorized kernel access to TEE memory.
         inPlace: true
         public: true
-
-    CVSS:
-      vector: CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
-    fullyMitigated: false
   - ID: FIRMWARE_EXPLOIT
     title: Exploitation of Insecure Firmware
     threatType: Spoofing
@@ -118,6 +116,9 @@ threats:
       - REFID: SECURE_BOOT
     attackers:
       - REFID: HARDWARE_ATTACKERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: FIRMWARE_VERIFICATION
         title: Verify Firmware Signatures
@@ -125,9 +126,7 @@ threats:
           Enforce cryptographic signature validation during firmware updates and secure boot processes.
         inPlace: true
         public: true
-    CVSS:
-      vector: CVSS:3.1/AV:L/AC:H/PR:N/UI:N/S:U/C:H/I:H/A:H
-    fullyMitigated: false
+        
   - ID: ROGUE_DEVICE_ACCESS
     title: Rogue Peripheral Attacks
     threatType: Tampering
@@ -140,6 +139,9 @@ threats:
       - REFID: TEE_CONFIDENTIALITY
     attackers:
       - REFID: HARDWARE_ATTACKERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: DMA_PROTECTION
         title: Restrict DMA Access
@@ -147,11 +149,6 @@ threats:
           Implement IOMMU (Input-Output Memory Management Unit) to limit peripheral access to memory regions used by the TEE.
         inPlace: false
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: SECURE_BOOT_SPOOFING
     title: Spoofing Secure Boot
     threatType: Spoofing
@@ -164,6 +161,9 @@ threats:
       - REFID: PLATFORM_TRUST
     attackers:
       - REFID: HARDWARE_ATTACKERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: ROOT_OF_TRUST
         title: Use Hardware Root of Trust
@@ -171,7 +171,3 @@ threats:
           Ensure the secure boot process is anchored to an immutable hardware root of trust to verify all stages of the boot chain.
         inPlace: true
         public: true
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false

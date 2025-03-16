@@ -63,6 +63,9 @@ threats:
       - REFID: ENCLAVE_CONFIDENTIALITY
     attackers:
       - REFID: SIDE_CHANNEL_ACTORS
+    CVSS:
+      vector: 'CVSS:3.1/AV:P/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N'
+    fullyMitigated: false
     countermeasures:
       - ID: CONSTANT_TIME_EXECUTION
         title: Constant-Time Execution
@@ -70,11 +73,6 @@ threats:
           Ensure that critical enclave operations, especially cryptographic routines, execute in constant time to minimize timing variations.
         inPlace: false
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: MALICIOUS_OS_MANIPULATION
     title: Privileged OS Attacks
     threatType: Elevation of Privilege
@@ -86,6 +84,9 @@ threats:
       - REFID: ENCLAVE_INTEGRITY
     attackers:
       - REFID: MALICIOUS_OS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: MEMORY_ENCRYPTION
         title: Encrypted Memory and Integrity Checks
@@ -93,11 +94,6 @@ threats:
           Leverage SGX's memory encryption engine to ensure data confidentiality and integrity, even under malicious OS control.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: HARDWARE_EXPLOIT
     title: Hardware Vulnerabilities
     threatType: Spoofing
@@ -110,6 +106,9 @@ threats:
       - REFID: ENCLAVE_CONFIDENTIALITY
     attackers:
       - REFID: HARDWARE_ATTACKERS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: MICROCODE_UPDATES
         title: Microcode Updates
@@ -117,11 +116,6 @@ threats:
           Ensure systems are patched with the latest microcode updates from Intel to mitigate hardware vulnerabilities.
         inPlace: true
         public: true
-
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
   - ID: ATTESTATION_SPOOFING
     title: Fake Attestation Responses
     threatType: Spoofing
@@ -133,6 +127,9 @@ threats:
       - REFID: PLATFORM_TRUST
     attackers:
       - REFID: MALICIOUS_OS
+    CVSS:
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+    fullyMitigated: false
     countermeasures:
       - ID: REMOTE_ATTESTATION_VALIDATION
         title: Validate Remote Attestation Responses
@@ -140,7 +137,3 @@ threats:
           Ensure attestation responses are validated against trusted Intel attestation servers.
         inPlace: true
         public: true
-    CVSS:
-      base: TODO CVSS
-      vector: ''
-    fullyMitigated: false
