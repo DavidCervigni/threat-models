@@ -1,0 +1,6 @@
+Include: ai/metaphor/threatModelTool.m6r
+
+Action: 
+    Create a detailed yaml threat model Corda protocol based on the whitepaper at https://docs.r3.com/en/pdf/corda-introductory-whitepaper.pdf
+    
+    

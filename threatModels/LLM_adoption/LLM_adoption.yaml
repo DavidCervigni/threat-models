@@ -1,6 +1,6 @@
 ID: LLM_ADOPTION_THREAT_MODEL
 title: LLM Adoption
-version: "1.0"
+version: '1.0'
 authors: |
   David Cervigni Using GenAI
 scope:
@@ -43,6 +43,13 @@ scope:
       treeImage: true
       group: Operational Security
 
+    - ID: PRIVACY_PROTECTION
+      title: Privacy Protection
+      description: |
+        Safeguard user privacy by implementing data anonymization, encryption, and access controls to prevent unauthorized data exposure or misuse.
+      treeImage: true
+      group: Data Security
+
   assumptions:
     - ID: TRUSTED_ENVIRONMENT
       description: |
@@ -50,6 +57,23 @@ scope:
     - ID: STATIC_MODEL_CONFIGURATION
       description: |
         The deployed LLM is configured with fixed parameters that may not dynamically adjust to emerging threats.
+    - ID: DATA_PROCESSING_ISOLATION
+      description: |
+        Azure OpenAI Service processes data in isolation - prompts and completions are NOT:
+        - Available to other customers
+        - Available to OpenAI
+        - Used to improve OpenAI models
+        - Used to train/retrain Azure OpenAI foundation models
+        - Used to improve Microsoft/3rd party services without permission
+
+    - ID: GEOGRAPHIC_PROCESSING
+      description: |
+        Data is processed within customer-specified geography unless using Global deployment type. 
+        Data at rest is always stored in customer-designated geography.
+
+    - ID: MODEL_STATELESSNESS
+      description: |
+        The models are stateless - no prompts or generations are stored in the model itself.
 
   attackers:
     - ID: MALICIOUS_USER
@@ -97,7 +121,7 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
     fullyMitigated: false
   - ID: LLM02_SENSITIVE_INFO_DISCLOSURE
     title: Sensitive Information Disclosure
@@ -132,7 +156,7 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N
     fullyMitigated: false
   - ID: LLM03_SUPPLY_CHAIN
     title: Supply Chain Risks
@@ -166,7 +190,7 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
     fullyMitigated: false
   - ID: LLM04_DATA_MODEL_POISONING
     title: Data and Model Poisoning
@@ -201,7 +225,7 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
     fullyMitigated: false
   - ID: LLM05_IMPROPER_OUTPUT_HANDLING
     title: Improper Output Handling
@@ -237,7 +261,7 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N
     fullyMitigated: false
   - ID: LLM06_EXCESSIVE_AGENCY
     title: Excessive Agency
@@ -272,7 +296,7 @@ threats:
         inPlace: true
         public: false
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H
     fullyMitigated: false
   - ID: LLM07_SYSTEM_PROMPT_LEAKAGE
     title: System Prompt Leakage
@@ -307,7 +331,7 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N
     fullyMitigated: false
   - ID: LLM08_VECTOR_EMBEDDING_WEAKNESS
     title: Vector and Embedding Weaknesses
@@ -342,7 +366,7 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N
     fullyMitigated: false
   - ID: LLM09_MISINFORMATION
     title: Misinformation
@@ -378,7 +402,7 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:N
     fullyMitigated: false
 
   - ID: LLM10_UNBOUNDED_CONSUMPTION
@@ -414,5 +438,112 @@ threats:
         inPlace: false
         public: false
     CVSS:
-      vector: "CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H"
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:N/A:H
+    fullyMitigated: false
+
+  - ID: LLM14_DATA_RESIDENCY_VIOLATION
+    title: Data Residency Violation
+    threatType: Compliance Violation
+    impactDesc: |
+      Processing or storing data outside designated geographic boundaries could violate data residency requirements and regulations.
+    attack: |
+      System configuration or deployment type choices lead to data being processed or stored outside permitted geographic boundaries.
+    impactedSecObj:
+      - REFID: COMPLIANCE
+      - REFID: DATA_PROTECTION
+      - REFID: PRIVACY_PROTECTION
+    attackers:
+      - REFID: MALICIOUS_USER
+    countermeasures:
+      - ID: DEPLOYMENT_TYPE_CONTROL
+        title: Deployment Type Control
+        description: |
+          Carefully control use of Global and DataZone deployment types based on data residency requirements.
+        inPlace: true
+        public: true
+      - ID: GEOGRAPHY_MONITORING
+        title: Geographic Processing Monitoring
+        description: |
+          Monitor and audit data processing locations to ensure compliance with residency requirements.
+        inPlace: true
+        public: true
+      - ID: STORAGE_LOCATION_CONTROL
+        title: Storage Location Control
+        description: |
+          Ensure data at rest is stored only in approved geographic locations regardless of deployment type.
+        inPlace: true
+        public: true
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:H/I:N/A:N
+    fullyMitigated: false
+
+  - ID: LLM15_ABUSE_MONITORING_BYPASS
+    title: Abuse Monitoring System Bypass
+    threatType: Detection Evasion
+    impactDesc: |
+      Bypassing abuse monitoring systems could allow generation of harmful content or violation of service terms.
+    attack: |
+      Attackers attempt to circumvent content filtering and abuse monitoring systems to generate prohibited content.
+    impactedSecObj:
+      - REFID: COMPLIANCE
+      - REFID: MODEL_INTEGRITY
+    attackers:
+      - REFID: MALICIOUS_USER
+    countermeasures:
+      - ID: CONTENT_FILTERING
+        title: Real-time Content Filtering
+        description: |
+          Implement synchronous content filtering during prompt processing and content generation.
+        inPlace: true
+        public: true
+      - ID: AI_REVIEW
+        title: AI-based Review System
+        description: |
+          Deploy AI systems to review prompts and completions for potential abuse patterns.
+        inPlace: true
+        public: true
+      - ID: HUMAN_REVIEW
+        title: Human Review Process
+        description: |
+          Maintain authorized human reviewer access for flagged content with proper security controls.
+        inPlace: true
+        public: true
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:H/A:N
+    fullyMitigated: false
+
+  - ID: LLM16_FEATURE_DATA_EXPOSURE
+    title: Feature Data Exposure
+    threatType: Data Exposure
+    impactDesc: |
+      Improper handling of data stored for specific features (Assistants API, Batch processing, etc.) could lead to unauthorized access.
+    attack: |
+      Attackers target stored data used by specific Azure OpenAI features to gain unauthorized access.
+    impactedSecObj:
+      - REFID: DATA_PROTECTION
+      - REFID: PRIVACY_PROTECTION
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+      - REFID: MALICIOUS_USER
+    countermeasures:
+      - ID: DOUBLE_ENCRYPTION
+        title: Double Encryption Implementation
+        description: |
+          Implement double encryption at rest using AES-256 and optional customer managed keys.
+        inPlace: true
+        public: true
+      - ID: FEATURE_ISOLATION
+        title: Feature Data Isolation
+        description: |
+          Ensure data for different features remains isolated and stored within appropriate geographic boundaries.
+        inPlace: true
+        public: true
+      - ID: CUSTOMER_DELETION_CONTROL
+        title: Customer Deletion Control
+        description: |
+          Provide customers with ability to delete stored feature data at any time.
+        inPlace: true
+        public: true
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:L/A:N
     fullyMitigated: false

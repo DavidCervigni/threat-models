@@ -148,9 +148,48 @@
                 "build",
                 "--MKDocsSiteDir",
                 "public",
+                "--fileName", "index",
                 "--MKDocsDir",
                 "build"
                 // ,"--generatePDF"
+            ]
+        },
+        {
+            "name": "Build HTML for Ethereum",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/Ethereum/Ethereum.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/Ethereum/",
+                "--template",
+                "TM_templateFull",
+                // "--assetDir",
+                // "threatModels/Ethereum/assets",
+                "--formatYAML"
+            ]
+        },
+        {
+            "name": "Build HTML for RIPPLE",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/RippleXRP/RippleXRP.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/RippleXRP/",
+                "--template",
+                "TM_templateFull",
+                // "--assetDir",
+                // "threatModels/RippleXRP/assets",
+                "--formatYAML"
             ]
         },
         {
@@ -165,6 +204,44 @@
                 "--browserSync",
                 "--outputDir",
                 "build/Bitcoin/",
+                "--template",
+                "TM_templateFull",
+                // "--assetDir",
+                // "threatModels/Bitcoin/assets",
+                "--formatYAML"
+            ]
+        },
+        {
+            "name": "Build HTML for Solana",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/Solana/Solana.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/Solana/",
+                "--template",
+                "TM_templateFull",
+                // "--assetDir",
+                // "threatModels/Bitcoin/assets",
+                "--formatYAML"
+            ]
+        },
+        {
+            "name": "Build HTML for LLM_adoption",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/LLM_adoption/LLM_adoption.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/LLM_adoption/",
                 "--template",
                 "TM_templateFull",
                 // "--assetDir",

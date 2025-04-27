@@ -66,7 +66,7 @@ threats:
     attackers:
       - REFID: NETWORK_OBSERVER
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N'
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:N/A:N
     fullyMitigated: false
     countermeasures:
       - ID: COIN_JOIN
@@ -87,7 +87,7 @@ threats:
     attackers:
       - REFID: MALICIOUS_MIXER
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N'
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:R/S:U/C:N/I:H/A:N
     fullyMitigated: false
     countermeasures:
       - ID: TRUSTED_SERVICES
@@ -108,7 +108,7 @@ threats:
     attackers:
       - REFID: PARTICIPANT_COLLUSION
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N'
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N
     fullyMitigated: false
     countermeasures:
       - ID: RANDOMIZED_INPUTS
@@ -129,7 +129,7 @@ threats:
     attackers:
       - REFID: NETWORK_OBSERVER
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N'
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:U/C:H/I:N/A:N
     fullyMitigated: false
     countermeasures:
       - ID: TOR_VPN_USAGE

@@ -1,0 +1,426 @@
+ID: Ethereum
+title: Ethereum
+version: 1.0
+authors: |
+  David Cervigni
+scope:
+  description: |
+    This threat model focuses on the Ethereum Mainnet protocol layer, specifically after the transition to Proof-of-Stake (PoS) via "The Merge". It examines the security properties and potential threats related to the PoS consensus mechanism (Gasper: Casper FFG + LMD GHOST), the Ethereum Virtual Machine (EVM) as the foundation for smart contracts, the ETH native asset, and interactions between key participants (validators, users, client software, staking pools). While Layer 2 solutions and individual Decentralized Applications (DApps) are built upon Ethereum, this model primarily addresses the foundational L1 protocol security, acknowledging that L1 vulnerabilities impact the entire ecosystem.
+  securityObjectives:
+    - ID: LEDGER_INTEGRITY
+      title: Ledger Integrity
+      description: |
+        Ensure the Ethereum blockchain accurately reflects the outcome of all valid state transitions dictated by processed transactions and blocks, prevents double-spending of ETH, and maintains a consistent history according to consensus rules.
+      group: Core Ledger Security
+    - ID: LEDGER_CONSISTENCY
+      title: Ledger Consistency (Canonical Chain)
+      description: |
+        Ensure all honest participating nodes eventually agree on the single, canonical sequence of blocks and state transitions, resolving temporary forks according to the fork-choice rule (LMD GHOST).
+      group: Core Ledger Security
+    - ID: TRANSACTION_FINALITY
+      title: Transaction Finality
+      description: |
+        Ensure that once a block containing a transaction reaches finality (typically after 2 epochs, ~13 minutes, via Casper FFG checkpoints), it cannot be reverted or changed by the protocol without incurring massive economic penalties (slashing).
+      group: Core Ledger Security
+    - ID: AVAILABILITY
+      title: Network Availability and Liveness
+      description: |
+        Ensure the Ethereum network remains operational, producing new blocks, processing valid transactions, and achieving finality in a timely manner, remaining resilient to disruptions and validator downtime.
+      group: Operational Security
+    - ID: CENSORSHIP_RESISTANCE
+      title: Censorship Resistance
+      description: |
+        Ensure the network's ability to eventually include any valid transaction submitted with sufficient fees, resisting systematic exclusion based on sender, receiver, or transaction content (e.g., interactions with specific contracts).
+      group: Network Properties
+    - ID: DECENTRALIZATION
+      title: Network Decentralization
+      description: |
+        Ensure control over network validation (stake distribution), client software development, and protocol governance is sufficiently distributed to prevent single points of failure, control, or capture by any single entity or small group.
+      group: Network Properties
+    - ID: ASSET_SECURITY
+      title: ETH Asset Security
+      description: |
+        Protect the integrity of the ETH asset, its supply mechanics (issuance vs. burn via EIP-1559), prevent unauthorized creation/destruction, and maintain its utility within the ecosystem (e.g., as gas, stake).
+      group: Asset Protection
+    - ID: SMART_CONTRACT_PLATFORM_INTEGRITY
+      title: Smart Contract Platform Integrity
+      description: |
+        Ensure the foundational security and correct execution semantics of the Ethereum Virtual Machine (EVM) and precompiled contracts, providing a reliable base for deploying DApps. (Does not cover individual DApp bugs).
+      group: Core Ledger Security
+
+  assets:
+    - ID: ETHEREUM_BLOCKCHAIN
+      type: system
+      title: Ethereum Blockchain (State Machine)
+      description: |
+        The distributed ledger maintaining the global state of accounts, balances, and smart contract storage.
+      inScope: true
+    - ID: ETH
+      type: data # Represents value/state
+      title: Ether (ETH)
+      description: |
+        The native cryptocurrency of the Ethereum network, used for gas fees and staking.
+      inScope: true
+    - ID: VALIDATORS
+      type: system
+      title: Validator Nodes
+      description: |
+        Entities running client software, having staked ETH, responsible for proposing and attesting to blocks in the PoS consensus.
+      inScope: true
+    - ID: EVM
+      type: system
+      title: Ethereum Virtual Machine (EVM)
+      description: |
+        The computation engine that executes smart contract code during state transitions.
+      inScope: true
+    - ID: POS_CONSENSUS
+      type: process # Protocol suite
+      title: Proof-of-Stake Consensus (Gasper)
+      description: |
+        The combination of Casper FFG (finality gadget) and LMD GHOST (fork-choice rule) governing block production and validation.
+      inScope: true
+    - ID: TRANSACTIONS
+      type: dataflow
+      title: Ethereum Transactions
+      description: |
+        Signed messages broadcast to the network, initiating state changes (transfers, contract calls, deployments). Includes the concept of the mempool.
+      inScope: true
+    - ID: USER_ACCOUNTS
+      type: system # State components
+      title: User Accounts (EOAs & Contracts)
+      description: |
+        Externally Owned Accounts (controlled by private keys) and Contract Accounts (controlled by code).
+      inScope: true
+    - ID: STAKED_ETH
+      type: data # Represents economic value/commitment
+      title: Staked ETH
+      description: |
+        ETH deposited into the Beacon Chain deposit contract to activate and run validators, subject to slashing penalties.
+      inScope: true
+    - ID: EXECUTION_CLIENTS
+      type: system
+      title: Execution Clients (e.g., Geth, Nethermind)
+      description: |
+        Software responsible for executing transactions, managing state, and handling the EVM.
+      inScope: true
+    - ID: CONSENSUS_CLIENTS
+      type: system
+      title: Consensus Clients (e.g., Prysm, Lighthouse)
+      description: |
+        Software responsible for managing the Beacon Chain, PoS consensus logic, attestations, and block production.
+      inScope: true
+
+  attackers:
+    - ID: EXTERNAL_ATTACKER
+      description: |
+        Standard unauthenticated network attacker attempting to exploit network protocols, client vulnerabilities, or flood the network.
+      inScope: true
+    - ID: MALICIOUS_VALIDATOR
+      description: |
+        An operator of one or more validators attempting to disrupt consensus, double-sign, censor transactions/blocks, or gain unfair advantages (e.g., excessive MEV). Includes potential collusion between validators.
+      inScope: true
+    - ID: MALICIOUS_USER
+      description: |
+        An Ethereum user attempting to spam the network, exploit EVM/contract interactions at the protocol level, or defraud others via transaction manipulation.
+      inScope: true
+    - ID: NETWORK_MANIPULATOR
+      description: |
+        An attacker focusing on network-level attacks like partitioning, BGP hijacking, or large-scale DoS against client nodes or the P2P network.
+      inScope: true
+    - ID: REGULATOR_OR_STATE_ACTOR
+      description: |
+        A government or regulatory body attempting to enforce censorship, surveillance, or control over the network, potentially by pressuring validators, client developers, or staking pools.
+      inScope: true
+    - ID: STAKING_POOL_OPERATOR
+      description: |
+        Operators of large staking pools (liquid or centralized exchanges) who could potentially collude, censor, or become central points of failure or regulatory pressure due to concentrated stake.
+      inScope: true
+    - ID: MEV_SEARCHER_BUILDER_RELAY
+      description: |
+        Actors within the MEV supply chain (searchers identifying opportunities, builders creating blocks, relays connecting builders/proposers) who could collude, censor, or manipulate transaction ordering for profit.
+      inScope: true
+    - ID: ETHEREUM_FOUNDATION
+      description: |
+        The Ethereum Foundation, while primarily focused on research and stewardship, holds influence through funding, research direction, and coordination, potentially creating perceived centralization or steering governance outcomes (less direct control than RippleCo).
+      inScope: true # For completeness, acknowledging influence
+
+  assumptions:
+    - ID: CRYPTOGRAPHY_SOUNDNESS
+      description: |
+        Standard cryptographic primitives used (ECDSA, Keccak-256, BLS signatures for consensus) are computationally secure against current threats.
+    - ID: PUBLIC_NETWORK
+      description: |
+        The Ethereum network operates over the public internet and peer discovery allows broad participation.
+    - ID: VALIDATOR_RATIONALITY
+      description: |
+        Validators are generally rational economic actors motivated by maximizing staking rewards and avoiding slashing penalties.
+    - ID: CLIENT_IMPLEMENTATION_CORRECTNESS
+      description: |
+        Assume client software implementations generally adhere to the Ethereum specification, though bugs are a known risk (modeled as a threat). Client diversity is assumed to exist as a mitigating factor.
+    - ID: NETWORK_LIVENESS
+      description: |
+        Assume the underlying network generally allows for timely propagation of messages (blocks, attestations) required for consensus liveness, though partitions are a threat.
+
+analysis: |
+  Ethereum's transition to Proof-of-Stake aims to provide scalability, security, and energy efficiency while maintaining decentralization. Its core strength lies in the EVM, enabling a vast ecosystem of DApps. The PoS consensus (Gasper) relies on economic incentives (staked ETH) and penalties (slashing) to secure the network. Key security concerns revolve around potential stake centralization (via liquid staking pools and exchanges), the complexities and potential for censorship introduced by MEV (Maximal Extractable Value), the security of multiple client implementations, and ensuring robust censorship resistance against external pressures. Compared to XRPL's FBA, Ethereum targets stronger decentralization and censorship resistance guarantees but historically had lower base-layer throughput and longer finality times, driving innovation towards Layer 2 scaling solutions. Governance is managed off-chain through a social consensus process around Ethereum Improvement Proposals (EIPs).
+
+threats:
+  - ID: POS_CONSENSUS_ATTACK
+    title: Proof-of-Stake Consensus Attack (Stake Dominance)
+    attack: |
+      An attacker (or colluding group) acquires sufficient staked ETH to disrupt or manipulate consensus. Thresholds include >1/3 stake for liveness attacks (preventing finality), >51% stake for certain censorship/reorg attacks (before finality), or >2/3 stake potentially needed to finalize alternative malicious forks (extremely difficult and costly due to slashing). Actions could include censoring blocks/transactions, attempting short-term reorgs, or halting finality.
+    threatType: Integrity Attack / Availability Attack / Censorship
+    impactDesc: |
+      Network fails to finalize blocks, valid transactions are persistently censored, temporary chain reorganizations cause confusion and potential double-spends (if finality is broken), loss of confidence in the network's security.
+    impactedSecObj:
+      - REFID: LEDGER_INTEGRITY
+      - REFID: LEDGER_CONSISTENCY
+      - REFID: TRANSACTION_FINALITY
+      - REFID: AVAILABILITY
+      - REFID: CENSORSHIP_RESISTANCE
+      - REFID: ASSET_SECURITY
+    attackers:
+      - REFID: MALICIOUS_VALIDATOR
+      - REFID: STAKING_POOL_OPERATOR # Colluding pools
+      - REFID: REGULATOR_OR_STATE_ACTOR # Coercing validators/pools
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H # High cost/complexity to acquire stake
+    fullyMitigated: false # Economic security relies on cost of attack > reward
+    countermeasures:
+      - ID: SLASHING_PENALTIES
+        title: Slashing Penalties
+        description: |
+          Validators detected performing malicious actions (e.g., double-signing, surrounding votes) have a significant portion of their stake burned and are ejected from the validator set, creating a strong economic disincentive.
+        inPlace: true # Core PoS mechanism
+        public: true
+      - ID: INACTIVITY_LEAK
+        title: Inactivity Leak Mechanism
+        description: |
+          If the chain fails to finalize for several epochs, validators who are not participating correctly gradually lose stake, ensuring the chain can eventually recover finality once >2/3 of active stake resumes participation. Discourages liveness attacks.
+        inPlace: true # Core PoS mechanism
+        public: true
+      - ID: ATTESTATION_REQUIREMENTS
+        title: Attestation Participation Requirements
+        description: |
+          Validators are rewarded for timely attestations supporting the canonical chain and penalized for missing them, incentivizing participation and convergence.
+        inPlace: true # Core PoS mechanism
+        public: true
+      - ID: SOCIAL_COORDINATION_RECOVERY
+        title: Social Coordination for Recovery
+        description: |
+          In extreme attack scenarios (e.g., successful >51% attack breaking guarantees), the community can potentially coordinate off-chain to hard-fork and slash the attacker's funds, acting as a final backstop (highly contentious).
+        inPlace: false # Emergency measure
+        public: true
+
+  - ID: STAKING_CENTRALIZATION_RISK
+    title: Staking Centralization Risk via Pools/Exchanges
+    attack: |
+      Market dynamics lead to a large percentage of staked ETH being concentrated in a small number of liquid staking protocols (e.g., Lido) or centralized exchanges. This concentration creates systemic risks, potential censorship vectors (if pool operators are coerced or act maliciously), and reduces the effective decentralization of validation power.
+    threatType: Decentralization Risk / Potential Censorship Vector
+    impactDesc: |
+      Increased risk of censorship if dominant pools comply with external pressure, potential for large-scale slashing events if a dominant pool's infrastructure fails or acts maliciously, reduced resilience to bugs affecting a dominant pool's setup, erosion of network's perceived decentralization and neutrality.
+    impactedSecObj:
+      - REFID: DECENTRALIZATION
+      - REFID: CENSORSHIP_RESISTANCE
+      - REFID: AVAILABILITY # If a large pool goes offline
+    attackers:
+      - REFID: STAKING_POOL_OPERATOR # Through dominance or collusion
+      - REFID: REGULATOR_OR_STATE_ACTOR # Pressuring dominant pools
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L # Indirect risk, market driven
+    fullyMitigated: false
+    countermeasures:
+      - ID: PROMOTE_SOLO_STAKING
+        title: Encourage Solo Staking
+        description: |
+          Efforts to lower the technical barriers and promote the benefits of individuals running their own validators to increase decentralization.
+        inPlace: false # Community effort
+        public: true
+      - ID: DIVERSE_STAKING_SOLUTIONS
+        title: Foster Diverse Staking Solutions
+        description: |
+          Support the development and adoption of multiple competing liquid staking protocols and staking providers to avoid single points of dominance.
+        inPlace: false # Market dynamic
+        public: true
+      - ID: STAKING_POOL_TRANSPARENCY
+        title: Staking Pool Transparency
+        description: |
+          Encourage staking pools to be transparent about their operations, infrastructure, governance, and compliance stances.
+        inPlace: false # Relies on pool operator behavior
+        public: true
+      - ID: CLIENT_DIVERSITY_VALIDATORS
+        title: Validator Client Diversity
+        description: |
+          Encouraging validators (including those run by pools) to use diverse combinations of consensus and execution clients reduces the impact of a bug in any single client software affecting a large portion of stake.
+        inPlace: true # Community effort, actively tracked
+        public: true
+
+  - ID: MEV_CENSORSHIP_REORDERING
+    title: MEV-driven Censorship or Transaction Reordering
+    attack: |
+      Actors in the MEV supply chain (searchers, builders, relays, proposers) prioritize, reorder, front-run, sandwich, or exclude transactions based primarily on the MEV profit they generate, rather than gas price alone or arrival time. This can lead to systematic censorship of certain transaction types (e.g., those interacting with sanctioned addresses) or unfair economic outcomes for users.
+    threatType: Censorship / Reordering / Economic Exploitation
+    impactDesc: |
+      Users experience transaction delays or failures if their transactions are not profitable enough for builders/proposers. Certain applications or users may face censorship. Economic value is extracted from users via front-running/sandwich attacks. Undermines network neutrality.
+    impactedSecObj:
+      - REFID: CENSORSHIP_RESISTANCE
+      - REFID: LEDGER_INTEGRITY # Fairness of ordering
+      - REFID: ASSET_SECURITY # User economic protection
+    attackers:
+      - REFID: MEV_SEARCHER_BUILDER_RELAY
+      - REFID: MALICIOUS_VALIDATOR # Acting as proposer
+      - REFID: STAKING_POOL_OPERATOR # Influencing block building
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:L/A:L # Primarily affects fairness/neutrality
+    fullyMitigated: false # MEV is an ongoing area of research and mitigation
+    countermeasures:
+      - ID: PROPOSER_BUILDER_SEPARATION
+        title: Proposer-Builder Separation (PBS)
+        description: |
+          Separates the role of proposing a block header from constructing the block's payload, aiming to reduce the proposer's ability to directly censor or reorder transactions by relying on a competitive market of builders. (e.g., via MEV-Boost currently, enshrined PBS in future).
+        inPlace: true # MEV-Boost widely used, ePBS planned
+        public: true
+      - ID: ENCRYPTED_MEMPOOLS
+        title: Encrypted Mempools Research
+        description: |
+          Research and development into techniques that hide transaction details until they are included in a block, reducing the potential for front-running and certain types of MEV extraction.
+        inPlace: false # Research phase
+        public: true
+      - ID: CRLISTS_INCLUSION_LISTS
+        title: Inclusion Lists / crLists (Future)
+        description: |
+          Proposed mechanisms where proposers commit to including certain transactions, potentially forcing builders to include them, thereby improving censorship resistance.
+        inPlace: false # Research/Development phase
+        public: true
+      - ID: LAYER_2_SCALING
+        title: Utilize Layer 2 Solutions
+        description: |
+          Moving transaction execution to Layer 2 networks can reduce the MEV impact on the Layer 1 base chain and potentially offer different sequencing/MEV mitigation strategies.
+        inPlace: true # L2s widely used
+        public: true
+
+  - ID: CLIENT_SOFTWARE_BUG
+    title: Critical Bug in Consensus/Execution Client Software
+    attack: |
+      A severe bug in a widely used execution client (e.g., Geth) or consensus client (e.g., Prysm) leads to nodes crashing, failing to process blocks correctly, reaching incorrect consensus (forking), processing invalid state transitions, or exposing a denial-of-service vulnerability. If a bug affects clients representing >1/3 or >2/3 of the stake, it can halt finality or cause incorrect finalization.
+    threatType: Availability Attack / Integrity Attack
+    impactDesc: |
+      Network stalls or fails to finalize. Potential chain split requiring social intervention. Validators using the faulty client may be slashed for incorrect attestations or inactivity. Significant disruption to DApps and users. Loss of confidence.
+    impactedSecObj:
+      - REFID: AVAILABILITY
+      - REFID: LEDGER_CONSISTENCY
+      - REFID: LEDGER_INTEGRITY
+      - REFID: TRANSACTION_FINALITY
+    attackers:
+      - REFID: EXTERNAL_ATTACKER # Exploiting the bug
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:N/I:H/A:H # Impact depends on client market share
+    fullyMitigated: false # Software bugs are inevitable
+    countermeasures:
+      - ID: CLIENT_DIVERSITY_ECOSYSTEM
+        title: Maintain Client Diversity
+        description: |
+          Actively supporting and encouraging the use of multiple, independent implementations of both execution and consensus clients is the primary defense. If one client fails, the network can continue operating with others (provided no single client has supermajority stake).
+        inPlace: true # Active community goal
+        public: true
+      - ID: RIGOROUS_TESTING_AUDITS
+        title: Rigorous Software Testing and Audits
+        description: |
+          Extensive unit testing, integration testing, fuzzing, formal verification (where applicable), and third-party security audits of client software before release.
+        inPlace: true # Standard practice for core clients
+        public: true
+      - ID: BUG_BOUNTY_PROGRAMS
+        title: Bug Bounty Programs
+        description: |
+          Incentivizing security researchers to find and responsibly disclose vulnerabilities in client software.
+        inPlace: true # EF and client teams run these
+        public: true
+
+  - ID: EVM_PROTOCOL_VULNERABILITY
+    title: Protocol-Level EVM or Precompile Vulnerability
+    attack: |
+      An attacker discovers and exploits a fundamental flaw in the EVM specification, an opcode's implementation across clients, or a precompiled contract provided by the protocol. This could allow for bypassing intended execution semantics, causing state inconsistencies, denial-of-service via resource exhaustion (e.g., infinite loops not caught by gas limits), or unauthorized access/manipulation of contract state at the protocol level.
+    threatType: Integrity Attack / Availability Attack
+    impactDesc: |
+      Potential for mass exploitation of smart contracts relying on the flawed component. Inconsistent state between different client implementations. Chain halt or requirement for an emergency hard fork to correct the state or patch the EVM. Massive loss of funds or locked assets.
+    impactedSecObj:
+      - REFID: SMART_CONTRACT_PLATFORM_INTEGRITY
+      - REFID: LEDGER_INTEGRITY
+      - REFID: AVAILABILITY
+      - REFID: ASSET_SECURITY
+    attackers:
+      - REFID: EXTERNAL_ATTACKER
+      - REFID: MALICIOUS_USER # Crafting exploiting transaction
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:H/I:H/A:H # Critical impact if found
+    fullyMitigated: false # Complex system, subtle bugs possible
+    countermeasures:
+      - ID: EVM_SPECIFICATION_RIGOR
+        title: Rigorous EVM Specification and Testing
+        description: |
+          Maintaining a clear, unambiguous specification for the EVM and extensive test suites (e.g., Ethereum Tests) covering edge cases for all opcodes and precompiles.
+        inPlace: true # Ongoing effort
+        public: true
+      - ID: FORMAL_VERIFICATION_EVM
+        title: Formal Verification Efforts
+        description: |
+          Applying formal methods to mathematically prove properties of the EVM specification and critical components.
+        inPlace: false # Ongoing research area
+        public: true
+      - ID: CLIENT_IMPLEMENTATION_TESTING
+        title: Cross-Client Implementation Testing
+        description: |
+          Ensuring multiple client teams implement the specification correctly and consistently through shared test vectors and consensus tests.
+        inPlace: true # Standard practice
+        public: true
+      - ID: EVM_AUDITS_BOUNTIES
+        title: Audits and Bug Bounties for EVM/Precompiles
+        description: |
+          Targeted security reviews and bug bounties focused on the core EVM and protocol-level contracts.
+        inPlace: true # Part of general bounties
+        public: true
+
+  - ID: GOVERNANCE_ATTACK_FORK
+    title: Contentious Hard Fork or Governance Capture
+    attack: |
+      A powerful faction (e.g., large pools, influential developers, EF) pushes through a controversial EIP or protocol change via the off-chain governance process, leading to significant community dissent. Alternatively, disagreement on a critical issue results in a persistent chain split (hard fork) where portions of the community and validator set adopt incompatible protocol rules.
+    threatType: Governance Failure / Chain Integrity Failure
+    impactDesc: |
+      A permanent split of the Ethereum network, creating two (or more) competing chains with duplicated history but diverging futures (e.g., ETH/ETC split). Causes massive disruption, ecosystem fragmentation, confusion for users, potential replay attacks across chains initially, and loss of network effect and value. Could also lead to adoption of changes harmful to neutrality or decentralization if governance is captured.
+    impactedSecObj:
+      - REFID: LEDGER_INTEGRITY # Split history
+      - REFID: LEDGER_CONSISTENCY # Lost global consistency
+      - REFID: ASSET_SECURITY # Value dilution/confusion
+      - REFID: DECENTRALIZATION # If governance captured
+    attackers:
+      - REFID: ETHEREUM_FOUNDATION # Via influence
+      - REFID: STAKING_POOL_OPERATOR # Via influence/stake weight
+      # Also driven by Community Factions, Core Developers
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:L/I:H/A:H # Social/political complexity
+    fullyMitigated: false # Off-chain governance risk
+    countermeasures:
+      - ID: OPEN_EIP_PROCESS
+        title: Open Ethereum Improvement Proposal (EIP) Process
+        description: |
+          A publicly accessible process for proposing, debating, and refining protocol changes, allowing for broad community input and scrutiny.
+        inPlace: true # Standard process
+        public: true
+      - ID: ROUGH_CONSENSUS_MODEL
+        title: Rough Consensus and Running Code Model
+        description: |
+          Decisions are generally based on the rough consensus of the core developers, client teams, researchers, and the wider community, rather than formal voting. Requires demonstrated implementation feasibility.
+        inPlace: true # De facto governance model
+        public: true
+      - ID: SOCIAL_LAYER_CONSENSUS
+        title: Strong Social Layer and Community Cohesion
+        description: |
+          A strong, engaged community provides a check against unpopular or harmful changes and facilitates coordination to maintain a single canonical chain.
+        inPlace: true # Strength varies over time
+        public: true
+      - ID: CLIENT_TEAM_INDEPENDENCE
+        title: Independence of Client Teams
+        description: |
+          Having multiple independent client teams provides checks and balances, as widespread adoption of a change requires buy-in from several teams.
+        inPlace: true # Core principle
+        public: true

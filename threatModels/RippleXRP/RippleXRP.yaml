@@ -1,0 +1,403 @@
+ID: RippleXRP
+title: Ripple Ledger and XRP
+version: 1.0
+authors: |
+  David Cervigni
+scope:
+  description: |
+    This threat model focuses on the Ripple/XRP ecosystem, 
+    specifically examining the security properties and potential threats related to the XRP Ledger (XRPL) technology, 
+    the XRP digital asset, and the interactions between key participants including users, validators, and Ripple (the company).
+     It considers the unique aspects of the XRP Ledger Consensus Protocol (RPCA) based on Unique Node Lists (UNLs) and the implications for decentralization, 
+     censorship resistance, and ledger integrity. The model distinguishes between Ripple the company, the open-source XRPL, and the XRP asset.
+  securityObjectives:
+    - ID: LEDGER_INTEGRITY
+      title: Ledger Integrity
+      description: |
+        Ensure the XRP Ledger accurately reflects all validated transactions, prevents double-spending, and maintains a consistent, immutable history.
+      group: Core Ledger Security
+    - ID: LEDGER_CONSISTENCY
+      title: Ledger Consistency
+      description: |
+        Ensure all participating nodes agree on the state of the validated ledger.
+      group: Core Ledger Security
+    - ID: TRANSACTION_FINALITY
+      title: Transaction Finality
+      description: |
+        Ensure that once a transaction is validated and included in a ledger, it is final and cannot be reversed or altered (typically within 3-5 seconds).
+      group: Core Ledger Security
+    - ID: AVAILABILITY
+      title: Network Availability
+      description: |
+        Ensure the XRP Ledger network remains operational, processes valid transactions promptly, and is resilient to disruptions.
+      group: Operational Security
+    - ID: CENSORSHIP_RESISTANCE
+      title: Censorship Resistance
+      description: |
+        Ensure the network's ability to process valid transactions without undue interference or blocking based on sender, receiver, or transaction content.
+      group: Network Properties
+    - ID: DECENTRALIZATION
+      title: Network Decentralization
+      description: |
+        Ensure control over the network (consensus, development, rules) is sufficiently distributed to prevent single points of failure or control.
+      group: Network Properties
+    - ID: ASSET_SECURITY
+      title: XRP Asset Security
+      description: |
+        Protect the XRP asset from theft, unauthorized creation, and significant market manipulation that undermines its utility.
+      group: Asset Protection
+
+  assets:
+    - ID: XRPL
+      type: system
+      title: XRP Ledger
+      description: |
+        The distributed, open-source ledger technology itself.
+      inScope: true
+    - ID: XRP
+      type: data # Considered as data/value on the ledger
+      title: XRP Digital Asset
+      description: |
+        The native cryptocurrency of the XRP Ledger.
+      inScope: true
+    - ID: VALIDATORS
+      type: system
+      title: Validator Nodes
+      description: |
+        Servers running the XRPL software that participate in the consensus process.
+      inScope: true
+    - ID: UNL
+      type: data # Configuration data
+      title: Unique Node List (UNL)
+      description: |
+        The list of validators trusted by a specific node operator for consensus. Includes the concept of the default UNL (dUNL).
+      inScope: true
+    - ID: RPCA_CONSENSUS
+      type: process # The mechanism/protocol
+      title: XRP Ledger Consensus Protocol (RPCA)
+      description: |
+        The federated consensus algorithm used by the XRPL.
+      inScope: true
+    - ID: TRANSACTIONS
+      type: dataflow
+      title: XRPL Transactions
+      description: |
+        Operations submitted to the ledger (payments, account settings, DEX orders, etc.).
+      inScope: true
+    - ID: USER_ACCOUNTS
+      type: system # Represents state on the ledger
+      title: User Accounts
+      description: |
+        Entities on the ledger holding XRP and interacting with the network.
+      inScope: true
+    - ID: RIPPLE_ESCROW
+      type: system # A specific ledger feature/contract
+      title: Ripple's XRP Escrow Mechanism
+      description: |
+        The on-ledger mechanism holding a significant portion of Ripple's XRP supply, releasing it periodically.
+      inScope: true
+
+  attackers:
+    - ID: EXTERNAL_ATTACKER
+      description: |
+        Standard unauthenticated network attacker attempting to exploit network protocols or public interfaces.
+      inScope: true
+    - ID: MALICIOUS_VALIDATOR
+      description: |
+        An operator of a validator node attempting to disrupt consensus, double-spend (if possible), censor transactions, or gain unfair advantages.
+      inScope: true
+    - ID: MALICIOUS_USER
+      description: |
+        An XRPL user attempting to spam the network, exploit ledger features maliciously, or defraud others.
+      inScope: true
+    - ID: NETWORK_MANIPULATOR
+      description: |
+        An attacker focusing on network-level attacks like partitioning, BGP hijacking, or large-scale DoS against validators.
+      inScope: true
+    - ID: REGULATOR_OR_STATE_ACTOR
+      description: |
+        A government or regulatory body attempting to enforce censorship, surveillance, or control over the network or its participants through legal or coercive means.
+      inScope: true
+    - ID: RIPPLE_COMPANY
+      description: |
+        Ripple (the company) potentially acting in its own commercial interest, which might conflict with broader ecosystem decentralization, neutrality, or lead to market influence via its XRP holdings.
+      inScope: true # As requested
+
+  assumptions:
+    - ID: CRYPTOGRAPHY_SOUNDNESS
+      description: |
+        Standard cryptographic primitives used (ECDSA, Ed25519, SHA-512) are computationally secure against current threats.
+    - ID: PUBLIC_NETWORK
+      description: |
+        The XRP Ledger operates over the public internet and is accessible to anyone.
+    - ID: VALIDATOR_RATIONALITY
+      description: |
+        Validators are generally rational actors motivated by maintaining network health for their own benefit (reputation, business reliance), though some may act maliciously.
+    - ID: UNL_DEPENDENCE
+      description: |
+        The security and liveness of the network consensus heavily depend on the quality, diversity, and overlap of the UNLs chosen by operators.
+    - ID: RIPPLE_INFLUENCE
+      description: |
+        Ripple (the company) retains significant influence over the core codebase development and historically shaped the default UNL, impacting perceived decentralization.
+
+analysis: |
+  The XRP Ledger presents a unique set of trade-offs compared to traditional PoW or PoS blockchains. 
+  Its Federated Byzantine Agreement (RPCA) consensus mechanism enables high speed, low cost, and scalability, 
+  making it suitable for payments. However, this design relies on trusted validator lists (UNLs), introducing potential 
+  centralization vectors and weaker censorship resistance compared to more decentralized networks. Ripple's significant XRP holdings and historical 
+  influence over development and the default UNL are key factors in the threat landscape, raising concerns about potential conflicts of interest,
+   market manipulation, and the practical level of decentralization. Mitigations rely heavily on validator diversity, independent UNL curation 
+   (e.g., by XRPLF), transparent processes, and economic incentives aligning validators with network health.
+
+threats:
+  - ID: RIPPLE_CENTRALIZATION_RISK
+    title: Excessive Influence by Ripple Company
+    attack: |
+      Ripple leverages its large XRP holdings (including escrow), primary role in core `rippled` development, and historical influence over the default UNL to potentially steer network direction, prioritize features beneficial to its business, influence consensus outcomes indirectly, or exert undue market influence through XRP sales.
+    threatType: Manipulation / Elevation of Privilege (Influence)
+    impactDesc: |
+      Erosion of network decentralization, potential for governance decisions favoring Ripple's interests over the broader community, increased risk of perceived or actual conflicts of interest, potential for market instability due to large XRP sales, and a potential single point of pressure for regulatory actions.
+    impactedSecObj:
+      - REFID: DECENTRALIZATION
+      - REFID: CENSORSHIP_RESISTANCE # Indirectly, via influence pathway
+      - REFID: ASSET_SECURITY # Via market influence
+    attackers:
+      - REFID: RIPPLE_COMPANY
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:L/I:L/A:L # Influence is hard to quantify; impact on core ledger ops low, but high on ecosystem perception/trust
+    fullyMitigated: false
+    countermeasures:
+      - ID: INDEPENDENT_VALIDATORS
+        title: Promote Independent Validator Ecosystem
+        description: |
+          Encourage and support a diverse set of validators operated by independent entities globally to dilute the influence of any single party.
+        inPlace: true # Ecosystem effort
+        public: true
+      - ID: XRPLF_DUNL_MANAGEMENT
+        title: Independent dUNL Curation
+        description: |
+          Utilize the XRP Ledger Foundation (XRPLF) or a similar independent body to manage the default UNL based on transparent, objective criteria, reducing Ripple's direct control over the recommended validator set.
+        inPlace: true # XRPLF exists
+        public: true
+      - ID: COMMUNITY_GOVERNANCE
+        title: Robust Community Governance and Code Review
+        description: |
+          Foster active community participation in protocol upgrades (Amendments), code reviews, and governance discussions to counterbalance corporate influence.
+        inPlace: true # Community exists, effectiveness varies
+        public: true
+      - ID: XRP_ESCROW_TRANSPARENCY
+        title: Transparent XRP Escrow Management
+        description: |
+          Maintain the on-ledger, cryptographically secured escrow mechanism with predictable monthly releases and public reporting of Ripple's XRP sales to provide market transparency.
+        inPlace: true # Escrow is on-ledger
+        public: true
+
+  - ID: UNL_MANIPULATION_CENSORSHIP
+    title: UNL Manipulation Leading to Censorship
+    attack: |
+      A powerful entity (e.g., state actor, colluding group) coerces or conspires with the entity managing the dominant UNL (e.g., XRPLF) and/or directly with a supermajority (>80%) of validators on commonly used UNLs to systematically exclude specific transactions from validation based on predefined criteria (e.g., non-KYC'd addresses, specific jurisdictions).
+    threatType: Denial of Service / Tampering
+    impactDesc: |
+      Legitimate transactions are prevented from being included in the ledger, undermining the network's censorship resistance and neutrality. Could potentially lead to network instability or forks if operators resist.
+    impactedSecObj:
+      - REFID: CENSORSHIP_RESISTANCE
+      - REFID: AVAILABILITY
+      - REFID: LEDGER_INTEGRITY # If censorship becomes systemic
+    attackers:
+      - REFID: REGULATOR_OR_STATE_ACTOR
+      - REFID: MALICIOUS_VALIDATOR
+      - REFID: RIPPLE_COMPANY # Potentially under regulatory duress
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:N/I:H/A:H # High complexity, requires significant coordination/coercion
+    fullyMitigated: false
+    countermeasures:
+      - ID: DIVERSE_UNL_CHOICE
+        title: Encourage Operator UNL Diversity
+        description: |
+          Node operators should actively curate their own UNLs, selecting diverse, geographically distributed, and demonstrably independent validators, rather than solely relying on the default list.
+        inPlace: false # Relies on operator action
+        public: true
+      - ID: VALIDATOR_DIVERSITY_GEOGRAPHIC
+        title: Promote Validator Diversity
+        description: |
+          Foster a wide range of validator operators across different legal jurisdictions and organizational types (companies, universities, individuals) to make widespread collusion or coercion more difficult.
+        inPlace: true # Ongoing effort
+        public: true
+      - ID: TRANSPARENT_DUNL_CRITERIA
+        title: Transparent dUNL Management Criteria
+        description: |
+          The body managing the dUNL (e.g., XRPLF) should operate transparently with clear, objective criteria for validator inclusion and removal, resisting external pressure.
+        inPlace: true # XRPLF aims for this
+        public: true
+      - ID: COMMUNITY_MONITORING_CENSORSHIP
+        title: Community Monitoring for Censorship
+        description: |
+          The community should actively monitor validator behavior and transaction inclusion patterns to detect potential censorship attempts early.
+        inPlace: false # Relies on community effort
+        public: true
+
+  - ID: NETWORK_FORK_UNL_DIVERGENCE
+    title: Network Fork Due to Divergent UNLs
+    attack: |
+      Significant portions of the network adopt non-overlapping or minimally overlapping UNLs, causing disjoint sets of validators to reach the >80% consensus threshold independently, resulting in conflicting validated ledger histories (a fork). This could occur accidentally due to misconfiguration or be induced by an attacker sowing distrust.
+    threatType: Availability / Integrity Attack
+    impactDesc: |
+      Loss of global ledger consistency, conflicting transaction histories, potential for double-spends across forks, disruption of services relying on the ledger, requires complex off-chain coordination to resolve.
+    impactedSecObj:
+      - REFID: LEDGER_CONSISTENCY
+      - REFID: AVAILABILITY
+      - REFID: LEDGER_INTEGRITY
+      - REFID: TRANSACTION_FINALITY # Undermined if forks occur
+    attackers:
+      - REFID: NETWORK_MANIPULATOR # Could intentionally trigger this
+      # Primarily an emergent failure mode, not necessarily a direct attack
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:N/UI:N/S:C/C:N/I:H/A:H # High complexity, fundamental risk
+    fullyMitigated: false # Inherent risk in FBA models without a single enforced UNL
+    countermeasures:
+      - ID: DUNL_COORDINATION_MECHANISM
+        title: Default UNL as Coordination Point
+        description: |
+          The existence of a widely trusted default UNL (dUNL) serves as a crucial coordination mechanism, ensuring sufficient overlap among most validators' chosen UNLs to prevent accidental forks under normal conditions.
+        inPlace: true # dUNL exists
+        public: true
+      - ID: INCENTIVES_FOR_MAINNET_CONSENSUS
+        title: Economic and Operational Incentives
+        description: |
+          Validators and operators are strongly incentivized (economically, operationally) to maintain consensus with the majority network, as being on a minority fork renders their operations largely useless.
+        inPlace: true # Implicit incentive
+        public: true
+      - ID: FORK_DETECTION_PROTOCOL
+        title: Protocol-Level Fork Detection
+        description: |
+          The XRPL software includes mechanisms for nodes to detect loss of synchronization and consensus failures, preventing them from following an invalid or minority fork indefinitely.
+        inPlace: true # Part of `rippled`
+        public: true
+      - ID: COMMUNITY_FORK_RESOLUTION
+        title: Off-Chain Community Coordination
+        description: |
+          Established communication channels within the XRPL community allow for coordination among operators to resolve forks if they occur.
+        inPlace: true # Community channels exist
+        public: true
+
+  - ID: VALIDATOR_COLLUSION_ATTACK
+    title: Validator Collusion for Malicious Actions
+    attack: |
+      A colluding group controlling >80% of the validating power on widely used UNLs attempts to perform malicious actions beyond simple censorship, such as attempting to double-spend (requires rewriting recent history, very difficult but theoretically possible for a short window), preventing all transactions (DoS), or forcing through harmful protocol amendments.
+    threatType: Tampering / Denial of Service / Elevation of Privilege
+    impactDesc: |
+      Potential loss of funds for users, complete network standstill, erosion of trust in the consensus mechanism, or forced adoption of detrimental protocol changes.
+    impactedSecObj:
+      - REFID: LEDGER_INTEGRITY
+      - REFID: AVAILABILITY
+      - REFID: ASSET_SECURITY
+      - REFID: TRANSACTION_FINALITY
+    attackers:
+      - REFID: MALICIOUS_VALIDATOR
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H # Assumes control over >80% validating power
+    fullyMitigated: false
+    countermeasures:
+      - ID: VALIDATOR_DIVERSITY_REPUTATION_INCENTIVES
+        title: Validator Diversity, Reputation, and Incentives
+        description: |
+          Relies on the difficulty of achieving >80% collusion across diverse, reputable validators who have economic and reputational incentives to maintain network integrity.
+        inPlace: true # Core assumption of FBA security
+        public: true
+      - ID: UNL_CONFIGURATION_TRUST
+        title: Prudent UNL Configuration by Operators
+        description: |
+          Node operators selecting trustworthy, reliable, and independent validators for their UNLs is a critical defense layer.
+        inPlace: false # Relies on operator diligence
+        public: true
+      - ID: AMENDMENT_VOTING_THRESHOLD
+        title: High Threshold and Duration for Amendments
+        description: |
+          Protocol changes (Amendments) require sustained >80% validator support over a period (e.g., two weeks), making it harder to force through malicious changes quickly.
+        inPlace: true # Part of the protocol
+        public: true
+      - ID: CRYPTOGRAPHIC_TRANSACTION_VERIFICATION
+        title: Cryptographic Transaction Validation
+        description: |
+          Even colluding validators cannot forge signatures or violate fundamental cryptographic rules of transactions; they can primarily only control inclusion/ordering.
+        inPlace: true # Foundational
+        public: true
+
+  - ID: XRP_MARKET_MANIPULATION
+    title: Market Manipulation via Large XRP Holdings/Sales
+    attack: |
+      Ripple, or another entity holding a very large amount of XRP, strategically sells or moves large volumes on the open market,
+       potentially causing significant price volatility, triggering stop-losses, creating FUD (Fear, Uncertainty, Doubt),
+        or influencing market sentiment for their own gain.
+    threatType: Economic Attack / Manipulation
+    impactDesc: |
+      Financial losses for XRP holders, damage to the ecosystem's reputation and perceived stability, potential reduction in XRP's utility as a reliable bridge currency if volatility becomes excessive. Does not directly compromise ledger integrity but affects the asset's value proposition.
+    impactedSecObj:
+      - REFID: ASSET_SECURITY # Economic value and stability
+      - REFID: AVAILABILITY # Indirectly, if utility as bridge currency is impaired
+    attackers:
+      - REFID: RIPPLE_COMPANY
+      - REFID: EXTERNAL_ATTACKER # e.g., a large 'whale' holder
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:L/A:L # Affects market, not ledger protocol directly
+    fullyMitigated: false
+    countermeasures:
+      - ID: PROGRAMMATIC_ESCROW_RELEASES
+        title: Predictable Escrow Releases
+        description: |
+          The scheduled, on-ledger release of XRP from Ripple's escrow provides some predictability regarding potential new supply hitting the market, though Ripple controls sales post-release.
+        inPlace: true # Escrow is programmatic
+        public: true
+      - ID: RIPPLE_SALES_REPORTING
+        title: Ripple's Voluntary Sales Transparency
+        description: |
+          Ripple publishes quarterly reports detailing its programmatic and institutional XRP sales, providing some transparency to the market.
+        inPlace: true # Based on Ripple's policy
+        public: true
+      - ID: MARKET_SURVEILLANCE_EXCHANGES
+        title: Exchange Market Surveillance
+        description: |
+          Cryptocurrency exchanges employ market surveillance tools to detect and potentially mitigate overtly manipulative trading practices.
+        inPlace: true # Standard exchange practice
+        public: true
+      - ID: WIDER_XRP_DISTRIBUTION
+        title: Encourage Wider XRP Distribution Over Time
+        description: |
+          A long-term mitigation involves the gradual distribution of XRP to a broader base of holders, reducing the market impact of any single large seller.
+        inPlace: false # Long-term market dynamic
+        public: true
+
+  - ID: NETWORK_SPAM_DOS
+    title: Network Spam/Denial-of-Service via Transaction Flooding
+    attack: |
+      An attacker submits a massive volume of valid, low-value transactions to the network, attempting to consume validator resources (bandwidth, CPU, storage), increase ledger size unnecessarily, or potentially slightly degrade overall transaction processing performance during the flood.
+    threatType: Denial of Service
+    impactDesc: |
+      Increased operational costs for validators, potential for slight increase in transaction confirmation times if the network is pushed to its limits, ledger bloat over the long term.
+    impactedSecObj:
+      - REFID: AVAILABILITY
+    attackers:
+      - REFID: MALICIOUS_USER
+      - REFID: NETWORK_MANIPULATOR
+    CVSS:
+      vector: CVSS:3.1/AV:N/AC:L/PR:L/UI:N/S:U/C:N/I:N/A:L # Low impact due to built-in mitigations
+    fullyMitigated: false # Cannot completely prevent spam, only make it expensive
+    countermeasures:
+      - ID: TRANSACTION_FEE_BURN
+        title: Transaction Fee Destruction (XRP Burn)
+        description: |
+          Every transaction destroys a small amount of XRP. This makes submitting millions of spam transactions prohibitively expensive for the attacker.
+        inPlace: true # Core protocol feature
+        public: true
+      - ID: DYNAMIC_FEE_ESCALATION
+        title: Dynamic Fee Escalation Under Load
+        description: |
+          The minimum required transaction fee automatically increases as network load rises, further increasing the cost for attackers during a flood attempt.
+        inPlace: true # Core protocol feature
+        public: true
+      - ID: ACCOUNT_RESERVE_REQUIREMENT
+        title: Minimum Account Reserve
+        description: |
+          Each account must maintain a minimum XRP balance (currently 10 XRP) that cannot be spent, discouraging the creation of millions of spam accounts.
+        inPlace: true # Core protocol feature
+        public: true

@@ -81,7 +81,7 @@ threats:
     attackers:
       - REFID: CHANNEL_PARTNER
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:L'
+      vector: CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:H/A:L
     fullyMitigated: false
     countermeasures:
       - ID: PENALTY_MECHANISM
@@ -103,7 +103,7 @@ threats:
     attackers:
       - REFID: NETWORK_ADVERSARY
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H'
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:U/C:N/I:N/A:H
     fullyMitigated: false
     countermeasures:
       - ID: RATE_LIMITING
@@ -125,7 +125,7 @@ threats:
     attackers:
       - REFID: CHANNEL_PARTNER
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:H'
+      vector: CVSS:3.1/AV:N/AC:L/PR:H/UI:N/S:U/C:N/I:N/A:H
     fullyMitigated: false
     countermeasures:
       - ID: FORCE_CLOSURE
@@ -148,7 +148,7 @@ threats:
       - REFID: MALICIOUS_ROUTING_NODE
       - REFID: NETWORK_ADVERSARY
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N'
+      vector: CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:U/C:H/I:N/A:N
     fullyMitigated: false
     countermeasures:
       - ID: ROUTE_ENCRYPTION
@@ -170,7 +170,7 @@ threats:
     attackers:
       - REFID: NETWORK_ADVERSARY
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H'
+      vector: CVSS:3.1/AV:N/AC:L/PR:N/UI:N/S:C/C:N/I:H/A:H
     fullyMitigated: false
     countermeasures:
       - ID: DISTRIBUTED_WATCHTOWERS

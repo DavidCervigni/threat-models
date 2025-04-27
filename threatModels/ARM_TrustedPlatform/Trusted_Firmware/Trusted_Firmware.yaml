@@ -70,7 +70,7 @@ threats:
     attackers:
       - REFID: SUPPLY_CHAIN_ATTACKERS
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:L/UI:N/S:C/C:H/I:H/A:H'
     fullyMitigated: false
     countermeasures:
       - ID: UPDATE_SIGNING
@@ -112,7 +112,7 @@ threats:
     attackers:
       - REFID: SUPPLY_CHAIN_ATTACKERS
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+      vector: 'CVSS:3.1/AV:P/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H'
     fullyMitigated: false
     countermeasures:
       - ID: SUPPLY_CHAIN_AUDITS
@@ -133,7 +133,7 @@ threats:
     attackers:
       - REFID: MALICIOUS_FIRMWARE
     CVSS:
-      vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+      vector: 'CVSS:3.1/AV:N/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H'
     fullyMitigated: false
     countermeasures:
       - ID: ENCRYPT_STORAGE
@@ -163,6 +163,5 @@ threats:
         inPlace: true
         public: true
     CVSS:
-      base: TODO CVSS
-      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:U/C:H/I:H/A:H'
+      vector: 'CVSS:3.1/AV:L/AC:H/PR:H/UI:N/S:C/C:H/I:H/A:H'
     fullyMitigated: false
