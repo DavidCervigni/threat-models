@@ -33,7 +33,8 @@ jobs:
             --templateSiteFolderSRC scripts/mkdocs \
             --templateSiteFolderDST build \
             --MKDocsSiteDir public \
-            --MKDocsDir build
+            --MKDocsDir build \
+            --fileName index
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
