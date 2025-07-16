@@ -9,12 +9,12 @@ scope:
     Model Context Protocols (MCP) are a set of protocols designed to enhance the interaction between large language models (LLMs) and their users by providing a structured way to manage context, state, and user preferences.
     REF: https://modelcontextprotocol.io/introduction
 
-    <img src="img/MCP_sequence00_Complete.puml" />
-    <img src="img/MCP_sequence0_Init.puml" />
-    <img src="img/MCP_sequence1_Simple.puml" />
-    <img src="img/MCP_sequence2_RuntimeQuery.pumlg" />
-    <img src="img/MCP_sequence3_Elicitation.puml" />
-    <img src="img/MCP_sequence4_AuthFlow copy.puml" />
+    <img src="img/MCP_sequence00_Complete.svg" />
+    <img src="img/MCP_sequence0_Init.svg" />
+    <img src="img/MCP_sequence1_Simple.svg" />
+    <img src="img/MCP_sequence2_RuntimeQuery.svg" />
+    <img src="img/MCP_sequence3_Elicitation.svg" />
+    <img src="img/MCP_sequence4_AuthFlow copy.svg" />
 version: 1.0
 
 authors: |
