@@ -5,6 +5,11 @@ title: LLM Adoption
 version: '1.0'
 authors: |
   David Cervigni Using GenAI
+
+children:
+  - ID: MCP
+
+
 scope:
   description: |
     **NOTE:** This threat model addresses potential risks associated with the adoption 
