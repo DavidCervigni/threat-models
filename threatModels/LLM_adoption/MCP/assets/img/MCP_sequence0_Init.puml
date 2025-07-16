@@ -1,0 +1,48 @@
+@startuml
+@startuml
+!theme plain
+
+' Use autonumbering for all steps
+autonumber
+
+box "Local PC / On-Premise Network" #LightBlue
+  actor "Sales Manager" as User
+  participant "AI Business Assistant\n(MCP Client)" as App
+  participant "Local MCP Server\n(Provides access to CRM)" as LocalMCPServer
+  ' database "Internal CRM DB" as LocalDB
+end box
+
+box "Cloud" #LightGreen
+  participant "Cloud MCP Server\n(Provides access to Market Data)" as CloudMCPServer
+  ' participant "Financial Data API" as FinAPI
+end box
+
+box "LLM SaaS" #LightYellow
+  ' participant "Large Language Model (LLM)" as LLM
+end box
+
+' ===================================
+== Initialization & Tool Registration ==
+' This is an internal setup phase for the AI Assistant (Client).
+' ===================================
+
+activate App
+App -> LocalMCPServer: Discover available tools\n(Header: mcp-client-features: sampling, roots, elicitation)
+activate LocalMCPServer
+LocalMCPServer --> App: Return Local Tool Manifest\n- **name**: `get_internal_sales_summary`\n- **description**: "..."
+deactivate LocalMCPServer
+
+App -> CloudMCPServer: Discover available tools\n(Header: mcp-client-features: sampling, roots, elicitation)
+activate CloudMCPServer
+CloudMCPServer --> App: Return Cloud Tool Manifest\n- **name**: `get_stock_performance`\n- **description**: "..."
+deactivate CloudMCPServer
+
+note over App
+**Internal State Update**
+The App compiles the tool manifests
+into a "System Prompt" template.
+This template will be sent with every LLM call.
+end note
+deactivate App
+
+@enduml

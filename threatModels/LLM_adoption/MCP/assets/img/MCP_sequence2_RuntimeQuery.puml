@@ -1,0 +1,81 @@
+@startuml
+@startuml
+!theme plain
+
+' Use autonumbering for all steps
+autonumber
+
+box "Local PC / On-Premise Network" #LightBlue
+  actor "Sales Manager" as User
+  participant "AI Business Assistant\n(MCP Client)" as App
+  participant "Local MCP Server\n(Provides access to CRM)" as LocalMCPServer
+  database "Internal CRM DB" as LocalDB
+end box
+
+box "Cloud" #LightGreen
+  participant "Cloud MCP Server\n(Provides access to Market Data)" as CloudMCPServer
+  participant "Financial Data API" as FinAPI
+end box
+
+box "LLM SaaS" #LightYellow
+  participant "Large Language Model (LLM)" as LLM
+end box
+
+' ===================================
+== Runtime Operation (User Query) ==
+' This phase happens when the user asks a question.
+' ===================================
+
+User -> App: "Summarize our Q1 sales\nand compare to Competitor X's\nstock performance."
+activate App
+
+App -> LLM: Sends prompt and tool context
+activate LLM
+note left of LLM #LightYellow
+**API Payload includes:**
+1.  **System Prompt**: The compiled list of
+    all available tools and their descriptions.
+2.  **User Message**: "Summarize our Q1 sales..."
+end note
+LLM --> App: Determines it needs two tools:\n- `get_internal_sales_summary(quarter='Q1')`\n- `get_stock_performance(ticker='COMPX', quarter='Q1')`
+deactivate LLM
+
+App -> LocalMCPServer: Calls the specific tool for sales data
+activate LocalMCPServer
+
+LocalMCPServer -> LocalDB: Queries CRM for Q1 sales
+activate LocalDB
+LocalDB --> LocalMCPServer: Returns Q1 sales data
+deactivate LocalDB
+LocalMCPServer --> App: Forwards sales summary
+deactivate LocalMCPServer
+
+App -> CloudMCPServer: Calls the specific tool for market data
+activate CloudMCPServer
+
+CloudMCPServer -> FinAPI: Calls API for Competitor X's stock data
+activate FinAPI
+FinAPI --> CloudMCPServer: Returns stock performance data
+deactivate FinAPI
+CloudMCPServer --> App: Forwards stock data
+deactivate CloudMCPServer
+
+App -> LLM: Sends tool results and full history
+activate LLM
+note left of LLM #LightYellow
+**API Payload includes:**
+1.  **System Prompt**: (Sent again)
+2.  **Conversation History**:
+    - User: "Summarize..."
+    - Assistant: (The tool call request)
+3.  **Tool Execution Results**:
+    - Sales Data: "{...}"
+    - Stock Data: "{...}"
+end note
+LLM --> App: Generates a comprehensive summary\nusing the provided data
+deactivate LLM
+
+App --> User: Displays final analysis:\n"Our Q1 sales grew by 15% to $5.2M,\noutperforming Competitor X, whose stock\ndeclined by 8%."
+deactivate App
+
+@enduml

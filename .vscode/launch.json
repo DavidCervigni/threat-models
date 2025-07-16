@@ -125,6 +125,31 @@
                 // "threatModels/assets"
             ]
         },
+
+
+            {
+                "name": "checkYAMLFullDirectory",
+                "type": "python",
+                "request": "launch",
+                "module": "r3threatmodeling.checkYAMLFullDirectory",
+                "justMyCode": true,
+                "args": [
+                "--TMDirectory",
+                "threatModels"
+                ]
+            },
+        {
+            "name": "checkSingleYAMLfile composetest",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.checkSingleYAMLfile",
+            "justMyCode": true,
+            "args": [
+                "--tmYAMLfile",
+                "threatModels/composetest.yaml"
+            ]
+        },
+
         {
             "name": "Directory fullBuild MKDOCS",
             "type": "python",
@@ -152,6 +177,46 @@
                 "--MKDocsDir",
                 "build"
                 // ,"--generatePDF"
+            ]
+        },
+        {
+            "name": "Build HTML for composetest",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.report_generator",
+            "justMyCode": false,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/composetest.yaml",
+                "--browserSync",
+                "--outputDir",
+                "build/composetest/",
+                "--template",
+                "TM_templateFull",
+                "--assetDir",
+                "threatModels/OAuth2/assets",
+                "--formatYAML"
+            ]
+        },
+
+        {
+            "name": "Full Build composetest",
+            "type": "python",
+            "request": "launch",
+            "module": "r3threatmodeling.fullBuildSingleTM",
+            "justMyCode": true,
+            "args": [
+                "--rootTMYaml",
+                "threatModels/composetest.yaml",
+                "--outputDir",
+                "build/composetest",
+                "--template",
+                "TM_templateFull",
+                "--assetDir",
+                "threatModels/assets",
+                // "--visibility", "public",
+                "--generatePDF",
+                "--baseFileName", "index"
             ]
         },
         {

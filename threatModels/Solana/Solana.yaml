@@ -1,7 +1,9 @@
 ID: Solana
 title: Solana
-version: 1.0
-  David Cervigni (using LLM based on conversation)
+version: 1.0 David Cervigni (using LLM based on conversation)
+
+children:
+  - ID: SolanaProgram
 scope:
   description: |
     **NOTE:** This is an example threat model created based on specific instructions and conversation context.

@@ -1,5 +1,7 @@
 ID: LLM_ADOPTION_THREAT_MODEL
 title: LLM Adoption
+
+
 version: '1.0'
 authors: |
   David Cervigni Using GenAI

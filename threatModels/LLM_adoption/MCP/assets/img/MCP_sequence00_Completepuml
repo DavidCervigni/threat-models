@@ -1,0 +1,207 @@
+@startuml
+@startuml
+!theme plain
+
+' Use autonumbering for all steps
+autonumber
+
+box "Local PC / On-Premise Network" #LightBlue
+  actor "Sales Manager" as User
+  participant "AI Business Assistant\n(MCP Client)" as App
+  participant "Local MCP Server\n(Provides access to CRM)" as LocalMCPServer
+  database "Internal CRM DB" as LocalDB
+end box
+
+box "Cloud" #LightGreen
+  participant "Cloud MCP Server\n(Provides access to Market Data)" as CloudMCPServer
+  participant "Authorization Server" as AuthServer
+  participant "Financial Data API" as FinAPI
+end box
+
+box "LLM SaaS" #LightYellow
+  participant "Large Language Model (LLM)" as LLM
+end box
+
+' ===================================
+== Authorization Flow (Cloud Server) ==
+' The client needs to get authorization to act on behalf of the user.
+' ===================================
+activate App
+App -> CloudMCPServer: Discover available tools (no token)
+opt Auth
+activate CloudMCPServer
+CloudMCPServer --> App: HTTP 401 Unauthorized\n(WWW-Authenticate: mcp-v1 resource_metadata_uri="...")
+deactivate CloudMCPServer
+
+App -> CloudMCPServer: GET /.well-known/oauth-protected-resource
+activate CloudMCPServer
+CloudMCPServer --> App: Resource metadata with AS URL
+deactivate CloudMCPServer
+
+App -> AuthServer: GET /.well-known/oauth-authorization-server
+activate AuthServer
+AuthServer --> App: Authorization server metadata
+deactivate AuthServer
+
+note over App
+  **OAuth 2.1 Authorization Code Grant Flow**
+  The App opens a browser to start the flow.
+end note
+
+App -> AuthServer: **mcp-authorize** request\n(via User's browser)
+activate AuthServer
+AuthServer -> User: Shows login and consent screen
+User -> AuthServer: Enters credentials and grants consent
+AuthServer --> App: Redirects browser to client's\n**redirect_uri** with **authorization_code**
+
+App -> AuthServer: Exchanges **authorization_code** for an **access_token**
+AuthServer --> App: Returns **access_token**
+deactivate AuthServer
+note over App
+  **Authorization Complete**
+  The App securely stores the access token
+  for future requests to the Cloud MCP Server.
+end note
+
+end
+' ===================================
+== Initialization & Tool Registration ==
+' This is an internal setup phase for the AI Assistant (Client).
+' ===================================
+
+activate App
+App -> LocalMCPServer: Discover available tools\n(Header: mcp-client-features: sampling, roots, elicitation)
+activate LocalMCPServer
+LocalMCPServer --> App: Return Local Tool Manifest\n- **name**: `get_internal_sales_summary`\n- **description**: "..."
+deactivate LocalMCPServer
+
+App -> CloudMCPServer: Discover available tools\n(Header: Authorization: Bearer {access_token})\n(Header: mcp-client-features: sampling, roots, elicitation)
+activate CloudMCPServer
+CloudMCPServer --> App: Return Cloud Tool Manifest\n- **name**: `get_stock_performance`\n- **description**: "..."
+deactivate CloudMCPServer
+
+note over App
+**Internal State Update**
+The App compiles the tool manifests
+into a "System Prompt" template.
+This template will be sent with every LLM call.
+end note
+deactivate App
+
+' ===================================
+== Runtime Operation (User Query) ==
+' This phase happens when the user asks a question.
+' ===================================
+
+User -> App: "Summarize our Q1 sales\nand compare to Competitor X's\nstock performance."
+activate App
+
+App -> LLM: Sends prompt and tool context
+activate LLM
+note left of LLM #LightYellow
+**API Payload includes:**
+1.  **System Prompt**: The compiled list of
+    all available tools and their descriptions.
+2.  **User Message**: "Summarize our Q1 sales..."
+end note
+LLM --> App: Determines it needs two tools:\n- `get_internal_sales_summary(quarter='Q1')`\n- `get_stock_performance(ticker='COMPX', quarter='Q1')`
+deactivate LLM
+
+App -> LocalMCPServer: Calls the specific tool for sales data
+activate LocalMCPServer
+
+opt Elicitation: if query is ambiguous
+  note right of LocalMCPServer #LightBlue
+    **Elicitation Example**
+    The server determines the query is ambiguous
+    and needs a specific department.
+  end note
+  LocalMCPServer -> App: **Elicitation Request**: "Which department's sales?"
+  activate App
+  App -> User: "For which department would you like the sales summary?"
+  User -> App: "The 'Enterprise' department."
+  deactivate App
+  App -> LocalMCPServer: Elicitation Response: "Enterprise"
+end
+
+LocalMCPServer -> LocalDB: Queries CRM for Q1 'Enterprise' sales
+activate LocalDB
+LocalDB --> LocalMCPServer: Returns Q1 sales data
+deactivate LocalDB
+LocalMCPServer --> App: Forwards sales summary
+deactivate LocalMCPServer
+
+App -> CloudMCPServer: Calls the specific tool for market data
+activate CloudMCPServer
+
+opt Roots & Sampling: if server needs more data or sub-tasks
+  note right of CloudMCPServer #LightGreen
+    **Roots & Sampling Example**
+    The server needs to access a specific report
+    and perform a sub-analysis.
+  end note
+  CloudMCPServer -> App: **Roots Request**: "Provide content from 'https://market.reports/COMPX_Q1.pdf'"
+  activate App
+  App -> CloudMCPServer: Returns content of the report
+  deactivate App
+
+  CloudMCPServer -> App: **Sampling Request**: "Analyze competitor sentiment from the report"
+  activate App
+  note right of App #LightBlue
+    **User Controls for LLM Sampling**
+    1. User must approve the request.
+    2. User can review/edit the prompt.
+    3. User can review/edit the result.
+  end note
+
+  alt User Approves Sampling
+    App -> User: "The server wants to use an LLM to 'Analyze competitor sentiment...'. Approve?"
+    User -> App: "Yes"
+
+    App -> User: Show proposed prompt:\n"Analyze sentiment from: {report_content}"
+    User -> App: Approve/Edit Prompt
+
+    App -> LLM: "Analyze sentiment from: {approved_report_content}"
+    activate LLM
+    LLM --> App: "Sentiment is 'neutral to negative'."
+    deactivate LLM
+
+    App -> User: Show LLM result for review:\n"Sentiment is 'neutral to negative'."
+    User -> App: Approve/Edit Result
+
+    App -> CloudMCPServer: Sampling Response: {approved_result}
+  else User Rejects Sampling
+    App -> User: "The server wants to use an LLM... Approve?"
+    User -> App: "No"
+    App -> CloudMCPServer: Sampling Response: Error/Rejected
+  end
+  deactivate App
+end
+
+CloudMCPServer -> FinAPI: Calls API for Competitor X's stock data
+activate FinAPI
+FinAPI --> CloudMCPServer: Returns stock performance data
+deactivate FinAPI
+CloudMCPServer --> App: Forwards stock data and sentiment analysis
+deactivate CloudMCPServer
+
+App -> LLM: Sends tool results and full history
+activate LLM
+note left of LLM #LightYellow
+**API Payload includes:**
+1.  **System Prompt**: (Sent again)
+2.  **Conversation History**:
+    - User: "Summarize..."
+    - Assistant: (The tool call request)
+3.  **Tool Execution Results**:
+    - Sales Data: "{...}"
+    - Stock Data: "{...}"
+    - Sentiment: "neutral to negative"
+end note
+LLM --> App: Generates a comprehensive summary\nusing the provided data
+deactivate LLM
+
+App --> User: Displays final analysis:\n"Our Q1 sales for the Enterprise department grew by 15% to $5.2M,\noutperforming Competitor X, whose stock\ndeclined by 8% with neutral to negative sentiment."
+deactivate App
+
+@enduml

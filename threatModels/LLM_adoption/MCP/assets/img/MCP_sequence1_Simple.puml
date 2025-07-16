@@ -1,0 +1,49 @@
+@startuml
+!theme plain
+
+box "Local PC" #LightBlue
+  actor User
+  participant "AI Application (MCP Client)" as App
+end box
+
+box "Cloud" #LightGreen
+  participant "MCP Server" as MCPServer
+  database "Data Source" as DataSource
+end box
+
+box "LLM SaaS" #LightYellow
+  participant "Large Language Model (LLM)" as LLM
+end box
+
+User -> App: 1. Interacts with AI application
+activate App
+
+App -> MCPServer: 2. Discovers available tools and data
+activate MCPServer
+MCPServer --> App: 3. Returns available tools
+deactivate MCPServer
+
+User -> App: 4. Provides a prompt
+App -> LLM: 5. Sends prompt to LLM
+activate LLM
+
+LLM -> App: 6. Requests contextual information
+App -> MCPServer: 7. Requests data from a specific tool
+activate MCPServer
+
+MCPServer -> DataSource: 8. Queries the data source
+activate DataSource
+DataSource --> MCPServer: 9. Returns requested data
+deactivate DataSource
+
+MCPServer --> App: 10. Forwards data to the application
+deactivate MCPServer
+
+App -> LLM: 11. Sends contextual data to the LLM
+LLM --> App: 12. Returns a response based on the context
+deactivate LLM
+
+App --> User: 13. Displays the final response
+deactivate App
+
+@enduml

@@ -1,0 +1,83 @@
+@startuml
+!theme plain
+
+' === Style Definitions ===
+' Define visual styles for components and stereotypes directly
+skinparam component {
+    BackgroundColor LightCyan
+    BorderColor Black
+}
+skinparam database {
+    BackgroundColor LightYellow
+    BorderColor Black
+}
+' Stereotypes for config and credentials files
+skinparam file<<Config>> {
+    BackgroundColor #LightGoldenRodYellow
+    StereotypeFontColor #333
+}
+skinparam file<<Credentials>> {
+    BackgroundColor #FFC0CB
+    StereotypeFontColor #333
+}
+
+
+' === Layout Definition ===
+
+package "Local PC / On-Premise Network" #LightBlue {
+    component "[AI Business Assistant\n(MCP Client)]" as App {
+        file "client_config.yaml\n- mcp_server_urls" as AppConfig <<Config>>
+        file ".env\n- LLM_API_KEY" as AppCreds <<Credentials>>
+    }
+
+    component "[Local MCP Server]" as LocalMCPServer {
+        file "local_server_config.yaml\n- tool_definitions" as LocalServerConfig <<Config>>
+        file ".env\n- DB_USER\n- DB_PASS" as LocalServerCreds <<Credentials>>
+    }
+
+    database "Internal CRM DB" as LocalDB
+}
+
+package "Cloud Provider" #LightGreen {
+    component "[Cloud MCP Server]" as CloudMCPServer {
+        file "cloud_server_config.yaml\n- tool_definitions" as CloudServerConfig <<Config>>
+        file ".env\n- FINANCE_API_KEY" as CloudServerCreds <<Credentials>>
+    }
+    component "[Financial Data API]" as FinAPI
+}
+
+package "LLM SaaS Provider" #LightYellow {
+    component "[Large Language Model]" as LLM
+}
+
+
+' === Relationships ===
+' Arrows are labeled to show where credentials are used
+
+' AI Assistant calls external services
+App --> LLM : "Sends prompts & context\n(Uses **LLM_API_KEY**)"
+App --> LocalMCPServer : "Calls local tools\n(Internal RPC/HTTP)"
+App --> CloudMCPServer : "Calls cloud tools\n(HTTPS)"
+
+' Local MCP Server calls internal database
+LocalMCPServer --> LocalDB : "Queries for data\n(Uses **DB Credentials**)"
+
+' Cloud MCP Server calls external API
+CloudMCPServer --> FinAPI : "Requests data\n(Uses **FINANCE_API_KEY**)"
+
+
+' === Legend ===
+legend right
+  **Legend**
+  ---
+  <color:LightCyan><&box></color> **Component**: A running software module.
+  <color:LightGoldenRodYellow><&file></color> **Config File**: Defines component behavior.
+  <color:LightPink><&file></color> **Credentials**: Secrets loaded by the component.
+  <color:LightYellow><&hard-drive></color> **Database**: Data storage.
+  ---
+  **Arrows**
+  `-->`  : Interaction or data flow.
+  Labels in **bold** indicate\nwhere credentials are used for authentication.
+end legend
+
+@enduml

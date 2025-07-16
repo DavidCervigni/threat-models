@@ -1,0 +1,86 @@
+@startuml
+!theme plain
+
+' Use autonumbering for all steps
+autonumber
+
+box "Local PC / On-Premise Network" #LightBlue
+  actor "Sales Manager" as User
+  participant "AI Business Assistant\n(MCP Client)" as App
+  participant "Local MCP Server\n(Provides access to CRM)" as LocalMCPServer
+  ' database "Internal CRM DB" as LocalDB
+end box
+
+box "Cloud" #LightGreen
+  participant "Cloud MCP Server\n(Provides access to Market Data)" as CloudMCPServer
+  participant "Authorization Server" as AuthServer
+  ' participant "Financial Data API" as FinAPI
+end box
+
+' box "LLM SaaS" #LightYellow
+'   participant "Large Language Model (LLM)" as LLM
+' end box
+' ===================================
+== Initialization & Tool Registration with Authorization Flow (Cloud Server) ==
+' The client needs to get authorization to act on behalf of the user.
+' ===================================
+activate App
+App -> CloudMCPServer: Discover available tools (no token)
+opt Auth
+activate CloudMCPServer
+CloudMCPServer --> App: HTTP 401 Unauthorized\n(WWW-Authenticate: mcp-v1 resource_metadata_uri="...")
+deactivate CloudMCPServer
+
+App -> CloudMCPServer: GET /.well-known/oauth-protected-resource
+activate CloudMCPServer
+CloudMCPServer --> App: Resource metadata with AS URL
+deactivate CloudMCPServer
+
+App -> AuthServer: GET /.well-known/oauth-authorization-server
+activate AuthServer
+AuthServer --> App: Authorization server metadata
+deactivate AuthServer
+
+note over App
+  **OAuth 2.1 Authorization Code Grant Flow**
+  The App opens a browser to start the flow.
+end note
+
+App -> AuthServer: **mcp-authorize** request\n(via User's browser)
+activate AuthServer
+AuthServer -> User: Shows login and consent screen
+User -> AuthServer: Enters credentials and grants consent
+AuthServer --> App: Redirects browser to client's\n**redirect_uri** with **authorization_code**
+
+App -> AuthServer: Exchanges **authorization_code** for an **access_token**
+AuthServer --> App: Returns **access_token**
+deactivate AuthServer
+note over App
+  **Authorization Complete**
+  The App securely stores the access token
+  for future requests to the Cloud MCP Server.
+end note
+
+end
+
+
+activate App
+App -> LocalMCPServer: Discover available tools\n(Header: mcp-client-features: sampling, roots, elicitation)
+activate LocalMCPServer
+LocalMCPServer --> App: Return Local Tool Manifest\n- **name**: `get_internal_sales_summary`\n- **description**: "..."
+deactivate LocalMCPServer
+
+App -> CloudMCPServer: Discover available tools\n(Header: Authorization: Bearer {access_token})\n(Header: mcp-client-features: sampling, roots, elicitation)
+activate CloudMCPServer
+CloudMCPServer --> App: Return Cloud Tool Manifest\n- **name**: `get_stock_performance`\n- **description**: "..."
+deactivate CloudMCPServer
+
+note over App
+**Internal State Update**
+The App compiles the tool manifests
+into a "System Prompt" template.
+This template will be sent with every LLM call.
+end note
+deactivate App
+
+@enduml

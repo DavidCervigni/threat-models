@@ -1,0 +1,13 @@
+ID: composetest
+title: ComposeTest
+version: 1
+children:
+  - ID: OAuth2
+  - ID: Solana
+
+scope:
+  description: |
+    ComposeTest application.
+analysis:
+threats:
+
