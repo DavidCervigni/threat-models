@@ -1,7 +1,7 @@
 # threat-models
 threat models structured in YAML and report generation integration
 
-live site: [https://davidcervigni.github.io/threat-models/]()
+live site: [https://davidcervigni.github.io/threat-models/](https://davidcervigni.github.io/threat-models/)
 
 ## Generate the report using r3-threat-modeling-tool
 
